@@ -1,14 +1,3 @@
-CREATE TABLE ticket_office.trains(
-	id INT PRIMARY KEY AUTO_INCREMENT,
-	number VARCHAR(30) NOT NULL,
-    economy_carriages_number INT DEFAULT 0,
-    economy_carriage_seats_number INT DEFAULT 0,
-	coupe_carriages_number INT DEFAULT 0,
-    coupe_carriage_seats_number INT DEFAULT 0,
-	lux_carriages_number INT DEFAULT 0,
-    lux_carriage_seats_number INT DEFAULT 0
-);
-
 CREATE TABLE ticket_office.roles(
 	id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL UNIQUE
@@ -30,6 +19,27 @@ CREATE TABLE ticket_office.user_details(
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES ticket_office.users(id)
 );
 
+CREATE TABLE ticket_office.carriages(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    type VARCHAR(30) NOT NULL,
+    comfort_level VARCHAR(30),
+    seats INT
+);
+
+CREATE TABLE ticket_office.trains(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	number VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE ticket_office.trains_carriages(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    train_id INT,
+    carriage_id INT,
+    train_carriage_number INT,
+    CONSTRAINT fk_train FOREIGN KEY (train_id) REFERENCES ticket_office.trains(id),
+    CONSTRAINT fk_carriage FOREIGN KEY (carriage_id) REFERENCES ticket_office.carriages(id)
+);
+
 CREATE TABLE ticket_office.stations(
     id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(50) NOT NULL UNIQUE
@@ -41,6 +51,7 @@ CREATE TABLE ticket_office.routes(
 );
 
 CREATE TABLE ticket_office.routes_stations(
+    id INT PRIMARY KEY AUTO_INCREMENT,
     route_id INT,
     station_id INT,
     route_stop_number INT,
@@ -57,7 +68,7 @@ CREATE TABLE ticket_office.departures(
     route_id INT,
     departure_date DATETIME NOT NULL,
     arrival_date DATETIME NOT NULL,
-    CONSTRAINT fk_train FOREIGN KEY (train_id) REFERENCES ticket_office.trains(id),
+    CONSTRAINT fk_train_1 FOREIGN KEY (train_id) REFERENCES ticket_office.trains(id),
     CONSTRAINT fk_route_1 FOREIGN KEY (route_id) REFERENCES ticket_office.routes(id)
 );
 
