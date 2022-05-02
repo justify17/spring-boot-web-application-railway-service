@@ -56,8 +56,8 @@ CREATE TABLE ticket_office.routes_stations(
     station_id INT,
     route_stop_number INT,
     price_to_next_station INT,
-    time_to_next_station INT,
-    stop_time INT,
+    minutes_to_next_station INT,
+    stop_minutes INT,
     CONSTRAINT fk_route FOREIGN KEY (route_id) REFERENCES ticket_office.routes(id),
     CONSTRAINT fk_station FOREIGN KEY (station_id) REFERENCES ticket_office.stations(id)
 );

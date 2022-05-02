@@ -24,6 +24,7 @@ public class User {
     private Role role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private UserDetails userDetails;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

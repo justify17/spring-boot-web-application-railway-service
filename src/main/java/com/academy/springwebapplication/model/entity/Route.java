@@ -18,4 +18,7 @@ public class Route {
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
     private Set<Departure> departures;
+
+    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
+    private Set<RouteStation> stations;
 }

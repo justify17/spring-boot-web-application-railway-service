@@ -8,8 +8,12 @@ import javax.persistence.*;
 @Entity
 @Table(name = "user_details")
 public class UserDetails {
-    @MapsId
+    @Id
+    @Column(name = "user_id")
+    private Integer id;
+
     @OneToOne
+    @MapsId
     @JoinColumn(name = "user_id")
     private User user;
 

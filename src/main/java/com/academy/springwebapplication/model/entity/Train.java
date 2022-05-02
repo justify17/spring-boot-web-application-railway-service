@@ -18,4 +18,7 @@ public class Train {
 
     @OneToMany(mappedBy = "train", cascade = CascadeType.ALL)
     private Set<Departure> departures;
+
+    @OneToMany(mappedBy = "train", cascade = CascadeType.ALL)
+    private Set<TrainCarriage> carriages;
 }
