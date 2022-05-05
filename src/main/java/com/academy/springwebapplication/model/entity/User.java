@@ -1,9 +1,8 @@
 package com.academy.springwebapplication.model.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Data
 @Entity
@@ -14,7 +13,7 @@ public class User {
     private Integer id;
 
     @Column
-    private String login;
+    private String username;
 
     @Column
     private String password;
@@ -25,8 +24,5 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
-    private UserDetails userDetails;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Ticket> tickets;
+    private UserInformation userInformation;
 }

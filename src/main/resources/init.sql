@@ -5,13 +5,13 @@ CREATE TABLE ticket_office.roles(
 
 CREATE TABLE ticket_office.users(
 	id INT PRIMARY KEY AUTO_INCREMENT,
-    login VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(50) NOT NULL,
+    username VARCHAR(30) NOT NULL UNIQUE,
+    password VARCHAR(128) NOT NULL,
     role_id INT NOT NULL,
     CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES ticket_office.roles(id)
 );
 
-CREATE TABLE ticket_office.user_details(
+CREATE TABLE ticket_office.user_information(
 	user_id INT PRIMARY KEY,
     first_name VARCHAR(30),
     surname VARCHAR(30),

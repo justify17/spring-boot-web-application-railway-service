@@ -1,11 +1,15 @@
 package com.academy.springwebapplication.model.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(of = {"id", "name"})
+@ToString(of = {"id", "name"})
+@NoArgsConstructor
 @Entity
 @Table(name = "roles")
 public class Role {
@@ -18,4 +22,9 @@ public class Role {
 
     @OneToMany(mappedBy = "role", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
     private Set<User> users;
+
+    public Role(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

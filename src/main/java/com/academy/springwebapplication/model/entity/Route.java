@@ -1,11 +1,15 @@
 package com.academy.springwebapplication.model.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(of = {"id", "type"})
+@ToString(of = {"id", "type"})
+@NoArgsConstructor
 @Entity
 @Table(name = "routes")
 public class Route {

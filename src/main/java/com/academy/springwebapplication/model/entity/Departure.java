@@ -1,12 +1,16 @@
 package com.academy.springwebapplication.model.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(of = {"id", "train", "route", "departureDate", "arrivalDate"})
+@ToString(of = {"id", "train", "route", "departureDate", "arrivalDate"})
+@NoArgsConstructor
 @Entity
 @Table(name = "departures")
 public class Departure {

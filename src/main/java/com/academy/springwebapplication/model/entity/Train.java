@@ -1,11 +1,15 @@
 package com.academy.springwebapplication.model.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(of = {"id", "number"})
+@ToString(of = {"id", "number"})
+@NoArgsConstructor
 @Entity
 @Table(name = "trains")
 public class Train {
@@ -16,7 +20,7 @@ public class Train {
     @Column
     private String number;
 
-    @OneToMany(mappedBy = "train", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "train", cascade = CascadeType.ALL)
     private Set<Departure> departures;
 
     @OneToMany(mappedBy = "train", cascade = CascadeType.ALL)
