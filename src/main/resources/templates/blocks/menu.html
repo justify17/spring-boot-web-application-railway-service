@@ -1,0 +1,21 @@
+<div xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+     style="border: 1px solid #ccc;padding:5px;margin-bottom:20px;">
+
+    <a th:href="@{/}">Main page</a>
+
+    |
+
+    <a th:href="@{/departures}">Departures</a>
+
+    |
+
+    <a sec:authorize="!isAuthenticated()">
+        <a th:href="@{/login}">Login</a>
+        | <a th:href="@{/registration}">Registration</a>
+    </a>
+
+    <a sec:authorize="isAuthenticated()">
+       <a th:href="@{/logout}">Logout</a>
+    </a>
+
+</div>

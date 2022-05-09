@@ -1,15 +1,27 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Good Thymes Virtual Grocery</title>
     <meta content="text/html; charset=UTF-8" />
 </head>
 
 <body>
-    <h1>Welcome</h1>
-    <a href="/registration">Registration</a>
-    <a href="/login">Login</a>
-
+    <div sec:authorize="!isAuthenticated()">
+        Welcome, user
+    </div>
+    <div sec:authorize="isAuthenticated()">
+    Welcome, <span th:utext="${#request.userPrincipal.name}"></span>
+    </div>
+    <th:block th:include="blocks/menu"></th:block>
+    <br/>
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        Только администратор может видеть <br/>
+    </div>
+    <br/>
+    <div sec:authorize="hasRole('ROLE_USER')">
+        Пользователи могут видеть
+    </div>
+    <br/>
 </body>
 
 </html>

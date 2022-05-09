@@ -4,6 +4,7 @@
     <title>Spring Security Example </title>
 </head>
 <body>
+<th:block th:include="blocks/menu"></th:block>
 <div th:if="${param.error}">
     Invalid username and password.
 </div>

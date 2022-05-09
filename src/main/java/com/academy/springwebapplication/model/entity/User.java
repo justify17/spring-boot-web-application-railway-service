@@ -22,6 +22,9 @@ public class User {
     @JoinColumn(name = "role_id")
     private Role role;
 
+    @Column
+    private Boolean enabled;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private UserInformation userInformation;

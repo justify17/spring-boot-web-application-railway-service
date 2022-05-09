@@ -8,6 +8,7 @@ CREATE TABLE ticket_office.users(
     username VARCHAR(30) NOT NULL UNIQUE,
     password VARCHAR(128) NOT NULL,
     role_id INT NOT NULL,
+    enabled boolean DEFAULT TRUE,
     CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES ticket_office.roles(id)
 );
 
