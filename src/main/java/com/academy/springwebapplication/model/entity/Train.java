@@ -20,7 +20,7 @@ public class Train {
     @Column
     private String number;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "train", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "train", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Departure> departures;
 
     @OneToMany(mappedBy = "train", cascade = CascadeType.ALL)

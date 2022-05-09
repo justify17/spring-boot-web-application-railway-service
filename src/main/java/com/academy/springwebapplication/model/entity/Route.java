@@ -20,7 +20,7 @@ public class Route {
     @Column
     private String type;
 
-    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Departure> departures;
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)

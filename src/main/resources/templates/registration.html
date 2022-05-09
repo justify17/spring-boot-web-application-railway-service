@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-    <title>Spring Security Example </title>
+    <title>Registration page</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
+
 <body>
 <th:block th:include="blocks/menu"></th:block>
 <form th:action="@{/registration}" method="post" th:object="${user}">
-    <p> User Name : <input type="text" th:field="*{username}"/> </p>
+    <p> Username: <input type="text" th:field="*{username}"/> </p>
     <p> Password: <input type="password" th:field="*{password}"/> </p>
     <p><input type="submit" value="Registration"/></p>
 </form>
@@ -15,4 +17,5 @@
     <p>User with this username already exists</p>
 </div>
 </body>
+
 </html>

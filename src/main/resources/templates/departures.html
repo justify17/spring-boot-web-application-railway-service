@@ -1,5 +1,19 @@
-<html>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>Departures page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
 <body>
-Hello
+<div sec:authorize="!isAuthenticated()">
+    Welcome, user
+</div>
+<div sec:authorize="isAuthenticated()">
+    Welcome, <span th:utext="${#request.userPrincipal.name}"></span>
+</div>
+<th:block th:include="blocks/menu"></th:block>
 </body>
+
 </html>
