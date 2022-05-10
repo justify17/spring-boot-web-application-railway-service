@@ -14,4 +14,6 @@ public class Station {
 
     @Column
     private String title;
+
+
 }

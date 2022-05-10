@@ -24,5 +24,5 @@ public class Route {
     private Set<Departure> departures;
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
-    private Set<RouteStation> stations;
+    private Set<RouteStation> routeStations;
 }

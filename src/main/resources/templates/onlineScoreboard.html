@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Online scoreboard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+<th:block th:include="blocks/menu" />
+<form th:action="@{/onlineScoreboard}" method="post" th:object="${station}">
+    <div> Please enter the station: <input type="text" th:field="*{title}"/>
+        <input type="submit" value="Search"/>
+        <br><br>
+    </div>
+</form>
+<table border="5">
+    <tr>
+        <th>Train</th>
+        <th>Route</th>
+        <th>Departure Date</th>
+        <th>Arrival Date</th>
+    </tr>
+    <tr th:each="departure : ${departures}">
+        <td>
+            <span th:utext="${departure.train.number}" />
+            <span th:switch="${departure.route.type}">
+                <span th:case="'regional'">Региональные линии</span>
+                <span th:case="'interregional'">Межрегиональные линии</span>
+                <span th:case="'international'">Международные линии</span>
+            </span>
+        </td>
+        <td>
+        <span th:each="routeStation : ${departure.route.routeStations}">
+             <span th:if="${routeStation.routeStopNumber == 1}" th:utext="${routeStation.station.title}" />
+        </span>
+            <span> &mdash; </span>
+        <span th:each="routeStation : ${departure.route.routeStations}">
+            <span th:if="${routeStation.minutesToNextStation}  == 0" th:utext="${routeStation.station.title}" />
+        </span>
+        </td>
+        <td th:utext="${#temporals.format(departure.departureDate, 'dd.MM.yyyy HH:mm')}" />
+        <td th:utext="${#temporals.format(departure.arrivalDate, 'dd.MM.yyyy HH:mm')}" />
+    </tr>
+</table>
+</body>
+
+</html>

@@ -13,7 +13,12 @@ public class DepartureServiceImpl implements DepartureService{
     private final DepartureRepository departureRepository;
 
     @Override
-    public List<Departure> getDepartures() {
+    public List<Departure> getAllDepartures() {
         return departureRepository.findAll();
+    }
+
+    @Override
+    public List<Departure> getDeparturesFromAndToStation(String stationName) {
+        return departureRepository.findByRoute_RouteStations_Station_TitleIgnoreCase(stationName);
     }
 }
