@@ -7,8 +7,8 @@ import java.util.Set;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"id", "type"})
-@ToString(of = {"id", "type"})
+@EqualsAndHashCode(of = {"id", "type","departureStation","arrivalStation"})
+@ToString(of = {"id", "type","departureStation","arrivalStation"})
 @NoArgsConstructor
 @Entity
 @Table(name = "routes")
@@ -25,4 +25,10 @@ public class Route {
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
     private Set<RouteStation> routeStations;
+
+    @Transient
+    private Station departureStation;
+
+    @Transient
+    private Station arrivalStation;
 }

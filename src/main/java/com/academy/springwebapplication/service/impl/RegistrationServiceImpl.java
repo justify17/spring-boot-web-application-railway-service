@@ -1,15 +1,16 @@
-package com.academy.springwebapplication.service;
+package com.academy.springwebapplication.service.impl;
 
 import com.academy.springwebapplication.model.entity.User;
 import com.academy.springwebapplication.model.repository.RoleRepository;
 import com.academy.springwebapplication.model.repository.UserRepository;
+import com.academy.springwebapplication.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RegistrationServiceImpl implements RegistrationService{
+public class RegistrationServiceImpl implements RegistrationService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -25,6 +26,7 @@ public class RegistrationServiceImpl implements RegistrationService{
         userRepository.save(user);
     }
 
+    @Override
     public boolean isUserExists(User user){
         User existingUser = userRepository.findByUsername(user.getUsername());
 

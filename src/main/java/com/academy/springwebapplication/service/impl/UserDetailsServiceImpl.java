@@ -1,4 +1,4 @@
-package com.academy.springwebapplication.service;
+package com.academy.springwebapplication.service.impl;
 
 import com.academy.springwebapplication.model.entity.User;
 import com.academy.springwebapplication.model.repository.UserRepository;

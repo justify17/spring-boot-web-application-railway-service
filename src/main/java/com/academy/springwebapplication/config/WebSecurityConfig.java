@@ -1,6 +1,6 @@
 package com.academy.springwebapplication.config;
 
-import com.academy.springwebapplication.service.UserDetailsServiceImpl;
+import com.academy.springwebapplication.service.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

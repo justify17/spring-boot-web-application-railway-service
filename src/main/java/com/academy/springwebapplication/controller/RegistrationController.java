@@ -1,7 +1,7 @@
 package com.academy.springwebapplication.controller;
 
 import com.academy.springwebapplication.model.entity.User;
-import com.academy.springwebapplication.service.RegistrationServiceImpl;
+import com.academy.springwebapplication.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-// проверить с записи имплементацию сервиса
 @Controller
 @RequiredArgsConstructor
 public class RegistrationController {
-    private final RegistrationServiceImpl registrationService;
+    private final RegistrationService registrationService;
 
     @GetMapping("/registration")
     public String registration(Model model) {
         model.addAttribute("user", new User());
+
         return "registration";
     }
 

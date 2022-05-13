@@ -14,6 +14,13 @@
         Welcome, <span sec:authentication="name"/>
     </div>
     <th:block th:include="blocks/menu" />
+    Departures:
+    <form th:action="@{/departures}" method="post" th:object="${route}">
+        <span> From: <input type="text" th:field="*{departureStation.title}" /></span>
+        <span> To: <input type="text" th:field="*{arrivalStation.title}" /></span>
+        <input type="submit" value="Search"/></span>
+        <br><br>
+    </form>
     <!--<div sec:authorize="hasRole('ROLE_ADMIN')">
         Только администратор может видеть <br/>
     </div>

@@ -9,6 +9,10 @@
 
     |
 
+    <a th:href="@{/departures}">Departures</a>
+
+    |
+
     <a sec:authorize="!isAuthenticated()">
         <a th:href="@{/login}">Sign in</a>
         | <a th:href="@{/registration}">Registration</a>

@@ -1,11 +1,13 @@
 package com.academy.springwebapplication.service;
 
 import com.academy.springwebapplication.model.entity.Departure;
+import com.academy.springwebapplication.model.entity.Route;
+import com.academy.springwebapplication.model.entity.Station;
 
 import java.util.List;
 
 public interface DepartureService {
-    List<Departure> getAllDepartures();
+    List<Departure> getDeparturesByStation(Station station);
 
-    List<Departure> getDeparturesFromAndToStation(String stationName);
+    List<Departure> getDeparturesForRoute(Route route);
 }

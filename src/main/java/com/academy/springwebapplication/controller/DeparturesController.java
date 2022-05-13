@@ -1,6 +1,7 @@
 package com.academy.springwebapplication.controller;
 
 import com.academy.springwebapplication.model.entity.Departure;
+import com.academy.springwebapplication.model.entity.Route;
 import com.academy.springwebapplication.model.entity.Station;
 import com.academy.springwebapplication.service.DepartureService;
 import lombok.RequiredArgsConstructor;
@@ -14,26 +15,21 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-public class OnlineScoreboardController {
+public class DeparturesController {
     private final DepartureService departureService;
 
-    @GetMapping("/onlineScoreboard")
+    @GetMapping("/departures")
     public String onlineScoreboard(Model model) {
-        Station station = new Station();
-        station.setTitle("Гомель");
-        model.addAttribute("station",station);
+        model.addAttribute("route",new Route());
 
-        List<Departure> departures = departureService.getDeparturesByStation(station);
-        model.addAttribute("departures", departures);
-
-        return "onlineScoreboard";
+        return "departures";
     }
 
-    @PostMapping("/onlineScoreboard")
-    public String findingDeparturesForStation(@ModelAttribute Station station, Model model) {
-        List<Departure> departures = departureService.getDeparturesByStation(station);
+    @PostMapping("/departures")
+    public String findingDeparturesForRoute(@ModelAttribute Route route, Model model) {
+        List<Departure> departures = departureService.getDeparturesForRoute(route);
         model.addAttribute("departures", departures);
 
-        return "onlineScoreboard";
+        return "departures";
     }
 }
