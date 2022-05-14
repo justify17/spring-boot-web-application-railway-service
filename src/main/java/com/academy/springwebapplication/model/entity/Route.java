@@ -3,6 +3,7 @@ package com.academy.springwebapplication.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -24,7 +25,7 @@ public class Route {
     private Set<Departure> departures;
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
-    private Set<RouteStation> routeStations;
+    private List<RouteStation> routeStations;
 
     @Transient
     private Station departureStation;

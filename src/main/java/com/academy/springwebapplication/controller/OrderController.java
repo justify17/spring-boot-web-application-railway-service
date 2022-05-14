@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @RequiredArgsConstructor
 public class OrderController {
 
-    @GetMapping("/departures/order")
+    @GetMapping("/order")
     public String main(@ModelAttribute Departure departure){
         return "order";
     }

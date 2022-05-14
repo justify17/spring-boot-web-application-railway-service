@@ -1,10 +1,12 @@
 package com.academy.springwebapplication.model.entity;
 
+import com.academy.springwebapplication.model.StationSchedule;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -35,4 +37,7 @@ public class Departure {
 
     @OneToMany(mappedBy = "departure", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Ticket> tickets;
+
+    @Transient
+    private List<StationSchedule> stationSchedules = new ArrayList<>();
 }

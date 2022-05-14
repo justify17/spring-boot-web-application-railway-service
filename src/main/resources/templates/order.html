@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Main page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+<th:block th:include="blocks/menu" />
+<div>
+    <span th:utext="${departure.train.number}" />
+    <span th:switch="${departure.route.type}">
+        <span th:case="'regional'">Региональные линии</span>
+        <span th:case="'interregional'">Межрегиональные линии</span>
+        <span th:case="'international'">Международные линии</span>
+    </span>
+    <span th:each="routeStation : ${departure.route.routeStations}">
+        <span th:if="${routeStation.routeStopNumber == 1}" th:utext="${routeStation.station.title}" />
+    </span>
+    <span> &mdash; </span>
+    <span th:each="routeStation : ${departure.route.routeStations}">
+        <span th:if="${routeStation.minutesToNextStation}  == 0" th:utext="${routeStation.station.title}" />
+    </span>
+    <td th:utext="${#temporals.format(departure.departureDate, 'dd.MM.yyyy HH:mm')}" />
+    <td th:utext="${#temporals.format(departure.arrivalDate, 'dd.MM.yyyy HH:mm')}" />
+</div>
+</body>
+
+</html>
