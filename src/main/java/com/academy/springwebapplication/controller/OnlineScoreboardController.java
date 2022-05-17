@@ -21,7 +21,7 @@ public class OnlineScoreboardController {
     public String onlineScoreboard(Model model) {
         Station station = new Station();
         station.setTitle("Гомель");
-        model.addAttribute("station",station);
+        model.addAttribute("userStation",station);
 
         List<Departure> departures = departureService.getDeparturesByStation(station);
         model.addAttribute("departures", departures);
@@ -30,7 +30,7 @@ public class OnlineScoreboardController {
     }
 
     @PostMapping("/onlineScoreboard")
-    public String findingDeparturesForStation(@ModelAttribute Station station, Model model) {
+    public String findingDeparturesForStation(@ModelAttribute("userStation") Station station, Model model) {
         List<Departure> departures = departureService.getDeparturesByStation(station);
         model.addAttribute("departures", departures);
 

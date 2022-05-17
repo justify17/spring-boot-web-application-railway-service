@@ -12,7 +12,7 @@ public class MainController {
 
     @GetMapping("/")
     public String main(Model model){
-        model.addAttribute("route",new Route());
+        model.addAttribute("userRoute",new Route());
 
         return "main";
     }

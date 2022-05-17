@@ -15,7 +15,7 @@
     </div>
     <th:block th:include="blocks/menu" />
     Departures:
-    <form th:action="@{/departures}" method="post" th:object="${route}">
+    <form th:action="@{/departures}" method="post" th:object="${userRoute}">
         <span> From: <input type="text" th:field="*{departureStation.title}" /></span>
         <span> To: <input type="text" th:field="*{arrivalStation.title}" /></span>
         <input type="submit" value="Search"/></span>
