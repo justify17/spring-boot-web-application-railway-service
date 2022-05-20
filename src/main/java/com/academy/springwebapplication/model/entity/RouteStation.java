@@ -16,7 +16,7 @@ public class RouteStation {
     @JoinColumn(name = "route_id")
     private Route route;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "station_id")
     private Station station;
 

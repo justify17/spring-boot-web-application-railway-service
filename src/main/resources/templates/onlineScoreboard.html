@@ -14,10 +14,8 @@
         <br><br>
     </div>
 </form>
-<div th:if="${userStation != null}">
-    <h1 th:text="'Station: ' + ${userStation.title}" />
-</div>
 <table th:if="${departures} != null" border="5">
+    <h1 th:text="'Departures by station: ' + ${userStation.title}" />
     <tr>
         <th>Train</th>
         <th>Station arrival time</th>

@@ -12,9 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,32 +80,4 @@ public class DepartureServiceImpl implements DepartureService {
         departure.getStationSchedules().get(0).setArrivalDate(null);
         departure.getStationSchedules().get(departure.getStationSchedules().size() - 1).setDepartureDate(null);
     }
-
-    @Override
-    public Map<Departure, Integer> getPricesForDeparturesAlongTheRoute(List<Departure> departures, Route route) {
-        Map<Departure, Integer> prices = new HashMap<>();
-
-        for (Departure departure : departures) {
-            RouteStation departureRouteStation =
-                    routeStationRepository.findByRoute_IdAndStation_Title(departure.getRoute().getId(),
-                            route.getDepartureStation().getTitle());
-            RouteStation arrivalRouteStation =
-                    routeStationRepository.findByRoute_IdAndStation_Title(departure.getRoute().getId(),
-                            route.getArrivalStation().getTitle());
-
-            List<RouteStation> routeStations = departure.getRoute().getRouteStations();
-
-            int price = routeStations.stream()
-                    .filter(routeStation -> routeStation.getRouteStopNumber() >= departureRouteStation.getRouteStopNumber()
-                            && routeStation.getRouteStopNumber() < arrivalRouteStation.getRouteStopNumber())
-                    .mapToInt(RouteStation::getPriceToNextStation)
-                    .sum();
-
-            prices.put(departure, price);
-        }
-
-        return prices;
-    }
-
-
 }

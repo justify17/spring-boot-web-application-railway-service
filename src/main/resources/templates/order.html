@@ -1,60 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="utf-8">
-    <title>Название документа</title>
-    <style>
-      #zatemnenie {
-        background: rgba(102, 102, 102, 0.5);
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        display: none;
-      }
-      #okno {
-        width: 300px;
-        height: 50px;
-        text-align: center;
-        padding: 15px;
-        border: 3px solid #0000cc;
-        border-radius: 10px;
-        color: #0000cc;
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        margin: auto;
-        background: #fff;
-      }
-      #zatemnenie:target {display: block;}
-      .close {
-        display: inline-block;
-        border: 1px solid #0000cc;
-        color: #0000cc;
-        padding: 0 12px;
-        margin: 10px;
-        text-decoration: none;
-        background: #f2f2f2;
-        font-size: 14pt;
-        cursor:pointer;
-      }
-      .close:hover {background: #e6e6ff;}
-    </style>
+    <title>Order</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="order.css" />
+    <link rel="stylesheet" type="text/css" href="credit.css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script type="text/javascript" src="credit.js"></script>
+    <script type="text/javascript">
+        jQuery(function ( $ ){
+        $(".credit").credit();
+        });
+    </script>
 </head>
 
 <body>
-
-<div id="zatemnenie">
-    <div id="okno">
-        Всплывающее окошко!<br>
-        <a href="#" class="close">Закрыть окно</a>
+<th:block th:include="blocks/menu" />
+<div th:if="${session.ticket == null}">
+    Choose a route first, please: <a th:href="@{/departures}">Choose a route</a>
+</div>
+<div th:if="${session.ticket != null}" class="order">
+    <p>Train:</p>
+    <span th:utext="${session.ticket.departure.train.number}" />
+    <span th:switch="${session.ticket.departure.route.type}">
+                <span th:case="'regional'">Региональные линии</span>
+                <span th:case="'interregional'">Межрегиональные линии</span>
+                <span th:case="'international'">Международные линии</span>
+            </span>
+    <span th:utext="${session.ticket.departure.stationSchedules[0].station.title} + ' &mdash; '" />
+    <span th:utext="${session.ticket.departure.stationSchedules[session.ticket.departure.stationSchedules.size()-1].station.title}" />
+    <p>Your route:</p>
+    <div class="route">
+        <div class="route">
+            <span th:utext="${#temporals.format(session.ticket.userDepartureDate, 'dd MMM HH:mm , ')}" />
+            <span th:text="${session.ticket.userDepartureStation.title} + ' ———————> ' + ${session.ticket.userArrivalStation.title}" />
+            <span th:utext="${#temporals.format(session.ticket.userArrivalDate, ', dd MMM HH:mm')}" />
+        </div>
+        <br>
+        <a href="#wholeRoute">See the whole route</a>
+        <div id="wholeRoute">
+            <div id="modal">
+                <div>
+                    <span th:utext="'Route: '+${session.ticket.departure.stationSchedules[0].station.title} + ' &mdash; '" />
+                    <span th:utext="${session.ticket.departure.stationSchedules[session.ticket.departure.stationSchedules.size()-1].station.title}" />
+                </div>
+                <table border="5">
+                    <tr>
+                        <th>Station</th>
+                        <th>Arrival time</th>
+                        <th>Departure time</th>
+                    </tr>
+                    <tr th:each="stationSchedule : ${session.ticket.departure.stationSchedules}">
+                        <td th:utext="${stationSchedule.station.title}" />
+                        <td align="center" th:utext="${stationSchedule.arrivalDate != null} ?
+                            ${#temporals.format(stationSchedule.arrivalDate, 'dd MMM HH:mm')} : '&mdash;'" />
+                        <td align="center" th:utext="${stationSchedule.departureDate != null} ?
+                            ${#temporals.format(stationSchedule.departureDate, 'dd MMM HH:mm')} : '&mdash;'" />
+                    </tr>
+                </table>
+                <br>
+                <a href="#" class="submit">Back</a>
+            </div>
+        </div>
+    </div>
+    <p>Price:</p>
+    <p th:utext="${session.ticket.price / 100} + ',' + ${session.ticket.price % 100} + ' BYN'"></p>
+    <br>
+    <a href="#pay">Proceed to payment</a>
+    <div id="pay">
+        <div id="modalTwo">
+            <form th:action="@{/order}" method="post" th:object="${card}">
+                <div> Card Number:
+                    <input type="number"  class="credit" th:field="*{number}" /><br>
+                </div>
+                <div>Price:
+                    <span th:utext="${session.ticket.price / 100} + ',' + ${session.ticket.price % 100} + ' BYN'" />
+                </div>
+                <a href="#" class="submit">Back</a>
+                <input class="submit" type="submit" value="Pay"/>
+            </form>
+        </div>
     </div>
 </div>
 
-<a href="#zatemnenie">Вызвать всплывающее окно</a>
-
 </body>
+
 </html>

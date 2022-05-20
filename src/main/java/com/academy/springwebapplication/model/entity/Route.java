@@ -8,8 +8,8 @@ import java.util.Set;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"id", "type","departureStation","arrivalStation"})
-@ToString(of = {"id", "type","departureStation","arrivalStation"})
+@EqualsAndHashCode(of = {"id", "type"})
+@ToString(of = {"id", "type"})
 @NoArgsConstructor
 @Entity
 @Table(name = "routes")

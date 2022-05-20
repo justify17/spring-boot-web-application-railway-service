@@ -22,7 +22,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration")
-    public String userRegistration(@ModelAttribute User user, Model model) {
+    public String userRegistration(@ModelAttribute("user") User user, Model model) {
         if (registrationService.isUserExists(user)) {
             model.addAttribute("isUserExists", true);
             return "registration";

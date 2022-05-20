@@ -19,12 +19,7 @@ public class OnlineScoreboardController {
 
     @GetMapping("/onlineScoreboard")
     public String onlineScoreboard(Model model) {
-        Station station = new Station();
-        station.setTitle("Гомель");
-        model.addAttribute("userStation",station);
-
-        List<Departure> departures = departureService.getDeparturesByStation(station);
-        model.addAttribute("departures", departures);
+        model.addAttribute("userStation",new Station());
 
         return "onlineScoreboard";
     }
