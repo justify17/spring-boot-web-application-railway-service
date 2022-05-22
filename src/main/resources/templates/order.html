@@ -13,66 +13,119 @@
         $(".credit").credit();
         });
     </script>
+    <script type="text/javascript">
+    function alertName(){
+    alert("Form has been submitted");
+    }
+</script>
 </head>
 
 <body>
+
 <th:block th:include="blocks/menu" />
 <div th:if="${session.ticket == null}">
     Choose a route first, please: <a th:href="@{/departures}">Choose a route</a>
 </div>
 <div th:if="${session.ticket != null}" class="order">
-    <p>Train:</p>
-    <span th:utext="${session.ticket.departure.train.number}" />
-    <span th:switch="${session.ticket.departure.route.type}">
-                <span th:case="'regional'">Региональные линии</span>
-                <span th:case="'interregional'">Межрегиональные линии</span>
-                <span th:case="'international'">Международные линии</span>
-            </span>
-    <span th:utext="${session.ticket.departure.stationSchedules[0].station.title} + ' &mdash; '" />
-    <span th:utext="${session.ticket.departure.stationSchedules[session.ticket.departure.stationSchedules.size()-1].station.title}" />
-    <p>Your route:</p>
+    <div>
+        <p>Train:</p>
+        <span th:utext="${session.ticket.departure.train.number}" />
+        <span th:switch="${session.ticket.departure.route.type}">
+            <span th:case="'regional'">Региональные линии</span>
+            <span th:case="'interregional'">Межрегиональные линии</span>
+            <span th:case="'international'">Международные линии</span>
+        </span>
+        <span th:utext="${session.ticket.departure.stationSchedules[0].station.title} + ' &mdash; '" />
+        <span th:utext="${session.ticket.departure.stationSchedules[session.ticket.departure.stationSchedules.size()-1].station.title}" />
+    </div>
     <div class="route">
-        <div class="route">
-            <span th:utext="${#temporals.format(session.ticket.userDepartureDate, 'dd MMM HH:mm , ')}" />
-            <span th:text="${session.ticket.userDepartureStation.title} + ' ———————> ' + ${session.ticket.userArrivalStation.title}" />
-            <span th:utext="${#temporals.format(session.ticket.userArrivalDate, ', dd MMM HH:mm')}" />
-        </div>
+        <p>Your route:</p>
+        <span th:utext="${#temporals.format(session.ticket.userDepartureDate, 'dd MMM HH:mm , ')}" />
+        <span th:text="${session.ticket.userDepartureStation.title} + ' ———————> ' + ${session.ticket.userArrivalStation.title}" />
+        <span th:utext="${#temporals.format(session.ticket.userArrivalDate, ', dd MMM HH:mm')}" />
         <br>
         <a href="#wholeRoute">See the whole route</a>
-        <div id="wholeRoute">
-            <div id="modal">
-                <div>
-                    <span th:utext="'Route: '+${session.ticket.departure.stationSchedules[0].station.title} + ' &mdash; '" />
-                    <span th:utext="${session.ticket.departure.stationSchedules[session.ticket.departure.stationSchedules.size()-1].station.title}" />
-                </div>
-                <table border="5">
-                    <tr>
-                        <th>Station</th>
-                        <th>Arrival time</th>
-                        <th>Departure time</th>
-                    </tr>
-                    <tr th:each="stationSchedule : ${session.ticket.departure.stationSchedules}">
-                        <td th:utext="${stationSchedule.station.title}" />
-                        <td align="center" th:utext="${stationSchedule.arrivalDate != null} ?
-                            ${#temporals.format(stationSchedule.arrivalDate, 'dd MMM HH:mm')} : '&mdash;'" />
-                        <td align="center" th:utext="${stationSchedule.departureDate != null} ?
-                            ${#temporals.format(stationSchedule.departureDate, 'dd MMM HH:mm')} : '&mdash;'" />
-                    </tr>
-                </table>
-                <br>
-                <a href="#" class="submit">Back</a>
-            </div>
+    </div>
+
+    <div th:if="${session.ticket.departure.route.type} eq 'regional'">
+        <div>
+            <p>Price:</p>
+            <p th:utext="${session.ticket.price / 100} + ',' + ${session.ticket.price % 100} + ' BYN'"></p>
+        </div>
+        <h3 th:if="${error}" th:text="'Operation failed, please try again'" />
+        <a href="#payment">Proceed to payment</a>
+    </div>
+
+    <div th:if="${session.ticket.departure.route.type} eq 'interregional'">
+        <br>
+        Select carriage:
+        <form th:action="@{/order}" method="post">
+            <input type="hidden" name="hiddenAction" value="carriage">
+            <select th:name="carriageNumber">
+                <option th:each="trainCarriage : ${session.ticket.departure.train.trainCarriages}"
+                        th:value="${trainCarriage.carriageNumber}"
+                        th:text="'№ ' + ${trainCarriage.carriageNumber} + ' ' + ${trainCarriage.carriage.comfortLevel}" />
+                <br><input type="submit" value="Find places"/>
+            </select>
+        </form>
+        <br>
+        <div th:if="${session.carriageTickets != null}">
+            <div th:text="'Carriage № ' + ${session.ticket.carriageNumber}"></div>
+            <span th:each="ticket : ${session.carriageTickets}">
+                <span th:if="${ticket.id == null}">
+                    <form class="carriage" th:action="@{/order}" method="post">
+                        <input type="hidden" name="hiddenAction" value="seat">
+                        <input type="hidden" th:name="seatNumber" th:value="${ticket.seatNumber}">
+                        <input type="submit" th:value="${ticket.seatNumber}"/>
+                    </form>
+                </span>
+                <span th:if="${ticket.id != null}" th:text="${ticket.seatNumber}" />
+            </span>
+            <br><br>
+        </div>
+        <div th:if="${session.ticket.seatNumber != null}">
+            <p th:text="'Selected seat: № ' + ${session.ticket.seatNumber}" />
+            <p>Price:</p>
+            <p th:utext="${session.ticket.price / 100} + ',' + ${session.ticket.price % 100} + ' BYN'"></p>
+        <h3 th:if="${error}" th:text="'Operation failed, please try again'" />
+        <a href="#payment">Proceed to payment</a>
         </div>
     </div>
-    <p>Price:</p>
-    <p th:utext="${session.ticket.price / 100} + ',' + ${session.ticket.price % 100} + ' BYN'"></p>
-    <br>
-    <a href="#pay">Proceed to payment</a>
-    <div id="pay">
+
+    <div id="wholeRoute">
+        <div id="modal">
+            <div>
+                <span th:utext="'Route: '+${session.ticket.departure.stationSchedules[0].station.title} + ' &mdash; '" />
+                <span th:utext="${session.ticket.departure.stationSchedules[session.ticket.departure.stationSchedules.size()-1].station.title}" />
+            </div>
+            <table border="5">
+                <tr>
+                    <th>Station</th>
+                    <th>Arrival time</th>
+                    <th>Departure time</th>
+                </tr>
+                <tr th:each="stationSchedule : ${session.ticket.departure.stationSchedules}">
+                    <td th:utext="${stationSchedule.station.title}" />
+                    <td align="center" th:utext="${stationSchedule.arrivalDate != null} ?
+                            ${#temporals.format(stationSchedule.arrivalDate, 'dd MMM HH:mm')} : '&mdash;'" />
+                    <td align="center" th:utext="${stationSchedule.departureDate != null} ?
+                            ${#temporals.format(stationSchedule.departureDate, 'dd MMM HH:mm')} : '&mdash;'" />
+                </tr>
+            </table>
+            <br>
+            <a href="#" class="submit">Back</a>
+        </div>
+    </div>
+
+    <div id="payment">
         <div id="modalTwo">
-            <form th:action="@{/order}" method="post" th:object="${card}">
-                <div> Card Number:
-                    <input type="number"  class="credit" th:field="*{number}" /><br>
+            <form th:action="@{/order}" method="post" th:object="${card} ">
+                <input type="hidden" name="hiddenAction" value="payment">
+                <div>
+                    Card Number: <input type="number" class="credit" th:field="*{number}" /><br>
+                    MM/YY: <input type="number" class="expiration" min="1" max="12" th:field="*{monthOfCardExpiration}"> /
+                    <input type="number" class="expiration" min="22" max="99" th:field="*{yearOfCardExpiration}">
+                    <br><br>
                 </div>
                 <div>Price:
                     <span th:utext="${session.ticket.price / 100} + ',' + ${session.ticket.price % 100} + ' BYN'" />

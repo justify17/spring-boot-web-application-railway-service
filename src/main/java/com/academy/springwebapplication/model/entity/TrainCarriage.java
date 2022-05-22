@@ -21,5 +21,5 @@ public class TrainCarriage {
     private Carriage carriage;
 
     @Column(name = "train_carriage_number")
-    private Integer trainCarriageNumber;
+    private Integer carriageNumber;
 }

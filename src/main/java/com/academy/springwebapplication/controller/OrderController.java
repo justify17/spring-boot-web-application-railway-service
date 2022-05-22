@@ -3,20 +3,18 @@ package com.academy.springwebapplication.controller;
 import com.academy.springwebapplication.model.CreditCard;
 import com.academy.springwebapplication.model.entity.Ticket;
 import com.academy.springwebapplication.model.entity.User;
-import com.academy.springwebapplication.model.repository.TicketRepository;
 import com.academy.springwebapplication.service.TicketService;
-import com.academy.springwebapplication.service.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.servlet.http.HttpSession;
-import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -30,17 +28,18 @@ public class OrderController {
                         Model model, HttpSession session) {
         model.addAttribute("card", new CreditCard());
 
-        if(ticketIndex == null){
+        if (ticketIndex == null) {
             return "order";
         }
 
         Ticket ticket = tickets.get(ticketIndex);
         session.setAttribute("ticket", ticket);
+        model.addAttribute("ticket", ticket);
 
         return "order";
     }
 
-    @PostMapping("/order")
+    @PostMapping(value = "/order", params = {"hiddenAction=payment"})
     public String ticketPayment(@SessionAttribute("ticket") Ticket ticket, HttpSession session,
                                 @AuthenticationPrincipal UserDetails userDetails, Model model) {
         User user = new User();
@@ -50,10 +49,42 @@ public class OrderController {
 
         ticketService.saveTicket(ticket);
 
-        model.addAttribute("ticket",ticket);
+        if (ticket.getId() == null) {
+            model.addAttribute("card", new CreditCard());
+            model.addAttribute("error", true);
+            return "order";
+        }
+
+        model.addAttribute("ticket", ticket);
+        session.removeAttribute("carriageTickets");
         session.removeAttribute("ticket");
         session.removeAttribute("tickets");
 
         return "successfulOrder";
+    }
+
+    @PostMapping(value = "/order", params = {"hiddenAction=carriage"})
+    public String ticketCarriage(@RequestParam(value = "carriageNumber", required = false) int carriageNumber,
+                                 @SessionAttribute("ticket") Ticket ticket, Model model, HttpSession session) {
+        model.addAttribute("card", new CreditCard());
+
+        List<Ticket> purchasedAndNotPurchasedDepartureTicketsForCarriage =
+                ticketService.getPurchasedAndNotPurchasedDepartureTicketsForCarriage(ticket.getDeparture(), carriageNumber);
+
+        ticket.setCarriageNumber(carriageNumber);
+
+        session.setAttribute("carriageTickets", purchasedAndNotPurchasedDepartureTicketsForCarriage);
+
+        return "order";
+    }
+
+    @PostMapping(value = "/order", params = {"hiddenAction=seat"})
+    public String ticketSeat(@RequestParam(value = "seatNumber", required = false) int seatNumber,
+                             @SessionAttribute("ticket") Ticket ticket, Model model) {
+        model.addAttribute("card", new CreditCard());
+
+        ticket.setSeatNumber(seatNumber);
+
+        return "order";
     }
 }

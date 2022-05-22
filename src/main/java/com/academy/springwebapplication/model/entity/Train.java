@@ -3,6 +3,7 @@ package com.academy.springwebapplication.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -20,9 +21,9 @@ public class Train {
     @Column
     private String number;
 
-    @OneToMany(mappedBy = "train", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "train", cascade = CascadeType.ALL)
     private Set<Departure> departures;
 
-    @OneToMany(mappedBy = "train", cascade = CascadeType.ALL)
-    private Set<TrainCarriage> trainCarriages;
+    @OneToMany(mappedBy = "train", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<TrainCarriage> trainCarriages;
 }

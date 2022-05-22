@@ -1,12 +1,11 @@
 package com.academy.springwebapplication.service.impl;
 
 import com.academy.springwebapplication.model.StationSchedule;
-import com.academy.springwebapplication.model.entity.Departure;
-import com.academy.springwebapplication.model.entity.Route;
-import com.academy.springwebapplication.model.entity.RouteStation;
-import com.academy.springwebapplication.model.entity.Station;
+import com.academy.springwebapplication.model.entity.*;
 import com.academy.springwebapplication.model.repository.DepartureRepository;
 import com.academy.springwebapplication.model.repository.RouteStationRepository;
+import com.academy.springwebapplication.model.repository.TicketRepository;
+import com.academy.springwebapplication.model.repository.TrainCarriageRepository;
 import com.academy.springwebapplication.service.DepartureService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +19,8 @@ import java.util.stream.Collectors;
 public class DepartureServiceImpl implements DepartureService {
     private final DepartureRepository departureRepository;
     private final RouteStationRepository routeStationRepository;
+    private final TrainCarriageRepository trainCarriageRepository;
+    private final TicketRepository ticketRepository;
 
     @Override
     public List<Departure> getDeparturesByStation(Station station) {

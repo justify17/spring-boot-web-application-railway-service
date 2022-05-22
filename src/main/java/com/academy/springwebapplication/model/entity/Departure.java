@@ -7,12 +7,11 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"id", "train", "route", "departureDate", "arrivalDate"})
-@ToString(of = {"id", "train", "route", "departureDate", "arrivalDate"})
+@EqualsAndHashCode(of = {"id", "train","route", "departureDate","arrivalDate"})
+@ToString(of = {"id", "train","route", "departureDate","arrivalDate"})
 @NoArgsConstructor
 @Entity
 @Table(name = "departures")
@@ -35,8 +34,8 @@ public class Departure {
     @Column(name = "arrival_date")
     private LocalDateTime arrivalDate;
 
-    @OneToMany(mappedBy = "departure",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Ticket> tickets;
+    @OneToMany(mappedBy = "departure",cascade = CascadeType.ALL)
+    private List<Ticket> tickets;
 
     @Transient
     private List<StationSchedule> stationSchedules = new ArrayList<>();

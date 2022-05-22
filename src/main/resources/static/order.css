@@ -2,7 +2,11 @@
         font-size: 1.3em;
        }
 
-#wholeRoute,#pay {
+.carriage {
+        display: inline-block;
+       }
+
+#wholeRoute,#payment {
         background: rgba(102, 102, 102, 0.5);
         width: 100%;
         height: 100%;
@@ -27,7 +31,7 @@
         margin: auto;
         background: #fff;
       }
-      #pay:target {display: block;}
+      #payment:target {display: block;}
       #wholeRoute:target {display: block;}
       .submit {
         display: inline-block;

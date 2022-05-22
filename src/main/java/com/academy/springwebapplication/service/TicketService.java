@@ -10,4 +10,6 @@ public interface TicketService {
     void saveTicket(Ticket ticket);
 
     List<Ticket> getTicketsForDeparturesAlongTheRoute(List<Departure> departures, Route route);
+
+    List<Ticket> getPurchasedAndNotPurchasedDepartureTicketsForCarriage(Departure departure, int carriageNumber);
 }

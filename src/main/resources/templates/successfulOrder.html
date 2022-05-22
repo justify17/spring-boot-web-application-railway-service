@@ -27,11 +27,15 @@
     <p>Departure Station:</p>
     <span th:utext="${ticket.userDepartureStation.title}" />
     <p>Departure Date:</p>
-    <span th:utext="${#temporals.format(ticket.userDepartureDate, ', dd MMM HH:mm')}" />
+    <span th:utext="${#temporals.format(ticket.userDepartureDate, 'dd MMM HH:mm')}" />
     <p>Arrival Station:</p>
     <span th:utext="${ticket.userArrivalStation.title}" />
     <p>Arrival Date:</p>
-    <span th:utext="${#temporals.format(ticket.userArrivalDate, ', dd MMM HH:mm')}" />
+    <span th:utext="${#temporals.format(ticket.userArrivalDate, 'dd MMM HH:mm')}" />
+    <p>Carriage Number:</p>
+    <span th:utext="${ticket.carriageNumber != null} ? ${ticket.carriageNumber} : '&mdash;'" />
+    <p>Seat Number:</p>
+    <span th:utext="${ticket.seatNumber != null} ? ${ticket.seatNumber} : '&mdash;'" />
     <p>Ticket price: </p>
     <p th:utext="${ticket.price / 100} + ',' + ${ticket.price % 100} + ' BYN'"></p>
 </div>
