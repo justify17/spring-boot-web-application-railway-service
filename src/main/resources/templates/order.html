@@ -6,18 +6,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="order.css" />
     <link rel="stylesheet" type="text/css" href="credit.css" />
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script type="text/javascript" src="credit.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" />
+    <script type="text/javascript" src="credit.js" />
     <script type="text/javascript">
         jQuery(function ( $ ){
         $(".credit").credit();
         });
     </script>
-    <script type="text/javascript">
-    function alertName(){
-    alert("Form has been submitted");
-    }
-</script>
 </head>
 
 <body>
@@ -29,33 +24,62 @@
 <div th:if="${session.ticket != null}" class="order">
     <div>
         <p>Train:</p>
-        <span th:utext="${session.ticket.departure.train.number}" />
+        <span th:text="${session.ticket.departure.train.number}" />
+        <span th:text="|${session.ticket.departure.stationSchedules[0].station.title} &mdash;
+                ${session.ticket.departure.stationSchedules[session.ticket.departure.stationSchedules.size()-1].station.title}|" />
+        <br>
         <span th:switch="${session.ticket.departure.route.type}">
             <span th:case="'regional'">Региональные линии</span>
             <span th:case="'interregional'">Межрегиональные линии</span>
+            <span th:case="'interregional_long'">Межрегиональные линии дальнего следования</span>
             <span th:case="'international'">Международные линии</span>
         </span>
-        <span th:utext="${session.ticket.departure.stationSchedules[0].station.title} + ' &mdash; '" />
-        <span th:utext="${session.ticket.departure.stationSchedules[session.ticket.departure.stationSchedules.size()-1].station.title}" />
     </div>
     <div class="route">
         <p>Your route:</p>
-        <span th:utext="${#temporals.format(session.ticket.userDepartureDate, 'dd MMM HH:mm , ')}" />
-        <span th:text="${session.ticket.userDepartureStation.title} + ' ———————> ' + ${session.ticket.userArrivalStation.title}" />
-        <span th:utext="${#temporals.format(session.ticket.userArrivalDate, ', dd MMM HH:mm')}" />
+        <span th:text="${#temporals.format(session.ticket.userDepartureDate, 'dd MMM HH:mm , ')}" />
+        <span th:text="|${session.ticket.userDepartureStation.title} ———————> ${session.ticket.userArrivalStation.title}|" />
+        <span th:text="${#temporals.format(session.ticket.userArrivalDate, ', dd MMM HH:mm')}" />
         <br>
         <a href="#wholeRoute">See the whole route</a>
+
+        <!--modal for whole route-->
+        <div id="wholeRoute">
+            <div id="modal">
+                <div>
+                    <span th:text="|Route: ${session.ticket.departure.stationSchedules[0].station.title} &mdash;
+                    ${session.ticket.departure.stationSchedules[session.ticket.departure.stationSchedules.size()-1].station.title}|" />
+                </div>
+                <table border="5">
+                    <tr>
+                        <th>Station</th>
+                        <th>Arrival time</th>
+                        <th>Departure time</th>
+                    </tr>
+                    <tr th:each="stationSchedule : ${session.ticket.departure.stationSchedules}">
+                        <td th:text="${stationSchedule.station.title}" />
+                        <td align="center" th:text="${stationSchedule.arrivalDate != null} ?
+                            ${#temporals.format(stationSchedule.arrivalDate, 'dd MMM HH:mm')} : '&mdash;'" />
+                        <td align="center" th:utext="${stationSchedule.departureDate != null} ?
+                            ${#temporals.format(stationSchedule.departureDate, 'dd MMM HH:mm')} : '&mdash;'" />
+                    </tr>
+                </table>
+                <br>
+                <a href="#" class="submit">Back</a>
+            </div>
+        </div>
     </div>
 
+    <!--regional train order-->
     <div th:if="${session.ticket.departure.route.type} eq 'regional'">
         <div>
-            <p>Price:</p>
-            <p th:utext="${session.ticket.price / 100} + ',' + ${session.ticket.price % 100} + ' BYN'"></p>
+            <p th:text="|Price: ${session.ticket.price / 100},${session.ticket.price % 100} BYN|" />
         </div>
         <h3 th:if="${error}" th:text="'Operation failed, please try again'" />
         <a href="#payment">Proceed to payment</a>
     </div>
 
+    <!--interregional train order-->
     <div th:if="${session.ticket.departure.route.type} eq 'interregional'">
         <br>
         Select carriage:
@@ -64,77 +88,203 @@
             <select th:name="carriageNumber">
                 <option th:each="trainCarriage : ${session.ticket.departure.train.trainCarriages}"
                         th:value="${trainCarriage.carriageNumber}"
-                        th:text="'№ ' + ${trainCarriage.carriageNumber} + ' ' + ${trainCarriage.carriage.comfortLevel}" />
-                <br><input type="submit" value="Find places"/>
+                        th:text="|№ ${trainCarriage.carriageNumber} ${trainCarriage.carriage.comfortLevel}|" />
+                <br><input type="submit" value="Find seats"/>
             </select>
         </form>
         <br>
         <div th:if="${session.carriageTickets != null}">
-            <div th:text="'Carriage № ' + ${session.ticket.carriageNumber}"></div>
-            <span th:each="ticket : ${session.carriageTickets}">
-                <span th:if="${ticket.id == null}">
-                    <form class="carriage" th:action="@{/order}" method="post">
-                        <input type="hidden" name="hiddenAction" value="seat">
-                        <input type="hidden" th:name="seatNumber" th:value="${ticket.seatNumber}">
-                        <input type="submit" th:value="${ticket.seatNumber}"/>
-                    </form>
-                </span>
-                <span th:if="${ticket.id != null}" th:text="${ticket.seatNumber}" />
+            <span th:text="|${session.ticket.carriageComfortLevel} Carriage № ${session.ticket.carriageNumber}
+            &nbsp;&nbsp;&nbsp; Please select a seat:|" />
+            <div class="carriage">
+            <span th:each="ticket, state : ${session.carriageTickets}"
+                  th:if="${state.index < state.size/2 and state.odd}">
+                <form class="seat" th:action="@{/order}" method="post">
+                    <input type="hidden" name="hiddenAction" value="seat" />
+                    <input type="hidden" th:name="seatNumber" th:value="${ticket.seatNumber}" />
+                    <input th:if="${ticket.id == null}" class="seatFree" type="submit" th:value="${ticket.seatNumber}"/>
+                    <input th:if="${ticket.id != null}" class="seatTaken" type="button" th:value="${ticket.seatNumber}"/>
+                    <span class="partition" th:if="${state.index + 2 < state.size/2}">|</span>
+                </form>
+            </span>
+            <br>
+            <span th:each="ticket, state : ${session.carriageTickets}"
+                  th:if="${state.index < state.size/2 and state.even}">
+                <form class="seat" th:action="@{/order}" method="post">
+                    <input type="hidden" name="hiddenAction" value="seat">
+                    <input type="hidden" th:name="seatNumber" th:value="${ticket.seatNumber}">
+                    <input th:if="${ticket.id == null}" class="seatFree" type="submit" th:value="${ticket.seatNumber}"/>
+                    <input th:if="${ticket.id != null}" class="seatTaken" type="button" th:value="${ticket.seatNumber}"/>
+                    <span class="partition" th:if="${state.index + 1 < state.size/2}">|</span>
+                </form>
             </span>
             <br><br>
+            <span th:each="ticket, state : ${session.carriageTickets}"
+                  th:if="${state.index >= state.size/2 and state.odd}">
+                <form class="seat" th:action="@{/order}" method="post">
+                    <input type="hidden" name="hiddenAction" value="seat">
+                    <input type="hidden" th:name="seatNumber" th:value="${ticket.seatNumber}">
+                    <input th:if="${ticket.id == null}" class="seatFree" type="submit" th:value="${ticket.seatNumber}"/>
+                    <input th:if="${ticket.id != null}" class="seatTaken" type="button" th:value="${ticket.seatNumber}"/>
+                    <span class="partition" th:if="${state.index + 2 < state.size}">|</span>
+                </form>
+            </span>
+            <br>
+            <span th:each="ticket, state : ${session.carriageTickets}"
+                  th:if="${state.index >= state.size/2 and state.even}">
+                <form class="seat" th:action="@{/order}" method="post">
+                    <input type="hidden" name="hiddenAction" value="seat">
+                    <input type="hidden" th:name="seatNumber" th:value="${ticket.seatNumber}">
+                    <input th:if="${ticket.id == null}" class="seatFree" type="submit" th:value="${ticket.seatNumber}"/>
+                    <input th:if="${ticket.id != null}" class="seatTaken" type="button" th:value="${ticket.seatNumber}"/>
+                    <span class="partition" th:if="${state.index + 1 < state.size}">|</span>
+                </form>
+            </span>
+            </div>
         </div>
         <div th:if="${session.ticket.seatNumber != null}">
-            <p th:text="'Selected seat: № ' + ${session.ticket.seatNumber}" />
-            <p>Price:</p>
-            <p th:utext="${session.ticket.price / 100} + ',' + ${session.ticket.price % 100} + ' BYN'"></p>
+            <p th:text="|Selected seat: № ${session.ticket.seatNumber}|" />
+            <p th:text="|Price: ${session.ticket.price / 100},${session.ticket.price % 100} BYN|" />
         <h3 th:if="${error}" th:text="'Operation failed, please try again'" />
         <a href="#payment">Proceed to payment</a>
         </div>
     </div>
 
-    <div id="wholeRoute">
-        <div id="modal">
-            <div>
-                <span th:utext="'Route: '+${session.ticket.departure.stationSchedules[0].station.title} + ' &mdash; '" />
-                <span th:utext="${session.ticket.departure.stationSchedules[session.ticket.departure.stationSchedules.size()-1].station.title}" />
+    <!--interregional_long or international train order-->
+    <div th:if="${session.ticket.departure.route.type} eq 'interregional_long' or
+        ${session.ticket.departure.route.type} eq 'international'">
+        <br>
+        Select carriage:
+        <form th:action="@{/order}" method="post">
+            <input type="hidden" name="hiddenAction" value="carriage">
+            <select th:name="carriageNumber">
+                <option th:each="trainCarriage : ${session.ticket.departure.train.trainCarriages}"
+                        th:value="${trainCarriage.carriageNumber}"
+                        th:text="|№ ${trainCarriage.carriageNumber} ${trainCarriage.carriage.comfortLevel}|">
+                </option>
+                <br><input type="submit" value="Find seats"/>
+            </select>
+        </form>
+        <br>
+        <div th:if="${session.carriageTickets != null}">
+            <span th:text="|${session.ticket.carriageComfortLevel} Carriage № ${session.ticket.carriageNumber}
+            &nbsp;&nbsp;&nbsp; Please select a seat:|" />
+
+            <!--location of seats for LUX carriage-->
+            <div class="carriage" th:if="${session.ticket.carriageComfortLevel eq 'LUX'}">
+                <span th:each="ticket, state : ${session.carriageTickets}"
+                  th:if="${state.index < state.size/2}">
+                    <form class="seat" th:action="@{/order}" method="post">
+                        <input type="hidden" name="hiddenAction" value="seat">
+                        <input type="hidden" th:name="seatNumber" th:value="${ticket.seatNumber}">
+                        <input th:if="${ticket.id == null}" class="seatFree" type="submit" th:value="${ticket.seatNumber}"/>
+                        <input th:if="${ticket.id != null}" class="seatTaken" type="button" th:value="${ticket.seatNumber}"/>
+                        <span class="partition" th:if="${state.even and state.index + 1 < state.size/2}">|</span>
+                    </form>
+                </span>
+                <br><br>
+                <span th:each="ticket, state : ${session.carriageTickets}"
+                      th:if="${state.index >= state.size/2}">
+                    <form class="seat" th:action="@{/order}" method="post">
+                        <input type="hidden" name="hiddenAction" value="seat">
+                        <input type="hidden" th:name="seatNumber" th:value="${ticket.seatNumber}">
+                        <input th:if="${ticket.id == null}" class="seatFree" type="submit" th:value="${ticket.seatNumber}"/>
+                        <input th:if="${ticket.id != null}" class="seatTaken" type="button" th:value="${ticket.seatNumber}"/>
+                        <span class="partition" th:if="${state.even and state.index + 1 < state.size}">|</span>
+                    </form>
+                </span>
+                <br>
             </div>
-            <table border="5">
-                <tr>
-                    <th>Station</th>
-                    <th>Arrival time</th>
-                    <th>Departure time</th>
-                </tr>
-                <tr th:each="stationSchedule : ${session.ticket.departure.stationSchedules}">
-                    <td th:utext="${stationSchedule.station.title}" />
-                    <td align="center" th:utext="${stationSchedule.arrivalDate != null} ?
-                            ${#temporals.format(stationSchedule.arrivalDate, 'dd MMM HH:mm')} : '&mdash;'" />
-                    <td align="center" th:utext="${stationSchedule.departureDate != null} ?
-                            ${#temporals.format(stationSchedule.departureDate, 'dd MMM HH:mm')} : '&mdash;'" />
-                </tr>
-            </table>
-            <br>
-            <a href="#" class="submit">Back</a>
+
+            <!--location of seats for COUPE carriage-->
+            <div class="carriage" th:if="${session.ticket.carriageComfortLevel eq 'COUPE'}">
+                <span th:each="ticket, state : ${session.carriageTickets}"
+                  th:if="${state.odd}">
+                    <form class="seat" th:action="@{/order}" method="post">
+                        <input type="hidden" name="hiddenAction" value="seat">
+                        <input type="hidden" th:name="seatNumber" th:value="${ticket.seatNumber}">
+                        <input th:if="${ticket.id == null}" title="upper" class="seatFree" type="submit" th:value="${ticket.seatNumber}"/>
+                        <input th:if="${ticket.id != null}" class="seatTaken" type="button" th:value="${ticket.seatNumber}"/>
+                    </form>
+                </span>
+                <br>
+                <span th:each="ticket, state : ${session.carriageTickets}"
+                      th:if="${state.even}">
+                    <form class="seat" th:action="@{/order}" method="post">
+                        <input type="hidden" name="hiddenAction" value="seat">
+                        <input type="hidden" th:name="seatNumber" th:value="${ticket.seatNumber}">
+                        <input th:if="${ticket.id == null}" title="lower" class="seatFree" type="submit" th:value="${ticket.seatNumber}"/>
+                        <input th:if="${ticket.id != null}" class="seatTaken" type="button" th:value="${ticket.seatNumber}"/>
+                    </form>
+                </span>
+                <br><br><br>
+            </div>
+
+            <!--location of seats for ECONOMY carriage-->
+            <div class="carriage" th:if="${session.ticket.carriageComfortLevel eq 'ECONOMY'}">
+            <span th:each="ticket, state : ${session.carriageTickets}"
+                  th:if="${state.index < state.size - state.size/3 and state.odd}">
+                <form class="seat" th:action="@{/order}" method="post">
+                    <input type="hidden" name="hiddenAction" value="seat">
+                    <input type="hidden" th:name="seatNumber" th:value="${ticket.seatNumber}">
+                    <input th:if="${ticket.id == null}" title="upper" class="seatFree" type="submit" th:value="${ticket.seatNumber}"/>
+                    <input th:if="${ticket.id != null}" class="seatTaken" type="button" th:value="${ticket.seatNumber}"/>
+                </form>
+            </span>
+                <br>
+                <span th:each="ticket, state : ${session.carriageTickets}"
+                      th:if="${state.index < state.size - state.size/3 and state.even}">
+                <form class="seat" th:action="@{/order}" method="post">
+                    <input type="hidden" name="hiddenAction" value="seat">
+                    <input type="hidden" th:name="seatNumber" th:value="${ticket.seatNumber}">
+                    <input th:if="${ticket.id == null}" title="lower" class="seatFree" type="submit" th:value="${ticket.seatNumber}"/>
+                    <input th:if="${ticket.id != null}" class="seatTaken" type="button" th:value="${ticket.seatNumber}"/>
+                </form>
+            </span>
+                <br><br><br>
+                <span th:each="ticket, state : ${session.carriageTickets}"
+                      th:if="${state.index >= state.size - state.size/3}">
+                <form class="seat" th:action="@{/order}" method="post">
+                    <input type="hidden" name="hiddenAction" value="seat">
+                    <input type="hidden" th:name="seatNumber" th:value="${ticket.seatNumber}">
+                    <input th:if="${ticket.id == null and state.odd}" title="upper" class="seatFree"
+                           type="submit" th:value="${ticket.seatNumber}"/>
+                    <input th:if="${ticket.id == null and state.even}" title="lower" class="seatFree"
+                           type="submit" th:value="${ticket.seatNumber}"/>
+                    <input th:if="${ticket.id != null}" class="seatTaken" type="button" th:value="${ticket.seatNumber}"/>
+                </form>
+            </span>
+            </div>
+        </div>
+        <div th:if="${session.ticket.seatNumber != null}">
+            <p th:text="|Selected seat: № ${session.ticket.seatNumber}|" />
+            <p th:text="|Price: ${session.ticket.price / 100},${session.ticket.price % 100} BYN|" />
+            <h3 th:if="${error}" th:text="'Operation failed, please try again'" />
+            <a href="#payment">Proceed to payment</a>
         </div>
     </div>
 
+    <!--modal for order payment-->
     <div id="payment">
         <div id="modalTwo">
-            <form th:action="@{/order}" method="post" th:object="${card} ">
+            <form th:action="@{/order}" method="post" th:object="${card}">
                 <input type="hidden" name="hiddenAction" value="payment">
-                <div>
-                    Card Number: <input type="number" class="credit" th:field="*{number}" /><br>
-                    MM/YY: <input type="number" class="expiration" min="1" max="12" th:field="*{monthOfCardExpiration}"> /
-                    <input type="number" class="expiration" min="22" max="99" th:field="*{yearOfCardExpiration}">
-                    <br><br>
-                </div>
-                <div>Price:
-                    <span th:utext="${session.ticket.price / 100} + ',' + ${session.ticket.price % 100} + ' BYN'" />
-                </div>
+                <p><label for="number">Card Number:</label>
+                    <input type="number" id="number" class="credit" th:field="*{number}"/></p>
+                <span><label for="month">MM/YY: </label>
+                    <input type="number" id="month" class="expiration" placeholder="MM"
+                           min="1" max="12" th:field="*{monthOfCardExpiration}">
+                <label for="year">/</label>
+                    <input type="number" id="year" class="expiration" placeholder="YY"
+                           min="22" max="99" th:field="*{yearOfCardExpiration}"></span>
+                <br><br>
+                <p th:text="|Price: ${session.ticket.price / 100},${session.ticket.price % 100} BYN|" />
                 <a href="#" class="submit">Back</a>
                 <input class="submit" type="submit" value="Pay"/>
             </form>
         </div>
     </div>
+
 </div>
 
 </body>

@@ -1,11 +1,13 @@
 package com.academy.springwebapplication.service.impl;
 
+import com.academy.springwebapplication.model.CreditCard;
 import com.academy.springwebapplication.model.StationSchedule;
 import com.academy.springwebapplication.model.entity.*;
 import com.academy.springwebapplication.model.repository.*;
 import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +22,14 @@ public class TicketServiceImpl implements TicketService {
     private final StationRepository stationRepository;
     private final TrainCarriageRepository trainCarriageRepository;
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public void saveTicket(Ticket ticket) {
+    public void payTicket(CreditCard card, Ticket ticket) {
+        saveTicket(ticket);
+        card.moneyTransfer();
+    }
+
+    private void saveTicket(Ticket ticket) {
         User user = userRepository.findByUsername(ticket.getUser().getUsername());
         ticket.setUser(user);
 
@@ -32,6 +40,10 @@ public class TicketServiceImpl implements TicketService {
         ticket.setUserArrivalStation(arrivalStation);
 
         ticketRepository.save(ticket);
+
+        if (ticket.getId() == null) {
+            throw new RuntimeException("Error saving ticket");
+        }
     }
 
     @Override
@@ -87,20 +99,20 @@ public class TicketServiceImpl implements TicketService {
         }
     }
 
-    public List<Ticket> getPurchasedAndNotPurchasedDepartureTicketsForCarriage(Departure departure, int carriageNumber){
+    public List<Ticket> getPurchasedAndNotPurchasedDepartureTicketsForCarriage(Departure departure, int carriageNumber) {
         List<Ticket> allPossibleDepartureTicketsForCarriage =
-                getAllPossibleDepartureTicketsForCarriage(departure,carriageNumber);
+                getAllPossibleDepartureTicketsForCarriage(departure, carriageNumber);
 
         return allPossibleDepartureTicketsForCarriage.stream()
-                .peek(this::setTicketIdIfItPurchased)
+                .peek(this::setIdToTicketIfItPurchased)
                 .collect(Collectors.toList());
     }
 
-    private List<Ticket> getAllPossibleDepartureTicketsForCarriage(Departure departure, int carriageNumber){
+    private List<Ticket> getAllPossibleDepartureTicketsForCarriage(Departure departure, int carriageNumber) {
         List<Ticket> tickets = new ArrayList<>();
 
         TrainCarriage trainCarriage = trainCarriageRepository.
-                findByTrain_IdAndCarriageNumber(departure.getTrain().getId(),carriageNumber);
+                findByTrain_IdAndCarriageNumber(departure.getTrain().getId(), carriageNumber);
 
         int numberOfSeats = trainCarriage.getCarriage().getSeats();
 
@@ -117,13 +129,47 @@ public class TicketServiceImpl implements TicketService {
         return tickets;
     }
 
-    private void setTicketIdIfItPurchased(Ticket ticket){
+    private void setIdToTicketIfItPurchased(Ticket ticket) {
         Ticket existingTicket = ticketRepository.
                 findByDeparture_IdAndCarriageNumberAndSeatNumber
-                        (ticket.getDeparture().getId(),ticket.getCarriageNumber(),ticket.getSeatNumber());
+                        (ticket.getDeparture().getId(), ticket.getCarriageNumber(), ticket.getSeatNumber());
 
-        if(existingTicket != null){
+        if (existingTicket != null) {
             ticket.setId(existingTicket.getId());
+        }
+    }
+
+    public void setCarriageComfortLevelForTicket(Ticket ticket) {
+        int carriageNumber = ticket.getCarriageNumber();
+
+        List<TrainCarriage> trainCarriages = ticket.getDeparture().getTrain().getTrainCarriages();
+
+        for (TrainCarriage trainCarriage : trainCarriages) {
+
+            if (trainCarriage.getCarriageNumber() == carriageNumber) {
+                ticket.setCarriageComfortLevel(trainCarriage.getCarriage().getComfortLevel());
+            }
+
+        }
+    }
+
+    public void setAdditionalTicketPriceForComfortLevelOfCarriage(Ticket ticket) {
+        setTicketPriceForDeparture(ticket, ticket.getDeparture());
+
+        String carriageComfortLevel = ticket.getCarriageComfortLevel();
+
+        int ticketPrice = ticket.getPrice();
+
+        switch (carriageComfortLevel) {
+            case "LUX":
+                ticket.setPrice(ticketPrice + ticketPrice / 100 * 50);
+                break;
+            case "COUPE":
+                ticket.setPrice(ticketPrice + ticketPrice / 100 * 30);
+                break;
+            case "ECONOMY":
+                ticket.setPrice(ticketPrice + ticketPrice / 100 * 5);
+                break;
         }
     }
 }

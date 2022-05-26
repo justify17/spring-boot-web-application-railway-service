@@ -9,10 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -32,31 +29,33 @@ public class OrderController {
             return "order";
         }
 
+        session.removeAttribute("carriageTickets");
+
         Ticket ticket = tickets.get(ticketIndex);
         session.setAttribute("ticket", ticket);
-        model.addAttribute("ticket", ticket);
 
         return "order";
     }
 
     @PostMapping(value = "/order", params = {"hiddenAction=payment"})
     public String ticketPayment(@SessionAttribute("ticket") Ticket ticket, HttpSession session,
-                                @AuthenticationPrincipal UserDetails userDetails, Model model) {
+                                @AuthenticationPrincipal UserDetails userDetails, Model model,
+                                @ModelAttribute("card") CreditCard card) {
         User user = new User();
         user.setUsername(userDetails.getUsername());
 
         ticket.setUser(user);
 
-        ticketService.saveTicket(ticket);
-
-        if (ticket.getId() == null) {
+        try {
+            ticketService.payTicket(card, ticket);
+        } catch (Exception e) {
             model.addAttribute("card", new CreditCard());
             model.addAttribute("error", true);
             return "order";
         }
 
         model.addAttribute("ticket", ticket);
-        session.removeAttribute("carriageTickets");
+
         session.removeAttribute("ticket");
         session.removeAttribute("tickets");
 
@@ -72,6 +71,8 @@ public class OrderController {
                 ticketService.getPurchasedAndNotPurchasedDepartureTicketsForCarriage(ticket.getDeparture(), carriageNumber);
 
         ticket.setCarriageNumber(carriageNumber);
+        ticketService.setCarriageComfortLevelForTicket(ticket);
+        ticketService.setAdditionalTicketPriceForComfortLevelOfCarriage(ticket);
 
         session.setAttribute("carriageTickets", purchasedAndNotPurchasedDepartureTicketsForCarriage);
 

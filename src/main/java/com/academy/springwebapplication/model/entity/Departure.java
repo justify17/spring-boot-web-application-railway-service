@@ -31,9 +31,6 @@ public class Departure {
     @Column(name = "departure_date")
     private LocalDateTime departureDate;
 
-    @Column(name = "arrival_date")
-    private LocalDateTime arrivalDate;
-
     @OneToMany(mappedBy = "departure",cascade = CascadeType.ALL)
     private List<Ticket> tickets;
 

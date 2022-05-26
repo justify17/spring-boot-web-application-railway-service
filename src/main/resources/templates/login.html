@@ -9,10 +9,12 @@
 <body>
 <th:block th:include="blocks/menu" />
 <form th:action="@{/login}" method="post">
-    <div> Username: <input type="text" name="username"/> </div>
-    <div> Password: <input type="password" name="password"/> </div>
-    <span><input type="submit" value="Sign In"/></span>
-    <span th:if="${param.error}" th:text="' Invalid username or password.'" />
+    <p><label for="username">Username:</label>
+        <input type="text" id="username" name="username"/></p>
+    <p><label for="password">Password:</label>
+        <input type="password" id="password" name="password" /></p>
+    <p><input type="submit" value="Sign in"/></p>
+    <span th:if="${param.error}" th:text="'Invalid username or password.'" />
 </form>
 </body>
 

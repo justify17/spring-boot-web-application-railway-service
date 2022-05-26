@@ -9,45 +9,42 @@
 <body>
 <th:block th:include="blocks/menu" />
 <form th:action="@{/onlineScoreboard}" method="post" th:object="${userStation}">
-    <div> Please enter the station: <input type="text" th:field="*{title}"/>
-        <input type="submit" value="Search"/>
-        <br><br>
-    </div>
+    <p><label for="station">Please enter the station:</label>
+        <input type="text" id="station" th:field="*{title}" />
+        <input type="submit" value="Search"/></p>
 </form>
 <table th:if="${departures} != null" border="5">
-    <h1 th:text="'Departures by station: ' + ${userStation.title}" />
+    <h1 th:text="|Departures by station: ${userStation.title}|" />
     <tr>
         <th>Train</th>
         <th>Station arrival time</th>
         <th>Station departure time</th>
     </tr>
     <tr th:each="departure : ${departures}">
-        <td>
-            <span th:utext="${departure.train.number}" />
+        <td align="center">
+            <span th:text="${departure.train.number}" />
+            <span th:text="|${departure.stationSchedules[0].station.title} &mdash;
+                ${departure.stationSchedules[departure.stationSchedules.size()-1].station.title}|" />
+            <br>
             <span th:switch="${departure.route.type}">
                 <span th:case="'regional'">Региональные линии</span>
                 <span th:case="'interregional'">Межрегиональные линии</span>
+                <span th:case="'interregional_long'">Межрегиональные линии дальнего следования</span>
                 <span th:case="'international'">Международные линии</span>
             </span>
-            <span th:utext="${departure.stationSchedules[0].station.title}" />
-            <span> &mdash; </span>
-            <span th:utext="${departure.stationSchedules[departure.stationSchedules.size()-1].station.title}" />
-            </span>
         </td>
         <td align="center">
             <span th:each="stationSchedule : ${departure.stationSchedules}">
-                <span th:if="${stationSchedule.station.title} eq ${userStation.title}">
-                    <span th:text="${stationSchedule.arrivalDate != null} ?
+                <span th:if="${stationSchedule.station.title} eq ${userStation.title}"
+                    th:text="${stationSchedule.arrivalDate != null} ?
                     ${#temporals.format(stationSchedule.arrivalDate, 'dd MMM HH:mm')} : '&mdash;'" />
-                </span>
             </span>
         </td>
         <td align="center">
             <span th:each="stationSchedule : ${departure.stationSchedules}">
-                <span th:if="${stationSchedule.station.title} eq ${userStation.title}">
-                    <span th:text="${stationSchedule.departureDate != null} ?
+                <span th:if="${stationSchedule.station.title} eq ${userStation.title}"
+                    th:text="${stationSchedule.departureDate != null} ?
                     ${#temporals.format(stationSchedule.departureDate, 'dd MMM HH:mm')} : '&mdash;'" />
-                </span>
             </span>
         </td>
     </tr>

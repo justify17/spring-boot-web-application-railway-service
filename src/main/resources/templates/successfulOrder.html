@@ -15,29 +15,26 @@
 <div th:if="${ticket != null}" class="order">
     <h3>Payment was successful!</h3>
     <h3>Your ticket: </h3>
-    <p>Train:</p>
-    <span th:utext="${ticket.departure.train.number}" />
-    <span th:switch="${ticket.departure.route.type}">
-                <span th:case="'regional'">Региональные линии</span>
-                <span th:case="'interregional'">Межрегиональные линии</span>
-                <span th:case="'international'">Международные линии</span>
-            </span>
-    <span th:utext="${ticket.departure.stationSchedules[0].station.title} + ' &mdash; '" />
-    <span th:utext="${ticket.departure.stationSchedules[ticket.departure.stationSchedules.size()-1].station.title}" />
-    <p>Departure Station:</p>
-    <span th:utext="${ticket.userDepartureStation.title}" />
-    <p>Departure Date:</p>
-    <span th:utext="${#temporals.format(ticket.userDepartureDate, 'dd MMM HH:mm')}" />
-    <p>Arrival Station:</p>
-    <span th:utext="${ticket.userArrivalStation.title}" />
-    <p>Arrival Date:</p>
-    <span th:utext="${#temporals.format(ticket.userArrivalDate, 'dd MMM HH:mm')}" />
-    <p>Carriage Number:</p>
-    <span th:utext="${ticket.carriageNumber != null} ? ${ticket.carriageNumber} : '&mdash;'" />
-    <p>Seat Number:</p>
-    <span th:utext="${ticket.seatNumber != null} ? ${ticket.seatNumber} : '&mdash;'" />
-    <p>Ticket price: </p>
-    <p th:utext="${ticket.price / 100} + ',' + ${ticket.price % 100} + ' BYN'"></p>
+    <p>Train:
+    <span th:text="${ticket.departure.train.number}" />
+    <span th:text="|${ticket.departure.stationSchedules[0].station.title} &mdash;
+                ${ticket.departure.stationSchedules[ticket.departure.stationSchedules.size()-1].station.title}|" /></p>
+    <p>Departure Station:
+    <span th:text="${ticket.userDepartureStation.title}" /></p>
+    <p>Departure Date:
+    <span th:text="${#temporals.format(ticket.userDepartureDate, 'dd MMM HH:mm')}" /></p>
+    <p>Arrival Station:
+    <span th:text="${ticket.userArrivalStation.title}" /></p>
+    <p>Arrival Date:
+    <span th:text="${#temporals.format(ticket.userArrivalDate, 'dd MMM HH:mm')}" /></p>
+    <p>Carriage Comfort Level:
+    <span th:text="${ticket.carriageComfortLevel != null} ? ${ticket.carriageComfortLevel} : '&mdash;'" /></p>
+    <p>Carriage Number:
+    <span th:text="${ticket.carriageNumber != null} ? ${ticket.carriageNumber} : '&mdash;'" /></p>
+    <p>Seat Number:
+    <span th:text="${ticket.seatNumber != null} ? ${ticket.seatNumber} : '&mdash;'" /></p>
+    <p>Ticket price:
+    <span th:text="|${ticket.price / 100},${ticket.price % 100} BYN|" /></p>
 </div>
 
 </body>

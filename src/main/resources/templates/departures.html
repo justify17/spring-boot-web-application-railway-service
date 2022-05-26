@@ -10,41 +10,43 @@
 <body>
 <th:block th:include="blocks/menu" />
 <form th:action="@{/departures}" method="post" th:object="${userRoute}">
-    <span> From: <input type="text" th:field="*{departureStation.title}" /></span>
-    <span> To: <input type="text" th:field="*{arrivalStation.title}" /></span>
-    <input type="submit" value="Search"/></span>
+    <span><label for="from">From:</label>
+        <input type="text" id="from" placeholder="Station" th:field="*{departureStation.title}" /></span>
+    <span><label for="to">To:</label>
+        <input type="text" id="to" placeholder="Station" th:field="*{arrivalStation.title}" /></span>
+    <input type="submit" value="Search"/>
     <br><br>
 </form>
 <table th:if="${session.tickets} != null" border="5">
-    <h1 th:text="${session.tickets[0].userDepartureStation.title} + '&mdash;' + ${session.tickets[0].userArrivalStation.title}" />
+    <h1 th:text="|Route: ${session.tickets[0].userDepartureStation.title} &mdash; ${session.tickets[0].userArrivalStation.title}|" />
     <tr>
         <th>Train</th>
         <th>Route</th>
         <th>Price</th>
     </tr>
     <tr th:each="ticket, state : ${session.tickets}">
-        <td>
-            <span th:utext="*{ticket.departure.train.number}" />
+        <td align="center">
+            <span th:text="${ticket.departure.train.number}" />
+            <span th:text="|${ticket.departure.stationSchedules[0].station.title} &mdash;
+                ${ticket.departure.stationSchedules[ticket.departure.stationSchedules.size()-1].station.title}|" />
+            <br>
             <span th:switch="${ticket.departure.route.type}">
                 <span th:case="'regional'">Региональные линии</span>
                 <span th:case="'interregional'">Межрегиональные линии</span>
+                <span th:case="'interregional_long'">Межрегиональные линии дальнего следования</span>
                 <span th:case="'international'">Международные линии</span>
             </span>
-            <span th:utext="${ticket.departure.stationSchedules[0].station.title}" />
-            <span> &mdash; </span>
-            <span th:utext="${ticket.departure.stationSchedules[ticket.departure.stationSchedules.size()-1].station.title}" />
-        </span>
         </td>
         <td align="center">
             <div class="route">
-                <span th:utext="${#temporals.format(ticket.userDepartureDate, 'dd MMM HH:mm , ')}" />
-                <span th:text="${ticket.userDepartureStation.title} + ' ———————> ' + ${ticket.userArrivalStation.title}" />
-                <span th:utext="${#temporals.format(ticket.userArrivalDate, ', dd MMM HH:mm')}" />
+                <span th:text="${#temporals.format(ticket.userDepartureDate, 'dd MMM HH:mm , ')}" />
+                <span th:text="|${ticket.userDepartureStation.title} ———————> ${ticket.userArrivalStation.title}|" />
+                <span th:text="${#temporals.format(ticket.userArrivalDate, ', dd MMM HH:mm')}" />
             </div>
             <a th:href="@{/departures/route(departure=${ticket.departure.id})} " target="_blank">See the whole route</a>
         </td>
         <td align="center">
-            <span th:utext="${ticket.price / 100} + ',' + ${ticket.price % 100} + ' BYN'"></span>
+            <span th:text="|${ticket.price / 100},${ticket.price % 100} BYN|" />
             <br>
             <a th:href="@{/order(ticketIndex=${state.index})}">Make an order</a>
         </td>

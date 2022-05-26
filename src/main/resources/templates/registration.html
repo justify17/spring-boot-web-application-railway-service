@@ -9,9 +9,11 @@
 <body>
 <th:block th:include="blocks/menu" />
 <form th:action="@{/registration}" method="post" th:object="${user}">
-    <div> Username: <input type="text" th:field="*{username}"/> </div>
-    <div> Password: <input type="password" th:field="*{password}"/> </div>
-    <span><input type="submit" value="Registration"/></span>
+    <p><label for="username">Username:</label>
+        <input type="text" id="username" th:field="*{username}"/></p>
+    <p><label for="password">Password:</label>
+        <input type="password" id="password" th:field="*{password}"/></p>
+    <p><input type="submit" value="Registration"/></p>
     <span th:if="${isUserExists}" th:text="'User with this username already exists'" />
 </form>
 </body>

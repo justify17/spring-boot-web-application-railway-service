@@ -29,6 +29,7 @@ public class RegistrationController {
         }
 
         registrationService.saveNewUser(user);
+
         return "redirect:/login";
     }
 }

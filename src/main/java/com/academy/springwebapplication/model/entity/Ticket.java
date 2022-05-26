@@ -43,4 +43,7 @@ public class Ticket {
 
     @Column
     private Integer price;
+
+    @Transient
+    private String carriageComfortLevel;
 }
