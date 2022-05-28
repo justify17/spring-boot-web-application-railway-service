@@ -1,13 +1,12 @@
-package com.academy.springwebapplication.model;
+package com.academy.springwebapplication.dto;
 
-import com.academy.springwebapplication.model.entity.Station;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
 public class StationSchedule {
-    private Station station;
+    private StationDto station;
     private LocalDateTime departureDate;
     private LocalDateTime arrivalDate;
 }

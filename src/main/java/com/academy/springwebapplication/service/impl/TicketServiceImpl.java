@@ -1,7 +1,7 @@
 package com.academy.springwebapplication.service.impl;
 
-import com.academy.springwebapplication.model.CreditCard;
-import com.academy.springwebapplication.model.StationSchedule;
+import com.academy.springwebapplication.dto.CreditCard;
+import com.academy.springwebapplication.dto.StationSchedule;
 import com.academy.springwebapplication.model.entity.*;
 import com.academy.springwebapplication.model.repository.*;
 import com.academy.springwebapplication.service.TicketService;
@@ -26,7 +26,15 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public void payTicket(CreditCard card, Ticket ticket) {
         saveTicket(ticket);
-        card.moneyTransfer();
+        moneyTransfer(card);
+    }
+
+    private void moneyTransfer(CreditCard card){
+        if(card.getNumber().trim().length() < 16){
+            throw new RuntimeException("Ticket payment error");
+        }
+
+        System.out.println("Payment was successful!");
     }
 
     private void saveTicket(Ticket ticket) {

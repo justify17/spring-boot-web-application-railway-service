@@ -4,13 +4,15 @@
 <head>
     <title>Main page</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="main.css" />
+    <link rel="stylesheet" type="text/css" href="menu.css" />
 </head>
 
 <body>
-    <div sec:authorize="!isAuthenticated()" th:text="'Welcome, user'"/>
-    <div sec:authorize="isAuthenticated()">Welcome, <span sec:authentication="name"/></div>
-    <th:block th:include="blocks/menu" />
-    <form th:action="@{/departures}" method="post" th:object="${userRoute}">
+    <div class="menu" th:insert="blocks/menu :: menu_fragment" />
+    <h3 sec:authorize="!isAuthenticated()" th:text="'Welcome, user'"/>
+    <h3 sec:authorize="isAuthenticated()">Welcome, <span sec:authentication="name"/></h3>
+    <form class="form-style" th:action="@{/departures}" method="post" th:object="${userRoute}">
         <span><label for="from">From:</label>
             <input type="text" id="from" placeholder="Station" th:field="*{departureStation.title}" /></span>
         <span><label for="to">To:</label>
@@ -18,6 +20,7 @@
         <input type="submit" value="Search"/>
         <br><br>
     </form>
+
     <!--<div sec:authorize="hasRole('ROLE_ADMIN')">
         Только администратор может видеть <br/>
     </div>

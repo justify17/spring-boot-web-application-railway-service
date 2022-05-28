@@ -1,6 +1,6 @@
 package com.academy.springwebapplication.model.entity;
 
-import com.academy.springwebapplication.model.StationSchedule;
+import com.academy.springwebapplication.dto.StationSchedule;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,8 +10,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"id", "train","route", "departureDate","arrivalDate"})
-@ToString(of = {"id", "train","route", "departureDate","arrivalDate"})
+@EqualsAndHashCode(of = {"id", "train","route", "departureDate"})
+@ToString(of = {"id", "train","route", "departureDate"})
 @NoArgsConstructor
 @Entity
 @Table(name = "departures")

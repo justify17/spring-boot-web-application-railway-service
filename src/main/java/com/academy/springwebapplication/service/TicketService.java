@@ -1,6 +1,6 @@
 package com.academy.springwebapplication.service;
 
-import com.academy.springwebapplication.model.CreditCard;
+import com.academy.springwebapplication.dto.CreditCard;
 import com.academy.springwebapplication.model.entity.Departure;
 import com.academy.springwebapplication.model.entity.Route;
 import com.academy.springwebapplication.model.entity.Ticket;

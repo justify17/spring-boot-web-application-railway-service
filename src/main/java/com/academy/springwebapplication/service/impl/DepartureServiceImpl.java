@@ -1,11 +1,15 @@
 package com.academy.springwebapplication.service.impl;
 
-import com.academy.springwebapplication.model.StationSchedule;
-import com.academy.springwebapplication.model.entity.*;
+import com.academy.springwebapplication.dto.DepartureDto;
+import com.academy.springwebapplication.dto.StationDto;
+import com.academy.springwebapplication.dto.StationSchedule;
+import com.academy.springwebapplication.mapper.DepartureMapper;
+import com.academy.springwebapplication.model.entity.Departure;
+import com.academy.springwebapplication.model.entity.Route;
+import com.academy.springwebapplication.model.entity.RouteStation;
+import com.academy.springwebapplication.model.entity.Station;
 import com.academy.springwebapplication.model.repository.DepartureRepository;
 import com.academy.springwebapplication.model.repository.RouteStationRepository;
-import com.academy.springwebapplication.model.repository.TicketRepository;
-import com.academy.springwebapplication.model.repository.TrainCarriageRepository;
 import com.academy.springwebapplication.service.DepartureService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,18 +23,17 @@ import java.util.stream.Collectors;
 public class DepartureServiceImpl implements DepartureService {
     private final DepartureRepository departureRepository;
     private final RouteStationRepository routeStationRepository;
-    private final TrainCarriageRepository trainCarriageRepository;
-    private final TicketRepository ticketRepository;
+    private final DepartureMapper departureMapper;
 
     @Override
-    public List<Departure> getDeparturesByStation(Station station) {
-        String stationTitle = station.getTitle();
+    public List<DepartureDto> getDeparturesByStation(StationDto stationDto) {
+        String stationTitle = stationDto.getTitle();
 
         List<Departure> departuresByStation = departureRepository.
                 findByRoute_RouteStations_Station_TitleIgnoreCase(stationTitle);
 
         return departuresByStation.stream()
-                .peek(this::setStationSchedulesForDeparture)
+                .map(departureMapper::departureToDepartureDto)
                 .collect(Collectors.toList());
     }
 
@@ -61,6 +64,7 @@ public class DepartureServiceImpl implements DepartureService {
                 .collect(Collectors.toList());
     }
 
+
     @Override
     public void setStationSchedulesForDeparture(Departure departure) {
         List<RouteStation> routeStations = departure.getRoute().getRouteStations();
@@ -69,7 +73,7 @@ public class DepartureServiceImpl implements DepartureService {
         for (RouteStation routeStation : routeStations) {
             StationSchedule stationSchedule = new StationSchedule();
 
-            stationSchedule.setStation(routeStation.getStation());
+           /* stationSchedule.setStation(routeStation.getStation());*/
             stationSchedule.setArrivalDate(arrivalDateAtNextStation);
             stationSchedule.setDepartureDate(stationSchedule.getArrivalDate().plusMinutes(routeStation.getStopMinutes()));
 

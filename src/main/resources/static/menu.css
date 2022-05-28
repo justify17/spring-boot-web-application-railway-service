@@ -1,0 +1,40 @@
+@import url(https://fonts.googleapis.com/css?family=Lora);
+
+ul {
+  list-style: none;
+  margin: 0 auto;
+}
+a {
+  text-decoration: none;
+  font-family: 'Lora', serif;
+  transition: .5s linear;
+}
+
+i {
+  margin-right: 10px;
+}
+
+nav {
+  display: block;
+  width: auto;
+  margin: 0 auto 30px;
+}
+.menu ul {
+  background: #D4E7EE;
+  overflow: hidden;
+  padding: 0;
+}
+.menu li {
+  float: left;
+}
+.auth li{
+  float: right;
+}
+.menu a {
+  display: block;
+  padding: 1em;
+  border-right: 1px solid #ADC0CE;
+  background: rgba(173, 192, 206, .3);
+  color: #29838C;
+}
+.menu a:hover {background: #ADC0CE}

@@ -5,10 +5,11 @@
     <title>Successful Order</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="order.css" />
+    <link rel="stylesheet" type="text/css" href="menu.css" />
 </head>
 
 <body>
-<th:block th:include="blocks/menu" />
+<div class="menu" th:insert="blocks/menu :: menu_fragment" />
 <div th:if="${ticket == null}">
     Choose a route first, please: <a th:href="@{/departures}">Choose a route</a>
 </div>

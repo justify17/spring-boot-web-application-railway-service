@@ -5,6 +5,7 @@
     <title>Route Details</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="departures.css" />
+    <link rel="stylesheet" type="text/css" href="menu.css" />
     <style>
         .route {font-family: Verdana, Arial, Helvetica, Tahoma, sans-serif;
                 font-size: 15pt}
@@ -12,7 +13,7 @@
 </head>
 
 <body>
-<th:block th:include="blocks/menu" />
+<div class="menu" th:insert="blocks/menu :: menu_fragment" />
 <div class="route">
     <span th:utext="|Route: ${departure.stationSchedules[0].station.title} &mdash;
         ${departure.stationSchedules[departure.stationSchedules.size()-1].station.title}|"/>

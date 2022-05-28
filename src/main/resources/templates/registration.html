@@ -2,18 +2,25 @@
 <html xmlns:th="https://www.thymeleaf.org">
 
 <head>
-    <title>Registration</title>
+    <title>Sign up</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="auth.css" />
+    <link rel="stylesheet" type="text/css" href="menu.css" />
 </head>
 
 <body>
-<th:block th:include="blocks/menu" />
+<div class="menu" th:insert="blocks/menu :: menu_fragment" />
+<div class="background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+</div>
 <form th:action="@{/registration}" method="post" th:object="${user}">
     <p><label for="username">Username:</label>
         <input type="text" id="username" th:field="*{username}"/></p>
     <p><label for="password">Password:</label>
         <input type="password" id="password" th:field="*{password}"/></p>
-    <p><input type="submit" value="Registration"/></p>
+    <p><input type="submit" value="Sign up"/></p>
+    <h3>Do you have an account? <a class="link" th:href="@{/login}">Sign in</a></h3>
     <span th:if="${isUserExists}" th:text="'User with this username already exists'" />
 </form>
 </body>

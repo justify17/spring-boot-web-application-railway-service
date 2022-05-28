@@ -2,18 +2,25 @@
 <html xmlns:th="https://www.thymeleaf.org">
 
 <head>
-    <title>Sign in</title>
+    <title>Log in</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="auth.css" />
+    <link rel="stylesheet" type="text/css" href="menu.css" />
 </head>
 
 <body>
-<th:block th:include="blocks/menu" />
+<div class="menu" th:insert="blocks/menu :: menu_fragment" />
+<div class="background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+</div>
 <form th:action="@{/login}" method="post">
     <p><label for="username">Username:</label>
         <input type="text" id="username" name="username"/></p>
     <p><label for="password">Password:</label>
         <input type="password" id="password" name="password" /></p>
-    <p><input type="submit" value="Sign in"/></p>
+    <p><input type="submit" value="Log in"/></p>
+    <h3>Don't have an account? <a class="link" th:href="@{/registration}">Registration</a></h3>
     <span th:if="${param.error}" th:text="'Invalid username or password.'" />
 </form>
 </body>

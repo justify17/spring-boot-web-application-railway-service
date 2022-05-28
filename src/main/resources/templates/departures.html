@@ -5,10 +5,11 @@
     <title>Departures</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="departures.css" />
+    <link rel="stylesheet" type="text/css" href="menu.css" />
 </head>
 
 <body>
-<th:block th:include="blocks/menu" />
+<div class="menu" th:insert="blocks/menu :: menu_fragment" />
 <form th:action="@{/departures}" method="post" th:object="${userRoute}">
     <span><label for="from">From:</label>
         <input type="text" id="from" placeholder="Station" th:field="*{departureStation.title}" /></span>
