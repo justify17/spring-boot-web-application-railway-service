@@ -1,11 +1,9 @@
 package com.academy.springwebapplication.model.entity;
 
-import com.academy.springwebapplication.dto.StationSchedule;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -33,7 +31,4 @@ public class Departure {
 
     @OneToMany(mappedBy = "departure",cascade = CascadeType.ALL)
     private List<Ticket> tickets;
-
-    @Transient
-    private List<StationSchedule> stationSchedules = new ArrayList<>();
 }

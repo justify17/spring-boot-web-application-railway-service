@@ -1,8 +1,12 @@
 package com.academy.springwebapplication.controller;
 
 import com.academy.springwebapplication.dto.CreditCard;
+import com.academy.springwebapplication.dto.Seat;
+import com.academy.springwebapplication.dto.TicketDto;
+import com.academy.springwebapplication.dto.UserDto;
 import com.academy.springwebapplication.model.entity.Ticket;
 import com.academy.springwebapplication.model.entity.User;
+import com.academy.springwebapplication.service.DepartureService;
 import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,10 +21,11 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class OrderController {
+    private final DepartureService departureService;
     private final TicketService ticketService;
 
     @GetMapping("/order")
-    public String order(@SessionAttribute(required = false, name = "tickets") List<Ticket> tickets,
+    public String order(@SessionAttribute(required = false, name = "tickets") List<TicketDto> tickets,
                         @RequestParam(required = false, name = "ticketIndex") Integer ticketIndex,
                         Model model, HttpSession session) {
         model.addAttribute("card", new CreditCard());
@@ -29,22 +34,22 @@ public class OrderController {
             return "order";
         }
 
-        session.removeAttribute("carriageTickets");
+        session.removeAttribute("seats");
 
-        Ticket ticket = tickets.get(ticketIndex);
+        TicketDto ticket = tickets.get(ticketIndex);
         session.setAttribute("ticket", ticket);
 
         return "order";
     }
 
     @PostMapping(value = "/order", params = {"hiddenAction=payment"})
-    public String ticketPayment(@SessionAttribute("ticket") Ticket ticket, HttpSession session,
+    public String ticketPayment(@SessionAttribute("ticket") TicketDto ticket, HttpSession session,
                                 @AuthenticationPrincipal UserDetails userDetails, Model model,
                                 @ModelAttribute("card") CreditCard card) {
-        User user = new User();
-        user.setUsername(userDetails.getUsername());
+        UserDto userDto = new UserDto();
+        userDto.setUsername(userDetails.getUsername());
 
-        ticket.setUser(user);
+        ticket.setUser(userDto);
 
         try {
             ticketService.payTicket(card, ticket);
@@ -56,7 +61,6 @@ public class OrderController {
 
         model.addAttribute("ticket", ticket);
 
-        session.removeAttribute("ticket");
         session.removeAttribute("tickets");
 
         return "successfulOrder";
@@ -64,24 +68,24 @@ public class OrderController {
 
     @PostMapping(value = "/order", params = {"hiddenAction=carriage"})
     public String ticketCarriage(@RequestParam(value = "carriageNumber", required = false) int carriageNumber,
-                                 @SessionAttribute("ticket") Ticket ticket, Model model, HttpSession session) {
+                                 @SessionAttribute("ticket") TicketDto ticket, Model model, HttpSession session) {
         model.addAttribute("card", new CreditCard());
 
-        List<Ticket> purchasedAndNotPurchasedDepartureTicketsForCarriage =
-                ticketService.getPurchasedAndNotPurchasedDepartureTicketsForCarriage(ticket.getDeparture(), carriageNumber);
+        List<Seat> carriageSeats = departureService.getCarriageSeatsForDeparture(ticket.getDeparture(),carriageNumber);
 
         ticket.setCarriageNumber(carriageNumber);
         ticketService.setCarriageComfortLevelForTicket(ticket);
-        ticketService.setAdditionalTicketPriceForComfortLevelOfCarriage(ticket);
 
-        session.setAttribute("carriageTickets", purchasedAndNotPurchasedDepartureTicketsForCarriage);
+        ticketService.setTicketFinalPrice(ticket);
+
+        session.setAttribute("seats", carriageSeats);
 
         return "order";
     }
 
     @PostMapping(value = "/order", params = {"hiddenAction=seat"})
     public String ticketSeat(@RequestParam(value = "seatNumber", required = false) int seatNumber,
-                             @SessionAttribute("ticket") Ticket ticket, Model model) {
+                             @SessionAttribute("ticket") TicketDto ticket, Model model) {
         model.addAttribute("card", new CreditCard());
 
         ticket.setSeatNumber(seatNumber);

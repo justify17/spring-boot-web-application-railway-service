@@ -1,20 +1,17 @@
 package com.academy.springwebapplication.service.impl;
 
-import com.academy.springwebapplication.dto.DepartureDto;
-import com.academy.springwebapplication.dto.StationDto;
-import com.academy.springwebapplication.dto.StationSchedule;
+import com.academy.springwebapplication.dto.*;
 import com.academy.springwebapplication.mapper.DepartureMapper;
+import com.academy.springwebapplication.mapper.TrainMapper;
 import com.academy.springwebapplication.model.entity.Departure;
-import com.academy.springwebapplication.model.entity.Route;
-import com.academy.springwebapplication.model.entity.RouteStation;
-import com.academy.springwebapplication.model.entity.Station;
 import com.academy.springwebapplication.model.repository.DepartureRepository;
 import com.academy.springwebapplication.model.repository.RouteStationRepository;
 import com.academy.springwebapplication.service.DepartureService;
+import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +20,7 @@ import java.util.stream.Collectors;
 public class DepartureServiceImpl implements DepartureService {
     private final DepartureRepository departureRepository;
     private final RouteStationRepository routeStationRepository;
+    private final TicketService ticketService;
     private final DepartureMapper departureMapper;
 
     @Override
@@ -32,28 +30,28 @@ public class DepartureServiceImpl implements DepartureService {
         List<Departure> departuresByStation = departureRepository.
                 findByRoute_RouteStations_Station_TitleIgnoreCase(stationTitle);
 
+
         return departuresByStation.stream()
                 .map(departureMapper::departureToDepartureDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<Departure> getDeparturesWithScheduleForRoute(Route route) {
+    public List<Departure> getDeparturesForRoute(UserRouteDto userRouteDto) {
         List<Departure> commonDeparturesForTwoStations =
-                getCommonDeparturesForStations(route.getDepartureStation(), route.getArrivalStation());
+                getCommonDeparturesForStations(userRouteDto.getDepartureStation(), userRouteDto.getArrivalStation());
 
         return commonDeparturesForTwoStations.stream()
                 .filter(departure ->
                         routeStationRepository.findByRoute_IdAndStation_Title(departure.getRoute().getId(),
-                                route.getDepartureStation().getTitle()).getRouteStopNumber()
+                                userRouteDto.getDepartureStation().getTitle()).getRouteStopNumber()
                                 <
                                 routeStationRepository.findByRoute_IdAndStation_Title(departure.getRoute().getId(),
-                                        route.getArrivalStation().getTitle()).getRouteStopNumber())
-                .peek(this::setStationSchedulesForDeparture)
+                                        userRouteDto.getArrivalStation().getTitle()).getRouteStopNumber())
                 .collect(Collectors.toList());
     }
 
-    private List<Departure> getCommonDeparturesForStations(Station firstStation, Station secondStation) {
+    private List<Departure> getCommonDeparturesForStations(StationDto firstStation, StationDto secondStation) {
         List<Departure> departuresByFirstStation = departureRepository.
                 findByRoute_RouteStations_Station_TitleIgnoreCase(firstStation.getTitle());
         List<Departure> departuresBySecondStation = departureRepository.
@@ -64,25 +62,27 @@ public class DepartureServiceImpl implements DepartureService {
                 .collect(Collectors.toList());
     }
 
+    public List<Seat> getCarriageSeatsForDeparture(DepartureDto departureDto, int carriageNumber){
+        List<Seat> seats = new ArrayList<>();
 
-    @Override
-    public void setStationSchedulesForDeparture(Departure departure) {
-        List<RouteStation> routeStations = departure.getRoute().getRouteStations();
+        CarriageDto carriageDto = departureDto.getTrain().getCarriages().stream()
+                .filter(carriage -> carriage.getNumber() == carriageNumber)
+                .findFirst().get();
 
-        LocalDateTime arrivalDateAtNextStation = departure.getDepartureDate();
-        for (RouteStation routeStation : routeStations) {
-            StationSchedule stationSchedule = new StationSchedule();
+        int numberOfSeats = carriageDto.getNumberOfSeats();
 
-           /* stationSchedule.setStation(routeStation.getStation());*/
-            stationSchedule.setArrivalDate(arrivalDateAtNextStation);
-            stationSchedule.setDepartureDate(stationSchedule.getArrivalDate().plusMinutes(routeStation.getStopMinutes()));
+        for (int i = 1; i <= numberOfSeats; i++) {
+            Seat seat = new Seat();
 
-            departure.getStationSchedules().add(stationSchedule);
+            seat.setCarriageNumber(carriageNumber);
+            seat.setNumber(i);
 
-            arrivalDateAtNextStation = stationSchedule.getDepartureDate().plusMinutes(routeStation.getMinutesToNextStation());
+            boolean isFree = ticketService.isTicketExists(departureDto,seat) ? false : true;
+            seat.setFree(isFree);
+
+            seats.add(seat);
         }
 
-        departure.getStationSchedules().get(0).setArrivalDate(null);
-        departure.getStationSchedules().get(departure.getStationSchedules().size() - 1).setDepartureDate(null);
+        return seats;
     }
 }

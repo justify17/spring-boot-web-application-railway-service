@@ -1,16 +1,15 @@
 package com.academy.springwebapplication.service;
 
-import com.academy.springwebapplication.dto.DepartureDto;
-import com.academy.springwebapplication.dto.StationDto;
+import com.academy.springwebapplication.dto.*;
 import com.academy.springwebapplication.model.entity.Departure;
 import com.academy.springwebapplication.model.entity.Route;
 
 import java.util.List;
 
 public interface DepartureService {
-    List<DepartureDto> getDeparturesByStation(StationDto station);
+    List<DepartureDto> getDeparturesByStation(StationDto stationDto);
 
-    List<Departure> getDeparturesWithScheduleForRoute(Route route);
+    List<Departure> getDeparturesForRoute(UserRouteDto userRouteDto);
 
-    void setStationSchedulesForDeparture(Departure departure);
+    List<Seat> getCarriageSeatsForDeparture(DepartureDto departureDto, int carriageNumber);
 }

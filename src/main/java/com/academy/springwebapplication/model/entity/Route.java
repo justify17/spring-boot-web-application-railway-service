@@ -26,10 +26,4 @@ public class Route {
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
     private List<RouteStation> routeStations;
-
-    @Transient
-    private Station departureStation;
-
-    @Transient
-    private Station arrivalStation;
 }

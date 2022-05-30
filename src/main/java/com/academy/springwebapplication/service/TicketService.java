@@ -1,6 +1,6 @@
 package com.academy.springwebapplication.service;
 
-import com.academy.springwebapplication.dto.CreditCard;
+import com.academy.springwebapplication.dto.*;
 import com.academy.springwebapplication.model.entity.Departure;
 import com.academy.springwebapplication.model.entity.Route;
 import com.academy.springwebapplication.model.entity.Ticket;
@@ -8,13 +8,13 @@ import com.academy.springwebapplication.model.entity.Ticket;
 import java.util.List;
 
 public interface TicketService {
-    void payTicket(CreditCard card, Ticket ticket);
+    void payTicket(CreditCard card, TicketDto ticket);
 
-    List<Ticket> getTicketsForDeparturesAlongTheRoute(List<Departure> departures, Route route);
+    boolean isTicketExists(DepartureDto departureDto, Seat seat);
 
-    List<Ticket> getPurchasedAndNotPurchasedDepartureTicketsForCarriage(Departure departure, int carriageNumber);
+    List<TicketDto> getTicketsForDeparturesAlongTheRoute(List<Departure> departures, UserRouteDto userRouteDto);
 
-    void setCarriageComfortLevelForTicket(Ticket ticket);
+    void setCarriageComfortLevelForTicket(TicketDto ticket);
 
-    void setAdditionalTicketPriceForComfortLevelOfCarriage(Ticket ticket);
+    void setTicketFinalPrice(TicketDto ticketDto);
 }

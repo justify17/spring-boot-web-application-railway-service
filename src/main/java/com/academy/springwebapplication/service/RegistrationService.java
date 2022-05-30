@@ -1,9 +1,9 @@
 package com.academy.springwebapplication.service;
 
-import com.academy.springwebapplication.model.entity.User;
+import com.academy.springwebapplication.dto.UserDto;
 
 public interface RegistrationService {
-    boolean isUserExists(User user);
+    boolean isUserExists(UserDto userDto);
 
-    void saveNewUser(User user);
+    void saveNewUser(UserDto userDto);
 }

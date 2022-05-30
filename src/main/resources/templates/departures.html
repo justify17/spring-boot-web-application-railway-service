@@ -19,7 +19,7 @@
     <br><br>
 </form>
 <table th:if="${session.tickets} != null" border="5">
-    <h1 th:text="|Route: ${session.tickets[0].userDepartureStation.title} &mdash; ${session.tickets[0].userArrivalStation.title}|" />
+    <h1 th:text="|Route: ${session.tickets[0].departureStation.title} &mdash; ${session.tickets[0].arrivalStation.title}|" />
     <tr>
         <th>Train</th>
         <th>Route</th>
@@ -31,23 +31,18 @@
             <span th:text="|${ticket.departure.stationSchedules[0].station.title} &mdash;
                 ${ticket.departure.stationSchedules[ticket.departure.stationSchedules.size()-1].station.title}|" />
             <br>
-            <span th:switch="${ticket.departure.route.type}">
-                <span th:case="'regional'">Региональные линии</span>
-                <span th:case="'interregional'">Межрегиональные линии</span>
-                <span th:case="'interregional_long'">Межрегиональные линии дальнего следования</span>
-                <span th:case="'international'">Международные линии</span>
-            </span>
+            <span th:text="${ticket.departure.route.type}" />
         </td>
         <td align="center">
             <div class="route">
                 <span th:text="${#temporals.format(ticket.userDepartureDate, 'dd MMM HH:mm , ')}" />
-                <span th:text="|${ticket.userDepartureStation.title} ———————> ${ticket.userArrivalStation.title}|" />
+                <span th:text="|${ticket.departureStation.title} ———————> ${ticket.arrivalStation.title}|" />
                 <span th:text="${#temporals.format(ticket.userArrivalDate, ', dd MMM HH:mm')}" />
             </div>
-            <a th:href="@{/departures/route(departure=${ticket.departure.id})} " target="_blank">See the whole route</a>
+            <a th:href="@{/departures/route(ticketIndex=${state.index})} " target="_blank">See the whole route</a>
         </td>
         <td align="center">
-            <span th:text="|${ticket.price / 100},${ticket.price % 100} BYN|" />
+            <span th:text="|${ticket.routePrice / 100},${ticket.routePrice % 100} BYN|" />
             <br>
             <a th:href="@{/order(ticketIndex=${state.index})}">Make an order</a>
         </td>

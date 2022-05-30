@@ -1,8 +1,11 @@
 package com.academy.springwebapplication.service.impl;
 
-import com.academy.springwebapplication.dto.CreditCard;
-import com.academy.springwebapplication.dto.StationSchedule;
-import com.academy.springwebapplication.model.entity.*;
+import com.academy.springwebapplication.dto.*;
+import com.academy.springwebapplication.mapper.TicketMapper;
+import com.academy.springwebapplication.model.entity.Departure;
+import com.academy.springwebapplication.model.entity.RouteStation;
+import com.academy.springwebapplication.model.entity.Ticket;
+import com.academy.springwebapplication.model.entity.User;
 import com.academy.springwebapplication.model.repository.*;
 import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -19,33 +22,28 @@ public class TicketServiceImpl implements TicketService {
     private final TicketRepository ticketRepository;
     private final RouteStationRepository routeStationRepository;
     private final UserRepository userRepository;
-    private final StationRepository stationRepository;
-    private final TrainCarriageRepository trainCarriageRepository;
+    private final TicketMapper ticketMapper;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void payTicket(CreditCard card, Ticket ticket) {
-        saveTicket(ticket);
+    public void payTicket(CreditCard card, TicketDto ticketDto) {
+        saveTicket(ticketDto);
         moneyTransfer(card);
     }
 
-    private void moneyTransfer(CreditCard card){
-        if(card.getNumber().trim().length() < 16){
+    private void moneyTransfer(CreditCard card) {
+        if (card.getNumber().trim().length() < 16) {
             throw new RuntimeException("Ticket payment error");
         }
 
         System.out.println("Payment was successful!");
     }
 
-    private void saveTicket(Ticket ticket) {
-        User user = userRepository.findByUsername(ticket.getUser().getUsername());
+    private void saveTicket(TicketDto ticketDto) {
+        Ticket ticket = ticketMapper.ticketDtoToTicket(ticketDto);
+
+        User user = userRepository.findByUsername(ticketDto.getUser().getUsername());
         ticket.setUser(user);
-
-        Station departureStation = stationRepository.findByTitle(ticket.getUserDepartureStation().getTitle());
-        ticket.setUserDepartureStation(departureStation);
-
-        Station arrivalStation = stationRepository.findByTitle(ticket.getUserArrivalStation().getTitle());
-        ticket.setUserArrivalStation(arrivalStation);
 
         ticketRepository.save(ticket);
 
@@ -55,32 +53,42 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<Ticket> getTicketsForDeparturesAlongTheRoute(List<Departure> departures, Route route) {
-        List<Ticket> tickets = new ArrayList<>();
+    public List<TicketDto> getTicketsForDeparturesAlongTheRoute(List<Departure> departures, UserRouteDto userRouteDto) {
+        List<TicketDto> tickets = new ArrayList<>();
 
         for (Departure departure : departures) {
-            Ticket ticket = new Ticket();
+            TicketDto ticketDto = ticketMapper.departureAndUserRouteDtoToTicketDto(departure, userRouteDto);
 
-            ticket.setUserDepartureStation(route.getDepartureStation());
-            ticket.setUserArrivalStation(route.getArrivalStation());
-            ticket.setDeparture(departure);
+            setTicketDepartureAndArrivalDates(ticketDto);
+            setTicketRoutePricePerDeparture(ticketDto, departure);
 
-            setTicketPriceForDeparture(ticket, departure);
-            setTicketUserDepartureAndArrivalDateForDeparture(ticket, departure);
-
-            tickets.add(ticket);
+            tickets.add(ticketDto);
         }
 
         return tickets;
     }
 
-    private void setTicketPriceForDeparture(Ticket ticket, Departure departure) {
+    private void setTicketDepartureAndArrivalDates(TicketDto ticketDto) {
+        List<StationSchedule> stationSchedules = ticketDto.getDeparture().getStationSchedules();
+
+        for (StationSchedule stationSchedule : stationSchedules) {
+            String stationTitle = stationSchedule.getStation().getTitle();
+
+            if (stationTitle.equals(ticketDto.getDepartureStation().getTitle())) {
+                ticketDto.setUserDepartureDate(stationSchedule.getDepartureDate());
+            } else if (stationTitle.equals(ticketDto.getArrivalStation().getTitle())) {
+                ticketDto.setUserArrivalDate(stationSchedule.getArrivalDate());
+            }
+        }
+    }
+
+    private void setTicketRoutePricePerDeparture(TicketDto ticketDto, Departure departure) {
         RouteStation departureRouteStation =
                 routeStationRepository.findByRoute_IdAndStation_Title(departure.getRoute().getId(),
-                        ticket.getUserDepartureStation().getTitle());
+                        ticketDto.getDepartureStation().getTitle());
         RouteStation arrivalRouteStation =
                 routeStationRepository.findByRoute_IdAndStation_Title(departure.getRoute().getId(),
-                        ticket.getUserArrivalStation().getTitle());
+                        ticketDto.getArrivalStation().getTitle());
 
         List<RouteStation> routeStations = departure.getRoute().getRouteStations();
 
@@ -90,94 +98,58 @@ public class TicketServiceImpl implements TicketService {
                 .mapToInt(RouteStation::getPriceToNextStation)
                 .sum();
 
-        ticket.setPrice(price);
+        ticketDto.setRoutePrice(price);
     }
 
-    private void setTicketUserDepartureAndArrivalDateForDeparture(Ticket ticket, Departure departure) {
-        List<StationSchedule> stationSchedules = departure.getStationSchedules();
-
-        for (StationSchedule stationSchedule : stationSchedules) {
-            String stationTitle = stationSchedule.getStation().getTitle();
-
-            if (stationTitle.equals(ticket.getUserDepartureStation().getTitle())) {
-                ticket.setUserDepartureDate(stationSchedule.getDepartureDate());
-            } else if (stationTitle.equals(ticket.getUserArrivalStation().getTitle())) {
-                ticket.setUserArrivalDate(stationSchedule.getArrivalDate());
-            }
-        }
-    }
-
-    public List<Ticket> getPurchasedAndNotPurchasedDepartureTicketsForCarriage(Departure departure, int carriageNumber) {
-        List<Ticket> allPossibleDepartureTicketsForCarriage =
-                getAllPossibleDepartureTicketsForCarriage(departure, carriageNumber);
-
-        return allPossibleDepartureTicketsForCarriage.stream()
-                .peek(this::setIdToTicketIfItPurchased)
-                .collect(Collectors.toList());
-    }
-
-    private List<Ticket> getAllPossibleDepartureTicketsForCarriage(Departure departure, int carriageNumber) {
-        List<Ticket> tickets = new ArrayList<>();
-
-        TrainCarriage trainCarriage = trainCarriageRepository.
-                findByTrain_IdAndCarriageNumber(departure.getTrain().getId(), carriageNumber);
-
-        int numberOfSeats = trainCarriage.getCarriage().getSeats();
-
-        for (int i = 1; i <= numberOfSeats; i++) {
-            Ticket ticket = new Ticket();
-
-            ticket.setDeparture(departure);
-            ticket.setCarriageNumber(carriageNumber);
-            ticket.setSeatNumber(i);
-
-            tickets.add(ticket);
-        }
-
-        return tickets;
-    }
-
-    private void setIdToTicketIfItPurchased(Ticket ticket) {
+    public boolean isTicketExists(DepartureDto departureDto, Seat seat) {
         Ticket existingTicket = ticketRepository.
                 findByDeparture_IdAndCarriageNumberAndSeatNumber
-                        (ticket.getDeparture().getId(), ticket.getCarriageNumber(), ticket.getSeatNumber());
+                        (departureDto.getId(), seat.getCarriageNumber(), seat.getNumber());
 
         if (existingTicket != null) {
-            ticket.setId(existingTicket.getId());
+            return true;
         }
+
+        return false;
     }
 
-    public void setCarriageComfortLevelForTicket(Ticket ticket) {
-        int carriageNumber = ticket.getCarriageNumber();
+    @Override
+    public void setCarriageComfortLevelForTicket(TicketDto ticketDto) {
+        CarriageDto carriageDto = ticketDto.getDeparture().getTrain().getCarriages().stream()
+                .filter(carriage -> Objects.equals(carriage.getNumber(), ticketDto.getCarriageNumber()))
+                .findFirst().get();
 
-        List<TrainCarriage> trainCarriages = ticket.getDeparture().getTrain().getTrainCarriages();
-
-        for (TrainCarriage trainCarriage : trainCarriages) {
-
-            if (trainCarriage.getCarriageNumber() == carriageNumber) {
-                ticket.setCarriageComfortLevel(trainCarriage.getCarriage().getComfortLevel());
-            }
-
-        }
+        ticketDto.setCarriageComfortLevel(carriageDto.getComfortLevel());
     }
 
-    public void setAdditionalTicketPriceForComfortLevelOfCarriage(Ticket ticket) {
-        setTicketPriceForDeparture(ticket, ticket.getDeparture());
-
-        String carriageComfortLevel = ticket.getCarriageComfortLevel();
-
-        int ticketPrice = ticket.getPrice();
+    private void setTicketAdditionalPrice(TicketDto ticketDto) {
+        String carriageComfortLevel = ticketDto.getCarriageComfortLevel();
 
         switch (carriageComfortLevel) {
             case "LUX":
-                ticket.setPrice(ticketPrice + ticketPrice / 100 * 50);
+                ticketDto.setAdditionalPrice(ticketDto.getRoutePrice() / 100 * 50);
                 break;
             case "COUPE":
-                ticket.setPrice(ticketPrice + ticketPrice / 100 * 30);
+                ticketDto.setAdditionalPrice(ticketDto.getRoutePrice() / 100 * 30);
                 break;
             case "ECONOMY":
-                ticket.setPrice(ticketPrice + ticketPrice / 100 * 5);
+                ticketDto.setAdditionalPrice(ticketDto.getRoutePrice() / 100 * 5);
                 break;
         }
+    }
+
+    @Override
+    public void setTicketFinalPrice(TicketDto ticketDto) {
+        setTicketAdditionalPrice(ticketDto);
+
+        double finalPrice;
+
+        if(ticketDto.getAdditionalPrice() != null){
+            finalPrice = (ticketDto.getRoutePrice() + ticketDto.getAdditionalPrice()) / 100.0;
+        } else {
+            finalPrice = ticketDto.getRoutePrice() / 100.0;
+        }
+
+        ticketDto.setFinalPrice(finalPrice);
     }
 }

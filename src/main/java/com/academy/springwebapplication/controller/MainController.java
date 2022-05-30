@@ -1,6 +1,6 @@
 package com.academy.springwebapplication.controller;
 
-import com.academy.springwebapplication.model.entity.Route;
+import com.academy.springwebapplication.dto.UserRouteDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +12,7 @@ public class MainController {
 
     @GetMapping("/")
     public String main(Model model){
-        model.addAttribute("userRoute",new Route());
+        model.addAttribute("userRoute", new UserRouteDto());
 
         return "main";
     }
