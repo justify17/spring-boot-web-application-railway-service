@@ -2,7 +2,6 @@ package com.academy.springwebapplication.service.impl;
 
 import com.academy.springwebapplication.dto.*;
 import com.academy.springwebapplication.mapper.DepartureMapper;
-import com.academy.springwebapplication.mapper.TrainMapper;
 import com.academy.springwebapplication.model.entity.Departure;
 import com.academy.springwebapplication.model.repository.DepartureRepository;
 import com.academy.springwebapplication.model.repository.RouteStationRepository;
@@ -29,7 +28,6 @@ public class DepartureServiceImpl implements DepartureService {
 
         List<Departure> departuresByStation = departureRepository.
                 findByRoute_RouteStations_Station_TitleIgnoreCase(stationTitle);
-
 
         return departuresByStation.stream()
                 .map(departureMapper::departureToDepartureDto)
@@ -62,7 +60,8 @@ public class DepartureServiceImpl implements DepartureService {
                 .collect(Collectors.toList());
     }
 
-    public List<Seat> getCarriageSeatsForDeparture(DepartureDto departureDto, int carriageNumber){
+    @Override
+    public List<Seat> getCarriageSeatsForDeparture(DepartureDto departureDto, int carriageNumber) {
         List<Seat> seats = new ArrayList<>();
 
         CarriageDto carriageDto = departureDto.getTrain().getCarriages().stream()
@@ -77,7 +76,7 @@ public class DepartureServiceImpl implements DepartureService {
             seat.setCarriageNumber(carriageNumber);
             seat.setNumber(i);
 
-            boolean isFree = ticketService.isTicketExists(departureDto,seat) ? false : true;
+            boolean isFree = ticketService.isTicketExists(departureDto, seat) ? false : true;
             seat.setFree(isFree);
 
             seats.add(seat);

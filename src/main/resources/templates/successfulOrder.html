@@ -21,11 +21,11 @@
     <span th:text="|${ticket.departure.stationSchedules[0].station.title} &mdash;
                 ${ticket.departure.stationSchedules[ticket.departure.stationSchedules.size()-1].station.title}|" /></p>
     <p>Departure Station:
-    <span th:text="${ticket.userDepartureStation.title}" /></p>
+    <span th:text="${ticket.departureStation.title}" /></p>
     <p>Departure Date:
     <span th:text="${#temporals.format(ticket.userDepartureDate, 'dd MMM HH:mm')}" /></p>
     <p>Arrival Station:
-    <span th:text="${ticket.userArrivalStation.title}" /></p>
+    <span th:text="${ticket.arrivalStation.title}" /></p>
     <p>Arrival Date:
     <span th:text="${#temporals.format(ticket.userArrivalDate, 'dd MMM HH:mm')}" /></p>
     <p>Carriage Comfort Level:
@@ -34,8 +34,8 @@
     <span th:text="${ticket.carriageNumber != null} ? ${ticket.carriageNumber} : '&mdash;'" /></p>
     <p>Seat Number:
     <span th:text="${ticket.seatNumber != null} ? ${ticket.seatNumber} : '&mdash;'" /></p>
-    <p>Ticket price:
-    <span th:text="|${ticket.price / 100},${ticket.price % 100} BYN|" /></p>
+    <p>Ticket Price:
+    <span th:text="|${ticket.finalPrice} BYN|" /></p>
 </div>
 
 </body>

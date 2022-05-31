@@ -67,7 +67,7 @@ CREATE TABLE ticket_office.departures(
     id INT PRIMARY KEY AUTO_INCREMENT,
     train_id INT,
     route_id INT,
-    departure_date DATETIME NOT NULL
+    departure_date DATETIME NOT NULL,
     CONSTRAINT fk_train_1 FOREIGN KEY (train_id) REFERENCES ticket_office.trains(id),
     CONSTRAINT fk_route_1 FOREIGN KEY (route_id) REFERENCES ticket_office.routes(id)
 );

@@ -4,8 +4,6 @@ import com.academy.springwebapplication.dto.CreditCard;
 import com.academy.springwebapplication.dto.Seat;
 import com.academy.springwebapplication.dto.TicketDto;
 import com.academy.springwebapplication.dto.UserDto;
-import com.academy.springwebapplication.model.entity.Ticket;
-import com.academy.springwebapplication.model.entity.User;
 import com.academy.springwebapplication.service.DepartureService;
 import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +35,11 @@ public class OrderController {
         session.removeAttribute("seats");
 
         TicketDto ticket = tickets.get(ticketIndex);
+
+        if(ticket.getDeparture().getRoute().getType().equals("Региональные линии")){
+            ticketService.setTicketFinalPrice(ticket);
+        }
+
         session.setAttribute("ticket", ticket);
 
         return "order";
@@ -61,7 +64,7 @@ public class OrderController {
 
         model.addAttribute("ticket", ticket);
 
-        session.removeAttribute("tickets");
+        session.removeAttribute("ticket");
 
         return "successfulOrder";
     }

@@ -4,16 +4,10 @@
 <head>
     <title>Order</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="menu.css" />
     <link rel="stylesheet" type="text/css" href="order.css" />
     <link rel="stylesheet" type="text/css" href="credit.css" />
-    <link rel="stylesheet" type="text/css" href="menu.css" />
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" />
-    <script type="text/javascript" src="credit.js" />
-    <script type="text/javascript">
-        jQuery(function ( $ ){
-        $(".credit").credit();
-        });
-    </script>
+    <script type="text/javascript" src="credit.js"></script>
 </head>
 
 <body>
@@ -69,7 +63,7 @@
     <!--regional train order-->
     <div th:if="${session.ticket.departure.route.type} eq 'Региональные линии'">
         <div>
-            <p th:text="|Price: session.ticket.routePrice / 100},${session.ticket.routePrice % 100} BYN|" />
+            <p th:text="|Price: ${session.ticket.finalPrice} BYN|" />
         </div>
         <h3 th:if="${error}" th:text="'Operation failed, please try again'" />
         <a th:href="@{#payment}">Proceed to payment</a>
@@ -264,12 +258,12 @@
             <form th:action="@{/order}" method="post" th:object="${card}">
                 <input type="hidden" name="hiddenAction" value="payment" />
                 <p><label for="number">Card Number:</label>
-                    <input type="number" id="number" class="number" th:field="*{number}"/></p>
+                    <input type="text" id="number" onKeyPress="CreditCard(this)" th:field="*{number}"/></p>
                 <span><label for="month">MM/YY: </label>
-                    <input type="number" id="month" class="expiration" placeholder="MM"
+                    <input type="number" id="month" placeholder="MM"
                            min="1" max="12" th:field="*{monthOfCardExpiration}">
                 <label for="year">/</label>
-                    <input type="number" id="year" class="expiration" placeholder="YY"
+                    <input type="number" id="year" placeholder="YY"
                            min="22" max="99" th:field="*{yearOfCardExpiration}"></span>
                 <br><br>
                 <p th:text="|Price: ${session.ticket.finalPrice} BYN|" />

@@ -4,10 +4,12 @@ import com.academy.springwebapplication.dto.TicketDto;
 import com.academy.springwebapplication.dto.UserRouteDto;
 import com.academy.springwebapplication.model.entity.Departure;
 import com.academy.springwebapplication.model.entity.Ticket;
+import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {DepartureMapper.class})
+@DecoratedWith(TicketMapperDecorator.class)
 public interface TicketMapper {
 
     @Mapping(source = "userRouteDto.departureStation", target = "departureStation")

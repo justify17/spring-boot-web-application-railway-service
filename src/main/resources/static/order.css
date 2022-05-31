@@ -14,7 +14,7 @@
 
 .seatFree {
     cursor: pointer;
-    background-color: #e7e7e7;
+    background: rgba(0, 0, 120, 0.1);
     color: #000080;
     width: 40px;
     height: 40px;
@@ -28,9 +28,8 @@
 }
 
 .seatTaken {
-    opacity: 0.6;
     cursor: not-allowed;
-    background-color: #e7e7e7;
+    background: rgba(0, 80, 159, 0.3);
     color: #000080;
     width: 40px;
     height: 40px;
@@ -59,6 +58,7 @@
         left: 0;
         display: none;
       }
+
       #modal, #modalTwo {
         width: max-content;
         height: max-content;

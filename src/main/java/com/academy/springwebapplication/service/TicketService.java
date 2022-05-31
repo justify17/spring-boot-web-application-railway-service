@@ -8,13 +8,13 @@ import com.academy.springwebapplication.model.entity.Ticket;
 import java.util.List;
 
 public interface TicketService {
-    void payTicket(CreditCard card, TicketDto ticket);
+    void payTicket(CreditCard card, TicketDto ticketDto);
 
     boolean isTicketExists(DepartureDto departureDto, Seat seat);
 
     List<TicketDto> getTicketsForDeparturesAlongTheRoute(List<Departure> departures, UserRouteDto userRouteDto);
 
-    void setCarriageComfortLevelForTicket(TicketDto ticket);
+    void setCarriageComfortLevelForTicket(TicketDto ticketDto);
 
     void setTicketFinalPrice(TicketDto ticketDto);
 }

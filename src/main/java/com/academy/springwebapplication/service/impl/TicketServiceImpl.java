@@ -2,10 +2,7 @@ package com.academy.springwebapplication.service.impl;
 
 import com.academy.springwebapplication.dto.*;
 import com.academy.springwebapplication.mapper.TicketMapper;
-import com.academy.springwebapplication.model.entity.Departure;
-import com.academy.springwebapplication.model.entity.RouteStation;
-import com.academy.springwebapplication.model.entity.Ticket;
-import com.academy.springwebapplication.model.entity.User;
+import com.academy.springwebapplication.model.entity.*;
 import com.academy.springwebapplication.model.repository.*;
 import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +19,7 @@ public class TicketServiceImpl implements TicketService {
     private final TicketRepository ticketRepository;
     private final RouteStationRepository routeStationRepository;
     private final UserRepository userRepository;
+    private final StationRepository stationRepository;
     private final TicketMapper ticketMapper;
 
     @Transactional(rollbackFor = Exception.class)
@@ -44,6 +42,12 @@ public class TicketServiceImpl implements TicketService {
 
         User user = userRepository.findByUsername(ticketDto.getUser().getUsername());
         ticket.setUser(user);
+
+        Station departureStation = stationRepository.findByTitle(ticketDto.getDepartureStation().getTitle());
+        ticket.setUserDepartureStation(departureStation);
+
+        Station arrivalStation = stationRepository.findByTitle(ticketDto.getArrivalStation().getTitle());
+        ticket.setUserArrivalStation(arrivalStation);
 
         ticketRepository.save(ticket);
 
@@ -101,6 +105,7 @@ public class TicketServiceImpl implements TicketService {
         ticketDto.setRoutePrice(price);
     }
 
+    @Override
     public boolean isTicketExists(DepartureDto departureDto, Seat seat) {
         Ticket existingTicket = ticketRepository.
                 findByDeparture_IdAndCarriageNumberAndSeatNumber
@@ -123,19 +128,27 @@ public class TicketServiceImpl implements TicketService {
     }
 
     private void setTicketAdditionalPrice(TicketDto ticketDto) {
+        if (ticketDto.getDeparture().getRoute().getType().equals("Региональные линии")) {
+            return;
+        }
+
+        int additionalPrice = getPricePerCarriageComfortLevel(ticketDto);
+        ticketDto.setAdditionalPrice(additionalPrice);
+    }
+
+    private int getPricePerCarriageComfortLevel(TicketDto ticketDto) {
         String carriageComfortLevel = ticketDto.getCarriageComfortLevel();
 
         switch (carriageComfortLevel) {
             case "LUX":
-                ticketDto.setAdditionalPrice(ticketDto.getRoutePrice() / 100 * 50);
-                break;
+                return ticketDto.getRoutePrice() / 100 * 50;
             case "COUPE":
-                ticketDto.setAdditionalPrice(ticketDto.getRoutePrice() / 100 * 30);
-                break;
+                return ticketDto.getRoutePrice() / 100 * 30;
             case "ECONOMY":
-                ticketDto.setAdditionalPrice(ticketDto.getRoutePrice() / 100 * 5);
-                break;
+                return ticketDto.getRoutePrice() / 100 * 5;
         }
+
+        return 0;
     }
 
     @Override
@@ -144,7 +157,7 @@ public class TicketServiceImpl implements TicketService {
 
         double finalPrice;
 
-        if(ticketDto.getAdditionalPrice() != null){
+        if (ticketDto.getAdditionalPrice() != null) {
             finalPrice = (ticketDto.getRoutePrice() + ticketDto.getAdditionalPrice()) / 100.0;
         } else {
             finalPrice = ticketDto.getRoutePrice() / 100.0;

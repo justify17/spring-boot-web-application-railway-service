@@ -20,6 +20,6 @@ public class Role {
     @Column
     private String name;
 
-    @OneToMany(mappedBy = "role", cascade = {CascadeType.MERGE,CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "role", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
     private Set<User> users;
 }

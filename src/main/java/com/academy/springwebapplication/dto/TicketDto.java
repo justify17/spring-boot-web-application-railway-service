@@ -13,9 +13,9 @@ public class TicketDto {
     private StationDto arrivalStation;
     private LocalDateTime userArrivalDate;
     private String carriageComfortLevel;
-    private int carriageNumber;
-    private int seatNumber;
-    private int routePrice;
-    private int additionalPrice;
-    private double finalPrice;
+    private Integer carriageNumber;
+    private Integer seatNumber;
+    private Integer routePrice;
+    private Integer additionalPrice;
+    private Double finalPrice;
 }
