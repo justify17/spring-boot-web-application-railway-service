@@ -4,7 +4,11 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(of = {"id", "username","role","enabled","userInformation"})
+@ToString(of = {"id", "username","role","enabled","userInformation"})
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -26,6 +30,5 @@ public class User {
     private Boolean enabled;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
     private UserInformation userInformation;
 }

@@ -13,6 +13,7 @@
         </span>
         <span class="auth" sec:authorize="isAuthenticated()">
             <li><a th:href="@{/logout}">Logout</a></lI>
+            <li><a id="account" th:href="@{/account}" sec:authentication="name"></a></lI>
         </span>
     </ul>
 </nav>

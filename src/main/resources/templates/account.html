@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Main page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="menu.css" />
+    <link rel="stylesheet" type="text/css" href="account.css" />
+    <script type="text/javascript" src="account.js"></script>
+</head>
+
+<body onload="startingData();">
+<div class="menu" th:insert="blocks/menu :: menu_fragment" />
+
+<div class="tab">
+    <button class="tablinks" onclick="openData(event, 'userInformation')" id="defaultOpen">Personal information</button>
+    <button class="tablinks" onclick="openData(event, 'changeLogin')">Change Login</button>
+    <button class="tablinks" onclick="openData(event, 'changePassword')">Change Password</button>
+</div>
+
+<div id="userInformation" class="tabcontent">
+    <h3>Personal Information</h3>
+    <form th:action="@{/account}" method="post" th:object="${userInformation}">
+        <p><label for="firstName">First name:</label>
+            <input type="text" id="firstName" th:field="*{firstName}"/></p>
+        <p><label for="surname">Surname:</label>
+            <input type="text" id="surname" th:field="*{surname}"/></p>
+        <p><label for="phoneNumber">Phone number:</label>
+            <input type="tel" id="phoneNumber" autofocus="autofocus" required="required"
+                   pattern="\+375\s?[\(]{0,1}[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}"
+                   placeholder="+375(__)___-__-__" th:field="*{phoneNumber}"/></p>
+        <p><input type="submit" value="Save changes"/></p>
+    </form>
+</div>
+
+<div id="changeLogin" class="tabcontent">
+    <h3>Change login</h3>
+</div>
+
+<div id="changePassword" class="tabcontent">
+    <h3>Change password</h3>
+</div>
+
+</body>
+
+</html>
+
+
+<!--
+<p><label for="username">Username:</label>
+    <input type="text" id="username" th:field="*{user.username}"/></p>
+<p><label for="password">Password::</label>
+    <input type="password" id="password" th:field="*{user.password}"/></p>-->
+

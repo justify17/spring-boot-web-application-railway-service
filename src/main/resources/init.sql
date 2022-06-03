@@ -16,7 +16,7 @@ CREATE TABLE ticket_office.user_information(
 	user_id INT PRIMARY KEY,
     first_name VARCHAR(30),
     surname VARCHAR(30),
-    phone_number INT UNIQUE,
+    phone_number VARCHAR(20),
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES ticket_office.users(id)
 );
 

@@ -38,3 +38,9 @@ nav {
   color: #29838C;
 }
 .menu a:hover {background: #ADC0CE}
+
+#account {
+   color: #A0522D;
+   font-family: Verdana, Arial, Helvetica, sans-serif;
+   letter-spacing: 1px;
+}

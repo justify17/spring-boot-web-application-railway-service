@@ -1,15 +1,18 @@
 package com.academy.springwebapplication.model.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(of = {"id", "firstName","surname","phoneNumber"})
+@ToString(of = {"id", "firstName","surname","phoneNumber"})
+@NoArgsConstructor
 @Entity
 @Table(name = "user_information")
 public class UserInformation {
     @Id
-    @Column(name = "user_id")
     private Integer id;
 
     @OneToOne
@@ -24,5 +27,5 @@ public class UserInformation {
     private String surname;
 
     @Column(name = "phone_number")
-    private Integer phoneNumber;
+    private String phoneNumber;
 }

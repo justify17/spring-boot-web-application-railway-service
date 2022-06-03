@@ -11,7 +11,7 @@
 <body>
     <div class="menu" th:insert="blocks/menu :: menu_fragment" />
     <h3 sec:authorize="!isAuthenticated()" th:text="'Welcome, user'"/>
-    <h3 sec:authorize="isAuthenticated()">Welcome, <span sec:authentication="name"/>
+    <h3 sec:authorize="isAuthenticated()">Welcome, <span sec:authentication="name"/></h3>
     <form class="form-style" th:action="@{/departures}" method="post" th:object="${userRoute}">
         <span><label for="from">From:</label>
             <input type="text" id="from" placeholder="Station" th:field="*{departureStation.title}" /></span>
