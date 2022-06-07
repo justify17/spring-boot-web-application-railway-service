@@ -22,7 +22,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     public void saveNewUser(UserDto userDto){
         User user = userMapper.userDtoToUser(userDto);
 
-        String encryptedPassword = getEncryptedPassword(user.getPassword());
+        String encryptedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encryptedPassword);
 
         user.setRole(roleRepository.findByName("ROLE_USER"));
@@ -32,17 +32,13 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
-    public boolean isUserExists(UserDto userDto){
-        User existingUser = userRepository.findByUsername(userDto.getUsername());
+    public boolean isUserExists(String username){
+        User existingUser = userRepository.findByUsername(username);
 
         if(existingUser != null){
             return true;
         }
 
         return false;
-    }
-
-    private String getEncryptedPassword(String password){
-        return passwordEncoder.encode(password);
     }
 }

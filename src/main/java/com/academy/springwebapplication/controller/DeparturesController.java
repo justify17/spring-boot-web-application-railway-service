@@ -3,6 +3,7 @@ package com.academy.springwebapplication.controller;
 import com.academy.springwebapplication.dto.DepartureDto;
 import com.academy.springwebapplication.dto.TicketDto;
 import com.academy.springwebapplication.dto.UserRouteDto;
+import com.academy.springwebapplication.mapper.DepartureMapper;
 import com.academy.springwebapplication.model.entity.Departure;
 import com.academy.springwebapplication.service.DepartureService;
 import com.academy.springwebapplication.service.TicketService;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -19,32 +22,33 @@ import java.util.List;
 public class DeparturesController {
     private final DepartureService departureService;
     private final TicketService ticketService;
+    private final DepartureMapper departureMapper;
 
     @GetMapping("/departures")
-    public String departures(Model model, HttpSession session) {
+    public String departures(Model model) {
         model.addAttribute("userRoute", new UserRouteDto());
-
-        session.removeAttribute("tickets");
 
         return "departures";
     }
 
     @PostMapping("/departures")
-    public String findingDeparturesForRoute(@ModelAttribute("userRoute") UserRouteDto route, HttpSession session) {
+    public String findingDeparturesForRoute(@ModelAttribute("userRoute") UserRouteDto route, Model model) {
         List<Departure> departures = departureService.getDeparturesForRoute(route);
 
         List<TicketDto> tickets = ticketService.getTicketsForDeparturesAlongTheRoute(departures, route);
-        session.setAttribute("tickets", tickets);
+
+        model.addAttribute("tickets", tickets);
 
         return "departures";
     }
 
     @GetMapping("/departures/route")
-    public String departureRoute(@SessionAttribute(name = "tickets") List<TicketDto> tickets,
-                                 @RequestParam(name = "ticketIndex") Integer ticketIndex, Model model) {
-        DepartureDto departure = tickets.get(ticketIndex).getDeparture();
+    public String departureRoute(@RequestParam(name = "departureId") Integer departureId, Model model) {
+        Departure departure = departureService.getDepartureById(departureId);
 
-        model.addAttribute("departure",departure);
+        DepartureDto departureDto = departureMapper.departureToDepartureDto(departure);
+
+        model.addAttribute("departure",departureDto);
 
         return "departureRoute";
     }

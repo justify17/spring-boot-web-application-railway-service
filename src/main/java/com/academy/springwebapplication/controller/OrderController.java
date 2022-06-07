@@ -1,9 +1,7 @@
 package com.academy.springwebapplication.controller;
 
-import com.academy.springwebapplication.dto.CreditCard;
-import com.academy.springwebapplication.dto.Seat;
-import com.academy.springwebapplication.dto.TicketDto;
-import com.academy.springwebapplication.dto.UserDto;
+import com.academy.springwebapplication.dto.*;
+import com.academy.springwebapplication.model.entity.Departure;
 import com.academy.springwebapplication.service.DepartureService;
 import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;
@@ -23,24 +21,46 @@ public class OrderController {
     private final TicketService ticketService;
 
     @GetMapping("/order")
-    public String order(@SessionAttribute(required = false, name = "tickets") List<TicketDto> tickets,
-                        @RequestParam(required = false, name = "ticketIndex") Integer ticketIndex,
+    public String order(@RequestParam(name = "idDeparture") int idDeparture,
+                        @RequestParam(name = "departureStation") String departureStation,
+                        @RequestParam(name = "arrivalStation") String arrivalStation,
                         Model model, HttpSession session) {
-        model.addAttribute("card", new CreditCard());
+        Departure departure = departureService.getDepartureById(idDeparture);
+        UserRouteDto userRouteDto = new UserRouteDto(new StationDto(departureStation), new StationDto(arrivalStation));
 
-        if (ticketIndex == null) {
-            return "order";
-        }
+        TicketDto ticket = ticketService.getTicketForDepartureAlongTheRoute(departure, userRouteDto);
 
-        session.removeAttribute("seats");
-
-        TicketDto ticket = tickets.get(ticketIndex);
-
-        if(ticket.getDeparture().getRoute().getType().equals("Региональные линии")){
+        if (ticket.getDeparture().getRoute().getType().equals("Региональные линии")) {
             ticketService.setTicketFinalPrice(ticket);
         }
 
+        setModelData(model, ticket);
+
         session.setAttribute("ticket", ticket);
+
+        return "order";
+    }
+
+    @PostMapping(value = "/order", params = {"hiddenAction=carriage"})
+    public String ticketCarriage(@RequestParam(value = "carriageNumber") int carriageNumber,
+                                 @SessionAttribute("ticket") TicketDto ticket, Model model) {
+        ticket.setCarriageNumber(carriageNumber);
+
+        ticketService.setCarriageComfortLevelForTicket(ticket);
+
+        setModelData(model, ticket);
+
+        return "order";
+    }
+
+    @PostMapping(value = "/order", params = {"hiddenAction=seat"})
+    public String ticketSeat(@RequestParam(value = "seatNumber") int seatNumber,
+                             @SessionAttribute("ticket") TicketDto ticket, Model model) {
+        ticket.setSeatNumber(seatNumber);
+
+        ticketService.setTicketFinalPrice(ticket);
+
+        setModelData(model, ticket);
 
         return "order";
     }
@@ -57,8 +77,10 @@ public class OrderController {
         try {
             ticketService.payTicket(card, ticket);
         } catch (Exception e) {
-            model.addAttribute("card", new CreditCard());
+            setModelData(model,ticket);
+
             model.addAttribute("error", true);
+
             return "order";
         }
 
@@ -69,30 +91,13 @@ public class OrderController {
         return "successfulOrder";
     }
 
-    @PostMapping(value = "/order", params = {"hiddenAction=carriage"})
-    public String ticketCarriage(@RequestParam(value = "carriageNumber", required = false) int carriageNumber,
-                                 @SessionAttribute("ticket") TicketDto ticket, Model model, HttpSession session) {
+    private void setModelData(Model model, TicketDto ticket) {
         model.addAttribute("card", new CreditCard());
 
-        List<Seat> carriageSeats = departureService.getCarriageSeatsForDeparture(ticket.getDeparture(),carriageNumber);
+        if (ticket.getCarriageNumber() != null) {
+            List<Seat> seats = departureService.getCarriageSeatsForDeparture(ticket.getDeparture(), ticket.getCarriageNumber());
 
-        ticket.setCarriageNumber(carriageNumber);
-        ticketService.setCarriageComfortLevelForTicket(ticket);
-
-        ticketService.setTicketFinalPrice(ticket);
-
-        session.setAttribute("seats", carriageSeats);
-
-        return "order";
-    }
-
-    @PostMapping(value = "/order", params = {"hiddenAction=seat"})
-    public String ticketSeat(@RequestParam(value = "seatNumber", required = false) int seatNumber,
-                             @SessionAttribute("ticket") TicketDto ticket, Model model) {
-        model.addAttribute("card", new CreditCard());
-
-        ticket.setSeatNumber(seatNumber);
-
-        return "order";
+            model.addAttribute("seats", seats);
+        }
     }
 }

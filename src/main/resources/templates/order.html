@@ -83,11 +83,11 @@
             </select>
         </form>
         <br>
-        <div th:if="${session.seats != null}">
+        <div th:if="${seats != null}">
             <span th:text="|${session.ticket.carriageComfortLevel} Carriage № ${session.ticket.carriageNumber}
             &nbsp;&nbsp;&nbsp; Please select a seat:|" />
             <div class="carriage">
-            <span th:each="seat, state : ${session.seats}"
+            <span th:each="seat, state : ${seats}"
                   th:if="${state.index < state.size/2 and state.odd}">
                 <form class="seat" th:action="@{/order}" method="post">
                     <input type="hidden" name="hiddenAction" value="seat" />
@@ -98,7 +98,7 @@
                 </form>
             </span>
             <br>
-            <span th:each="seat, state : ${session.seats}"
+            <span th:each="seat, state : ${seats}"
                   th:if="${state.index < state.size/2 and state.even}">
                 <form class="seat" th:action="@{/order}" method="post">
                     <input type="hidden" name="hiddenAction" value="seat" />
@@ -109,7 +109,7 @@
                 </form>
             </span>
             <br><br>
-            <span th:each="seat, state : ${session.seats}"
+            <span th:each="seat, state : ${seats}"
                   th:if="${state.index >= state.size/2 and state.odd}">
                 <form class="seat" th:action="@{/order}" method="post">
                     <input type="hidden" name="hiddenAction" value="seat" />
@@ -120,7 +120,7 @@
                 </form>
             </span>
             <br>
-            <span th:each="seat, state : ${session.seats}"
+            <span th:each="seat, state : ${seats}"
                   th:if="${state.index >= state.size/2 and state.even}">
                 <form class="seat" th:action="@{/order}" method="post">
                     <input type="hidden" name="hiddenAction" value="seat" />
@@ -154,13 +154,13 @@
             </select>
         </form>
         <br>
-        <div th:if="${session.seats != null}">
+        <div th:if="${seats != null}">
             <span th:text="|${session.ticket.carriageComfortLevel} Carriage № ${session.ticket.carriageNumber}
             &nbsp;&nbsp;&nbsp; Please select a seat:|" />
 
             <!--location of seats for LUX carriage-->
             <div class="carriage" th:if="${session.ticket.carriageComfortLevel eq 'LUX'}">
-                <span th:each="seat, state : ${session.seats}"
+                <span th:each="seat, state : ${seats}"
                   th:if="${state.index < state.size/2}">
                     <form class="seat" th:action="@{/order}" method="post">
                         <input type="hidden" name="hiddenAction" value="seat" />
@@ -171,7 +171,7 @@
                     </form>
                 </span>
                 <br><br>
-                <span th:each="seat, state : ${session.seats}"
+                <span th:each="seat, state : ${seats}"
                       th:if="${state.index >= state.size/2}">
                     <form class="seat" th:action="@{/order}" method="post">
                         <input type="hidden" name="hiddenAction" value="seat" />
@@ -186,7 +186,7 @@
 
             <!--location of seats for COUPE carriage-->
             <div class="carriage" th:if="${session.ticket.carriageComfortLevel eq 'COUPE'}">
-                <span th:each="seat, state : ${session.seats}"
+                <span th:each="seat, state : ${seats}"
                   th:if="${state.odd}">
                     <form class="seat" th:action="@{/order}" method="post">
                         <input type="hidden" name="hiddenAction" value="seat" />
@@ -196,7 +196,7 @@
                     </form>
                 </span>
                 <br>
-                <span th:each="seat, state : ${session.seats}"
+                <span th:each="seat, state : ${seats}"
                       th:if="${state.even}">
                     <form class="seat" th:action="@{/order}" method="post">
                         <input type="hidden" name="hiddenAction" value="seat" />
@@ -210,7 +210,7 @@
 
             <!--location of seats for ECONOMY carriage-->
             <div class="carriage" th:if="${session.ticket.carriageComfortLevel eq 'ECONOMY'}">
-            <span th:each="seat, state : ${session.seats}"
+            <span th:each="seat, state : ${seats}"
                   th:if="${state.index < state.size - state.size/3 and state.odd}">
                 <form class="seat" th:action="@{/order}" method="post">
                     <input type="hidden" name="hiddenAction" value="seat" />
@@ -220,7 +220,7 @@
                 </form>
             </span>
                 <br>
-                <span th:each="seat, state : ${session.seats}"
+                <span th:each="seat, state : ${seats}"
                       th:if="${state.index < state.size - state.size/3 and state.even}">
                 <form class="seat" th:action="@{/order}" method="post">
                     <input type="hidden" name="hiddenAction" value="seat" />
@@ -230,7 +230,7 @@
                 </form>
             </span>
                 <br><br><br>
-                <span th:each="seat, state : ${session.seats}"
+                <span th:each="seat, state : ${seats}"
                       th:if="${state.index >= state.size - state.size/3}">
                 <form class="seat" th:action="@{/order}" method="post">
                     <input type="hidden" name="hiddenAction" value="seat">

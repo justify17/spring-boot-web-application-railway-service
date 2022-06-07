@@ -61,15 +61,22 @@ public class TicketServiceImpl implements TicketService {
         List<TicketDto> tickets = new ArrayList<>();
 
         for (Departure departure : departures) {
-            TicketDto ticketDto = ticketMapper.departureAndUserRouteDtoToTicketDto(departure, userRouteDto);
-
-            setTicketDepartureAndArrivalDates(ticketDto);
-            setTicketRoutePricePerDeparture(ticketDto, departure);
+            TicketDto ticketDto = getTicketForDepartureAlongTheRoute(departure,userRouteDto);
 
             tickets.add(ticketDto);
         }
 
         return tickets;
+    }
+
+    @Override
+    public TicketDto getTicketForDepartureAlongTheRoute(Departure departure, UserRouteDto userRouteDto){
+        TicketDto ticketDto = ticketMapper.departureAndUserRouteDtoToTicketDto(departure, userRouteDto);
+
+        setTicketDepartureAndArrivalDates(ticketDto);
+        setTicketRoutePricePerDeparture(ticketDto, departure);
+
+        return ticketDto;
     }
 
     private void setTicketDepartureAndArrivalDates(TicketDto ticketDto) {
@@ -133,6 +140,7 @@ public class TicketServiceImpl implements TicketService {
         }
 
         int additionalPrice = getPricePerCarriageComfortLevel(ticketDto);
+
         ticketDto.setAdditionalPrice(additionalPrice);
     }
 

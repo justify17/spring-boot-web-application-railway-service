@@ -14,6 +14,8 @@ public interface TicketService {
 
     List<TicketDto> getTicketsForDeparturesAlongTheRoute(List<Departure> departures, UserRouteDto userRouteDto);
 
+    TicketDto getTicketForDepartureAlongTheRoute(Departure departure, UserRouteDto userRouteDto);
+
     void setCarriageComfortLevelForTicket(TicketDto ticketDto);
 
     void setTicketFinalPrice(TicketDto ticketDto);

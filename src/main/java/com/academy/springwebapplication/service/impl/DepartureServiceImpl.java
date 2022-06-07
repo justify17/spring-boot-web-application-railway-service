@@ -61,6 +61,12 @@ public class DepartureServiceImpl implements DepartureService {
     }
 
     @Override
+    public Departure getDepartureById(Integer id){
+
+        return departureRepository.getById(id);
+    }
+
+    @Override
     public List<Seat> getCarriageSeatsForDeparture(DepartureDto departureDto, int carriageNumber) {
         List<Seat> seats = new ArrayList<>();
 

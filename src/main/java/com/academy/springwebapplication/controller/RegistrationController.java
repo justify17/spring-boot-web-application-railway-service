@@ -24,8 +24,9 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public String userRegistration(@ModelAttribute("user") UserDto user, Model model) {
-        if (registrationService.isUserExists(user)) {
+        if (registrationService.isUserExists(user.getUsername())) {
             model.addAttribute("isUserExists", true);
+
             return "registration";
         }
 

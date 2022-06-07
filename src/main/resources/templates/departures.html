@@ -18,14 +18,14 @@
     <input type="submit" value="Search"/>
     <br><br>
 </form>
-<table th:if="${session.tickets} != null" border="5">
-    <h1 th:text="|Route: ${session.tickets[0].departureStation.title} &mdash; ${session.tickets[0].arrivalStation.title}|" />
+<table th:if="${tickets} != null" border="5">
+    <h1 th:text="|Route: ${tickets[0].departureStation.title} &mdash; ${tickets[0].arrivalStation.title}|" />
     <tr>
         <th>Train</th>
         <th>Route</th>
         <th>Price</th>
     </tr>
-    <tr th:each="ticket, state : ${session.tickets}">
+    <tr th:each="ticket : ${tickets}">
         <td align="center">
             <span th:text="${ticket.departure.train.number}" />
             <span th:text="|${ticket.departure.stationSchedules[0].station.title} &mdash;
@@ -39,12 +39,13 @@
                 <span th:text="|${ticket.departureStation.title} ———————> ${ticket.arrivalStation.title}|" />
                 <span th:text="${#temporals.format(ticket.userArrivalDate, ', dd MMM HH:mm')}" />
             </div>
-            <a th:href="@{/departures/route(ticketIndex=${state.index})} " target="_blank">See the whole route</a>
+            <a th:href="@{/departures/route(departureId=${ticket.departure.id})} " target="_blank">See the whole route</a>
         </td>
         <td align="center">
             <span th:text="|${ticket.routePrice / 100},${ticket.routePrice % 100} BYN|" />
             <br>
-            <a th:href="@{/order(ticketIndex=${state.index})}">Make an order</a>
+            <a th:href="@{/order(idDeparture=${ticket.departure.id},departureStation=${ticket.departureStation.title},
+            arrivalStation=${ticket.arrivalStation.title})}">Make an order</a>
         </td>
     </tr>
 </table>

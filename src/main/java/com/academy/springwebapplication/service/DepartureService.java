@@ -11,5 +11,7 @@ public interface DepartureService {
 
     List<Departure> getDeparturesForRoute(UserRouteDto userRouteDto);
 
+    Departure getDepartureById(Integer id);
+
     List<Seat> getCarriageSeatsForDeparture(DepartureDto departureDto, int carriageNumber);
 }
