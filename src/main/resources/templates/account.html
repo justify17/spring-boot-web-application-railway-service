@@ -13,15 +13,62 @@
 <div class="menu" th:insert="blocks/menu :: menu_fragment" />
 
 <div class="tab">
-    <button class="tablinks" onclick="openData(event, 'userInformation')" id="defaultOpen">Personal information</button>
+    <button class="tablinks" onclick="openData(event, 'myOrders')" id="openDefault">My orders</button>
+    <button class="tablinks" onclick="openData(event, 'userInformation')" id="openInformation">Personal information</button>
     <button class="tablinks" onclick="openData(event, 'changeUsername')" id="openChangeUsername">Change Username</button>
     <button class="tablinks" onclick="openData(event, 'changePassword')" id="openChangePassword">Change Password</button>
 </div>
 
-<div id="userInformation" class="tabcontent">
-    <div th:if="${changedAccountData.newUsername == null and changedAccountData.newPassword == null}">
+<div id="myOrders" class="tabcontent">
+    <div th:if="${openDefault}">
         <script>
-            document.getElementById("defaultOpen").click();
+            document.getElementById("openDefault").click();
+        </script>
+    </div>
+    <h3>My orders:</h3>
+    <table border="5">
+        <tr>
+            <th>Train</th>
+            <th>Departure Station</th>
+            <th>Departure Date</th>
+            <th>Arrival Station</th>
+            <th>Arrival Date</th>
+            <th>Carriage</th>
+            <th>Seat Number</th>
+            <th>Price</th>
+            <th>Status</th>
+        </tr>
+        <tr th:each="ticket : ${tickets}">
+            <td>
+                <span th:text="${ticket.departure.train.number}" />
+                <span th:text="|${ticket.departure.stationSchedules[0].station.title} &mdash;
+                ${ticket.departure.stationSchedules[ticket.departure.stationSchedules.size()-1].station.title}|" />
+                <br>
+                <span th:text="${ticket.departure.route.type}" />
+            </td>
+            <td th:text="${ticket.departureStation.title}" />
+            <td th:text="${#temporals.format(ticket.departureDate, 'dd MMM HH:mm')}" />
+            <td th:text="${ticket.arrivalStation.title}" />
+            <td th:text="${#temporals.format(ticket.arrivalDate, 'dd MMM HH:mm')}" />
+            <td th:text="${ticket.carriageNumber != null} ? |№ ${ticket.carriageNumber}, ${ticket.carriageComfortLevel}| : '&mdash;'" />
+            <td th:text="${ticket.seatNumber != null} ? ${ticket.seatNumber} : '&mdash;'" />
+            <td th:text="|${ticket.finalPrice} BYN|" />
+            <td>
+                <span>Paid &#10003; </span>
+                <form th:action="@{/account}" method="post">
+                    <input type="hidden" name="hiddenAction" value="cancelOrder" />
+                    <input type="hidden" th:name="ticketId" th:value="${ticket.id}"/>
+                    <input type="submit" value="Cancel Order"/>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="userInformation" class="tabcontent">
+    <div th:if="${openInformation}">
+        <script>
+            document.getElementById("openInformation").click();
         </script>
     </div>
     <h3>Personal Information</h3>
@@ -42,7 +89,7 @@
 </div>
 
 <div id="changeUsername" class="tabcontent">
-    <div th:if="${changedAccountData.newUsername != null}">
+    <div th:if="${openChangeUsername}">
         <script>
             document.getElementById("openChangeUsername").click();
         </script>
@@ -59,7 +106,7 @@
 </div>
 
 <div id="changePassword" class="tabcontent">
-    <div th:if="${changedAccountData.newPassword != null}">
+    <div th:if="${openChangePassword}">
         <script>
             document.getElementById("openChangePassword").click();
         </script>
@@ -83,11 +130,4 @@
 </body>
 
 </html>
-
-
-<!--
-<p><label for="username">Username:</label>
-    <input type="text" id="username" th:field="*{user.username}"/></p>
-<p><label for="password">Password::</label>
-    <input type="password" id="password" th:field="*{user.password}"/></p>-->
 

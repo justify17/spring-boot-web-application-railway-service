@@ -6,12 +6,13 @@ import java.time.LocalDateTime;
 
 @Data
 public class TicketDto {
+    private Integer id;
     private DepartureDto departure;
-    private UserDto user;
+    private String username;
     private StationDto departureStation;
-    private LocalDateTime userDepartureDate;
+    private LocalDateTime departureDate;
     private StationDto arrivalStation;
-    private LocalDateTime userArrivalDate;
+    private LocalDateTime arrivalDate;
     private String carriageComfortLevel;
     private Integer carriageNumber;
     private Integer seatNumber;

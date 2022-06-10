@@ -13,9 +13,6 @@
 <body>
 
 <div class="menu" th:insert="blocks/menu :: menu_fragment" />
-<div th:if="${session.ticket == null}">
-    Choose a route first, please: <a th:href="@{/departures}">Choose a route</a>
-</div>
 <div th:if="${session.ticket != null}" class="order">
     <div>
         <p>Train:</p>
@@ -27,9 +24,9 @@
     </div>
     <div class="route">
         <p>Your route:</p>
-        <span th:text="${#temporals.format(session.ticket.userDepartureDate, 'dd MMM HH:mm , ')}" />
+        <span th:text="${#temporals.format(session.ticket.departureDate, 'dd MMM HH:mm , ')}" />
         <span th:text="|${session.ticket.departureStation.title} ———————> ${session.ticket.arrivalStation.title}|" />
-        <span th:text="${#temporals.format(session.ticket.userArrivalDate, ', dd MMM HH:mm')}" />
+        <span th:text="${#temporals.format(session.ticket.arrivalDate, ', dd MMM HH:mm')}" />
         <br>
         <a href="#wholeRoute">See the whole route</a>
 

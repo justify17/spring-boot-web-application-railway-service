@@ -12,11 +12,15 @@ public interface TicketService {
 
     boolean isTicketExists(DepartureDto departureDto, Seat seat);
 
-    List<TicketDto> getTicketsForDeparturesAlongTheRoute(List<Departure> departures, UserRouteDto userRouteDto);
+    List<TicketDto> generateTicketsSuitableForUserRoute(List<Departure> departures, UserRouteDto userRouteDto);
 
-    TicketDto getTicketForDepartureAlongTheRoute(Departure departure, UserRouteDto userRouteDto);
+    TicketDto createTicketForDepartureAlongRoute(Departure departure, UserRouteDto userRouteDto);
 
     void setCarriageComfortLevelForTicket(TicketDto ticketDto);
 
     void setTicketFinalPrice(TicketDto ticketDto);
+
+    List<TicketDto> getUserTickets(String username);
+
+    void deleteTicketById(Integer ticketId);
 }

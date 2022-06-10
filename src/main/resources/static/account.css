@@ -49,3 +49,8 @@ body {font-family: Arial;}
 .successful {
     color: #4682B4;
 }
+
+td {
+    text-align: center;
+}
+

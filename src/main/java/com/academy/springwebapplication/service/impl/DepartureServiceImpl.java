@@ -8,9 +8,13 @@ import com.academy.springwebapplication.model.repository.RouteStationRepository;
 import com.academy.springwebapplication.service.DepartureService;
 import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,6 +61,7 @@ public class DepartureServiceImpl implements DepartureService {
 
         return departuresByFirstStation.stream()
                 .filter(departuresBySecondStation::contains)
+                .sorted(Comparator.comparing(Departure::getDepartureDate))
                 .collect(Collectors.toList());
     }
 

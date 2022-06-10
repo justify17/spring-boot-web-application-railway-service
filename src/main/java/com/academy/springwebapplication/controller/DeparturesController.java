@@ -10,11 +10,11 @@ import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -35,7 +35,7 @@ public class DeparturesController {
     public String findingDeparturesForRoute(@ModelAttribute("userRoute") UserRouteDto route, Model model) {
         List<Departure> departures = departureService.getDeparturesForRoute(route);
 
-        List<TicketDto> tickets = ticketService.getTicketsForDeparturesAlongTheRoute(departures, route);
+        List<TicketDto> tickets = ticketService.generateTicketsSuitableForUserRoute(departures, route);
 
         model.addAttribute("tickets", tickets);
 

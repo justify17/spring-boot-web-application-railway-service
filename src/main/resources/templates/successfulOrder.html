@@ -23,11 +23,11 @@
     <p>Departure Station:
     <span th:text="${ticket.departureStation.title}" /></p>
     <p>Departure Date:
-    <span th:text="${#temporals.format(ticket.userDepartureDate, 'dd MMM HH:mm')}" /></p>
+    <span th:text="${#temporals.format(ticket.departureDate, 'dd MMM HH:mm')}" /></p>
     <p>Arrival Station:
     <span th:text="${ticket.arrivalStation.title}" /></p>
     <p>Arrival Date:
-    <span th:text="${#temporals.format(ticket.userArrivalDate, 'dd MMM HH:mm')}" /></p>
+    <span th:text="${#temporals.format(ticket.arrivalDate, 'dd MMM HH:mm')}" /></p>
     <p>Carriage Comfort Level:
     <span th:text="${ticket.carriageComfortLevel != null} ? ${ticket.carriageComfortLevel} : '&mdash;'" /></p>
     <p>Carriage Number:

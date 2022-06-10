@@ -1,17 +1,24 @@
 package com.academy.springwebapplication.service.impl;
 
 import com.academy.springwebapplication.dto.*;
+import com.academy.springwebapplication.mapper.DepartureMapper;
 import com.academy.springwebapplication.mapper.TicketMapper;
 import com.academy.springwebapplication.model.entity.*;
-import com.academy.springwebapplication.model.repository.*;
+import com.academy.springwebapplication.model.repository.RouteStationRepository;
+import com.academy.springwebapplication.model.repository.StationRepository;
+import com.academy.springwebapplication.model.repository.TicketRepository;
+import com.academy.springwebapplication.model.repository.UserRepository;
 import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +28,7 @@ public class TicketServiceImpl implements TicketService {
     private final UserRepository userRepository;
     private final StationRepository stationRepository;
     private final TicketMapper ticketMapper;
+    private final DepartureMapper departureMapper;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -40,7 +48,7 @@ public class TicketServiceImpl implements TicketService {
     private void saveTicket(TicketDto ticketDto) {
         Ticket ticket = ticketMapper.ticketDtoToTicket(ticketDto);
 
-        User user = userRepository.findByUsername(ticketDto.getUser().getUsername());
+        User user = userRepository.findByUsername(ticketDto.getUsername());
         ticket.setUser(user);
 
         Station departureStation = stationRepository.findByTitle(ticketDto.getDepartureStation().getTitle());
@@ -57,26 +65,59 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<TicketDto> getTicketsForDeparturesAlongTheRoute(List<Departure> departures, UserRouteDto userRouteDto) {
-        List<TicketDto> tickets = new ArrayList<>();
+    public List<TicketDto> generateTicketsSuitableForUserRoute(List<Departure> departures, UserRouteDto userRouteDto) {
 
-        for (Departure departure : departures) {
-            TicketDto ticketDto = getTicketForDepartureAlongTheRoute(departure,userRouteDto);
-
-            tickets.add(ticketDto);
-        }
-
-        return tickets;
+        return departures.stream()
+                .map(departure -> createTicketForDepartureAlongRoute(departure, userRouteDto))
+                .filter(ticketDto -> isTicketSuitableForUserRoute(ticketDto, userRouteDto))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public TicketDto getTicketForDepartureAlongTheRoute(Departure departure, UserRouteDto userRouteDto){
-        TicketDto ticketDto = ticketMapper.departureAndUserRouteDtoToTicketDto(departure, userRouteDto);
+    public TicketDto createTicketForDepartureAlongRoute(Departure departure, UserRouteDto userRouteDto) {
+        TicketDto ticketDto = new TicketDto();
+
+        ticketDto.setDeparture(departureMapper.departureToDepartureDto(departure));
+        ticketDto.setDepartureStation(userRouteDto.getDepartureStation());
+        ticketDto.setArrivalStation(userRouteDto.getArrivalStation());
 
         setTicketDepartureAndArrivalDates(ticketDto);
         setTicketRoutePricePerDeparture(ticketDto, departure);
 
         return ticketDto;
+    }
+
+    private boolean isTicketSuitableForUserRoute(TicketDto ticketDto, UserRouteDto userRouteDto) {
+        if (userRouteDto.getDepartureDate() == null && userRouteDto.getDepartureTime() == null) {
+            LocalDateTime userDepartureDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+
+            return ticketDto.getDepartureDate().isAfter(userDepartureDateTime);
+        } else {
+
+            return isTicketDepartureDateEqualUserDepartureDate(ticketDto, userRouteDto);
+        }
+    }
+
+    private boolean isTicketDepartureDateEqualUserDepartureDate(TicketDto ticketDto, UserRouteDto userRouteDto) {
+        LocalDateTime userDepartureDateTime;
+        LocalDateTime endOfUserDepartureDay;
+
+        if (userRouteDto.getDepartureDate() != null && userRouteDto.getDepartureTime() != null) {
+            userDepartureDateTime = LocalDateTime.of(userRouteDto.getDepartureDate(), userRouteDto.getDepartureTime());
+
+            endOfUserDepartureDay = LocalDateTime.of(userRouteDto.getDepartureDate(), LocalTime.MAX);
+        } else if (userRouteDto.getDepartureTime() == null) {
+            userDepartureDateTime = LocalDateTime.of(userRouteDto.getDepartureDate(), LocalTime.MIN);
+
+            endOfUserDepartureDay = LocalDateTime.of(userRouteDto.getDepartureDate(), LocalTime.MAX);
+        } else {
+            userDepartureDateTime = LocalDateTime.of(LocalDate.now(), userRouteDto.getDepartureTime());
+
+            endOfUserDepartureDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+        }
+
+        return ticketDto.getDepartureDate().isAfter(userDepartureDateTime) &&
+                ticketDto.getDepartureDate().isBefore(endOfUserDepartureDay);
     }
 
     private void setTicketDepartureAndArrivalDates(TicketDto ticketDto) {
@@ -86,9 +127,9 @@ public class TicketServiceImpl implements TicketService {
             String stationTitle = stationSchedule.getStation().getTitle();
 
             if (stationTitle.equals(ticketDto.getDepartureStation().getTitle())) {
-                ticketDto.setUserDepartureDate(stationSchedule.getDepartureDate());
+                ticketDto.setDepartureDate(stationSchedule.getDepartureDate());
             } else if (stationTitle.equals(ticketDto.getArrivalStation().getTitle())) {
-                ticketDto.setUserArrivalDate(stationSchedule.getArrivalDate());
+                ticketDto.setArrivalDate(stationSchedule.getArrivalDate());
             }
         }
     }
@@ -127,11 +168,13 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public void setCarriageComfortLevelForTicket(TicketDto ticketDto) {
-        CarriageDto carriageDto = ticketDto.getDeparture().getTrain().getCarriages().stream()
-                .filter(carriage -> Objects.equals(carriage.getNumber(), ticketDto.getCarriageNumber()))
-                .findFirst().get();
+        if (ticketDto.getCarriageNumber() != null) {
+            CarriageDto carriageDto = ticketDto.getDeparture().getTrain().getCarriages().stream()
+                    .filter(carriage -> Objects.equals(carriage.getNumber(), ticketDto.getCarriageNumber()))
+                    .findFirst().get();
 
-        ticketDto.setCarriageComfortLevel(carriageDto.getComfortLevel());
+            ticketDto.setCarriageComfortLevel(carriageDto.getComfortLevel());
+        }
     }
 
     private void setTicketAdditionalPrice(TicketDto ticketDto) {
@@ -172,5 +215,20 @@ public class TicketServiceImpl implements TicketService {
         }
 
         ticketDto.setFinalPrice(finalPrice);
+    }
+
+    @Override
+    public List<TicketDto> getUserTickets(String username) {
+        List<Ticket> tickets = ticketRepository.findByUser_Username(username);
+
+        return tickets.stream()
+                .map(ticketMapper::ticketToTicketDto)
+                .peek(this::setCarriageComfortLevelForTicket)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteTicketById(Integer ticketId) {
+        ticketRepository.deleteById(ticketId);
     }
 }

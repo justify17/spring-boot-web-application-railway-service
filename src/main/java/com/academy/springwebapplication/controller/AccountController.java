@@ -2,32 +2,54 @@ package com.academy.springwebapplication.controller;
 
 
 import com.academy.springwebapplication.dto.ChangedAccountDataDto;
+import com.academy.springwebapplication.dto.TicketDto;
 import com.academy.springwebapplication.dto.UserInformationDto;
 import com.academy.springwebapplication.service.AccountService;
+import com.academy.springwebapplication.service.TicketService;
 import com.academy.springwebapplication.validator.ChangePasswordValidator;
 import com.academy.springwebapplication.validator.ChangeUsernameValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class AccountController {
     private final AccountService accountService;
-    private final ChangePasswordValidator changePasswordValidator;
-    private final ChangeUsernameValidator changeUsernameValidator;
+    private final TicketService ticketService;
+    private final Validator changePasswordValidator;
+    private final Validator changeUsernameValidator;
 
     @GetMapping("/account")
     public String account(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         setModelData(model, userDetails.getUsername());
+
+        model.addAttribute("openDefault",true);
+
+        return "account";
+    }
+
+    @PostMapping(value = "/account", params = {"hiddenAction=cancelOrder"})
+    public String cancelOrder(@RequestParam("ticketId") Integer ticketId, Model model,
+                              @AuthenticationPrincipal UserDetails userDetails) {
+        ticketService.deleteTicketById(ticketId);
+
+        setModelData(model,userDetails.getUsername());
+
+        model.addAttribute("openDefault",true);
 
         return "account";
     }
@@ -40,6 +62,7 @@ public class AccountController {
         setModelData(model, userDetails.getUsername());
 
         model.addAttribute("successfulSave","Data successfully saved!");
+        model.addAttribute("openInformation",true);
 
         return "account";
     }
@@ -52,6 +75,8 @@ public class AccountController {
 
         if (bindingResult.hasErrors()) {
             setModelData(model, userDetails.getUsername());
+
+            model.addAttribute("openChangeUsername",true);
 
             return "account";
         }
@@ -72,6 +97,8 @@ public class AccountController {
         if (bindingResult.hasErrors()) {
             setModelData(model, userDetails.getUsername());
 
+            model.addAttribute("openChangePassword",true);
+
             return "account";
         }
 
@@ -83,6 +110,10 @@ public class AccountController {
     }
 
     private void setModelData(Model model, String username) {
+        List<TicketDto> tickets = ticketService.getUserTickets(username);
+
+        model.addAttribute("tickets",tickets);
+
         if (model.getAttribute("userInformation") == null) {
             UserInformationDto userInformationDto = accountService.getUserInformation(username);
 

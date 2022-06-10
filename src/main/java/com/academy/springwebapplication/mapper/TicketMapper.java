@@ -4,21 +4,21 @@ import com.academy.springwebapplication.dto.TicketDto;
 import com.academy.springwebapplication.dto.UserRouteDto;
 import com.academy.springwebapplication.model.entity.Departure;
 import com.academy.springwebapplication.model.entity.Ticket;
-import org.mapstruct.DecoratedWith;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", uses = {DepartureMapper.class})
 @DecoratedWith(TicketMapperDecorator.class)
 public interface TicketMapper {
 
-    @Mapping(source = "userRouteDto.departureStation", target = "departureStation")
-    @Mapping(source = "userRouteDto.arrivalStation", target = "arrivalStation")
-    @Mapping(source = "departure", target = "departure")
-    TicketDto departureAndUserRouteDtoToTicketDto(Departure departure, UserRouteDto userRouteDto);
-
-    @Mapping(source = "ticketDto.departure.id", target = "departure.id")
-    @Mapping(source = "ticketDto.departureStation", target = "userDepartureStation")
-    @Mapping(source = "ticketDto.arrivalStation", target = "userArrivalStation")
+    @Mappings({
+            @Mapping(source = "ticketDto.departureStation", target = "userDepartureStation"),
+            @Mapping(source = "ticketDto.departureDate", target = "userDepartureDate"),
+            @Mapping(source = "ticketDto.arrivalStation", target = "userArrivalStation"),
+            @Mapping(source = "ticketDto.arrivalDate", target = "userArrivalDate")
+    })
     Ticket ticketDtoToTicket(TicketDto ticketDto);
+
+    @InheritInverseConfiguration
+    @Mapping(source = "ticket.price", target = "finalPrice")
+    TicketDto ticketToTicketDto(Ticket ticket);
 }

@@ -28,7 +28,7 @@ public class OrderController {
         Departure departure = departureService.getDepartureById(idDeparture);
         UserRouteDto userRouteDto = new UserRouteDto(new StationDto(departureStation), new StationDto(arrivalStation));
 
-        TicketDto ticket = ticketService.getTicketForDepartureAlongTheRoute(departure, userRouteDto);
+        TicketDto ticket = ticketService.createTicketForDepartureAlongRoute(departure, userRouteDto);
 
         if (ticket.getDeparture().getRoute().getType().equals("Региональные линии")) {
             ticketService.setTicketFinalPrice(ticket);
@@ -45,6 +45,7 @@ public class OrderController {
     public String ticketCarriage(@RequestParam(value = "carriageNumber") int carriageNumber,
                                  @SessionAttribute("ticket") TicketDto ticket, Model model) {
         ticket.setCarriageNumber(carriageNumber);
+        ticket.setSeatNumber(null);
 
         ticketService.setCarriageComfortLevelForTicket(ticket);
 
@@ -69,15 +70,12 @@ public class OrderController {
     public String ticketPayment(@SessionAttribute("ticket") TicketDto ticket, HttpSession session,
                                 @AuthenticationPrincipal UserDetails userDetails, Model model,
                                 @ModelAttribute("card") CreditCard card) {
-        UserDto userDto = new UserDto();
-        userDto.setUsername(userDetails.getUsername());
-
-        ticket.setUser(userDto);
+        ticket.setUsername(userDetails.getUsername());
 
         try {
             ticketService.payTicket(card, ticket);
         } catch (Exception e) {
-            setModelData(model,ticket);
+            setModelData(model, ticket);
 
             model.addAttribute("error", true);
 
