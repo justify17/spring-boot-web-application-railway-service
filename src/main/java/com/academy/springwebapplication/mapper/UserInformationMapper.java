@@ -1,7 +1,8 @@
 package com.academy.springwebapplication.mapper;
 
-import com.academy.springwebapplication.dto.UserInformationDto;
+import com.academy.springwebapplication.dto.ChangedUserInformationDto;
 import com.academy.springwebapplication.model.entity.UserInformation;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -9,7 +10,8 @@ import org.mapstruct.Mapping;
 public interface UserInformationMapper {
 
     @Mapping(source = "userInformation.user.username", target = "username")
-    UserInformationDto userInformationToUserInformationDto(UserInformation userInformation);
+    ChangedUserInformationDto userInformationToUserInformationDto(UserInformation userInformation);
 
-    UserInformation userInformationDtoToUserInformation(UserInformationDto userInformationDto);
+    @InheritInverseConfiguration
+    UserInformation userInformationDtoToUserInformation(ChangedUserInformationDto changedUserInformationDto);
 }

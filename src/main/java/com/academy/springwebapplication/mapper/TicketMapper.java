@@ -19,6 +19,5 @@ public interface TicketMapper {
     Ticket ticketDtoToTicket(TicketDto ticketDto);
 
     @InheritInverseConfiguration
-    @Mapping(source = "ticket.price", target = "finalPrice")
     TicketDto ticketToTicketDto(Ticket ticket);
 }

@@ -1,12 +1,12 @@
 package com.academy.springwebapplication.service;
 
 import com.academy.springwebapplication.dto.ChangedAccountDataDto;
-import com.academy.springwebapplication.dto.UserInformationDto;
+import com.academy.springwebapplication.dto.ChangedUserInformationDto;
 
 public interface AccountService {
-    UserInformationDto getUserInformation(String username);
+    ChangedUserInformationDto getUserInformation(String username);
 
-    void saveUserInformation(UserInformationDto userInformationDto);
+    void saveUserInformation(ChangedUserInformationDto changedUserInformationDto);
 
     void saveNewUsername(ChangedAccountDataDto changedAccountDataDto);
 

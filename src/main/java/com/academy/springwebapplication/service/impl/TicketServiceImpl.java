@@ -223,6 +223,7 @@ public class TicketServiceImpl implements TicketService {
 
         return tickets.stream()
                 .map(ticketMapper::ticketToTicketDto)
+                .peek(ticketDto -> ticketDto.setUsername(username))
                 .peek(this::setCarriageComfortLevelForTicket)
                 .collect(Collectors.toList());
     }

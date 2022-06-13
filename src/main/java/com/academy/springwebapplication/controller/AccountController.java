@@ -3,14 +3,10 @@ package com.academy.springwebapplication.controller;
 
 import com.academy.springwebapplication.dto.ChangedAccountDataDto;
 import com.academy.springwebapplication.dto.TicketDto;
-import com.academy.springwebapplication.dto.UserInformationDto;
+import com.academy.springwebapplication.dto.ChangedUserInformationDto;
 import com.academy.springwebapplication.service.AccountService;
 import com.academy.springwebapplication.service.TicketService;
-import com.academy.springwebapplication.validator.ChangePasswordValidator;
-import com.academy.springwebapplication.validator.ChangeUsernameValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -55,9 +51,9 @@ public class AccountController {
     }
 
     @PostMapping(value = "/account", params = {"hiddenAction=changeInformation"})
-    public String changePersonalInformation(@ModelAttribute("userInformation") UserInformationDto userInformationDto,
+    public String changePersonalInformation(@ModelAttribute("userInformation") ChangedUserInformationDto changedUserInformationDto,
                                             @AuthenticationPrincipal UserDetails userDetails, Model model) {
-        accountService.saveUserInformation(userInformationDto);
+        accountService.saveUserInformation(changedUserInformationDto);
 
         setModelData(model, userDetails.getUsername());
 
@@ -115,9 +111,9 @@ public class AccountController {
         model.addAttribute("tickets",tickets);
 
         if (model.getAttribute("userInformation") == null) {
-            UserInformationDto userInformationDto = accountService.getUserInformation(username);
+            ChangedUserInformationDto changedUserInformationDto = accountService.getUserInformation(username);
 
-            model.addAttribute("userInformation", userInformationDto);
+            model.addAttribute("userInformation", changedUserInformationDto);
         }
 
         if (model.getAttribute("changedAccountData") == null) {

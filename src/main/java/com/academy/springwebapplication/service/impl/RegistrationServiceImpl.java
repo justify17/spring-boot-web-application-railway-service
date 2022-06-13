@@ -1,6 +1,6 @@
 package com.academy.springwebapplication.service.impl;
 
-import com.academy.springwebapplication.dto.UserDto;
+import com.academy.springwebapplication.dto.UserRegistrationDto;
 import com.academy.springwebapplication.mapper.UserMapper;
 import com.academy.springwebapplication.model.entity.User;
 import com.academy.springwebapplication.model.repository.RoleRepository;
@@ -19,14 +19,14 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final UserMapper userMapper;
 
     @Override
-    public void saveNewUser(UserDto userDto){
-        User user = userMapper.userDtoToUser(userDto);
+    public void saveNewUser(UserRegistrationDto userRegistrationDto){
+        User user = userMapper.userRegistrationDtoToUser(userRegistrationDto);
 
         String encryptedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encryptedPassword);
 
         user.setRole(roleRepository.findByName("ROLE_USER"));
-        user.setEnabled(true);
+        user.setAccountNonLocked(true);
 
         userRepository.save(user);
     }

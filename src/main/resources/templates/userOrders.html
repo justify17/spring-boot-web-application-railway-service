@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>User's orders</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/menu.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/userOrders.css}" />
+</head>
+
+<body>
+<div class="menu" th:insert="blocks/menu :: menu_fragment" />
+
+<div th:if="${not #lists.isEmpty(tickets)}">
+    <h3 th:text="|Orders user: ${tickets[0].username}|"></h3>
+    <table border="5">
+        <tr>
+            <th>№</th>
+            <th>Train</th>
+            <th>Departure Station</th>
+            <th>Departure Date</th>
+            <th>Arrival Station</th>
+            <th>Arrival Date</th>
+            <th>Carriage</th>
+            <th>Seat Number</th>
+            <th>Price</th>
+            <th>Status</th>
+        </tr>
+        <tr th:each="ticket,state : ${tickets}">
+            <td th:text="${state.count}" />
+            <td>
+                <span th:text="${ticket.departure.train.number}" />
+                <span th:text="|${ticket.departure.stationSchedules[0].station.title} &mdash;
+                ${ticket.departure.stationSchedules[ticket.departure.stationSchedules.size()-1].station.title}|" />
+            </td>
+            <td th:text="${ticket.departureStation.title}" />
+            <td th:text="${#temporals.format(ticket.departureDate, 'dd MMM HH:mm')}" />
+            <td th:text="${ticket.arrivalStation.title}" />
+            <td th:text="${#temporals.format(ticket.arrivalDate, 'dd MMM HH:mm')}" />
+            <td th:text="${ticket.carriageNumber != null} ? |№ ${ticket.carriageNumber}, ${ticket.carriageComfortLevel}| : '&mdash;'" />
+            <td th:text="${ticket.seatNumber != null} ? ${ticket.seatNumber} : '&mdash;'" />
+            <td th:text="|${ticket.finalPrice} BYN|" />
+            <td>
+                <span>Paid &#10003; </span>
+                <form th:action="@{/admin/userOrders}" method="post">
+                    <input type="hidden" th:name="username" th:value="${tickets[0].username}"/>
+                    <input type="hidden" th:name="ticketId" th:value="${ticket.id}"/>
+                    <input type="submit" value="Delete Order"/>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+
+</html>

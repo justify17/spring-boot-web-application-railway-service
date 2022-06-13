@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Admin Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="menu.css" />
+    <link rel="stylesheet" type="text/css" href="admin.css" />
+    <script type="text/javascript" src="admin.js"></script>
+</head>
+
+<body>
+<div class="menu" th:insert="blocks/menu :: menu_fragment" />
+
+<div class="tab">
+    <button class="tablinks" onclick="openData(event, 'userDetails')" id="openUserDetails">User Details</button>
+</div>
+
+<div id="userDetails" class="tabcontent">
+    <div th:if="${openUserDetails}">
+        <script>
+            document.getElementById("openUserDetails").click();
+        </script>
+    </div>
+    <h3>User Details</h3>
+    <table class="users">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Not locked</th>
+                <th>First Name</th>
+                <th>Surname</th>
+                <th>Phone Number</th>
+                <th>Orders</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user, state : ${users}">
+                <td th:text="${state.count}" />
+                <td th:text="${user.username}" />
+                <td>
+                    <span th:text="${user.role.name}" />
+                    <form th:action="@{/admin}" method="post">
+                        <input type="hidden" name="hiddenAction" value="changeUserRole" />
+                        <input type="hidden" th:name="username" th:value="${user.username}"/>
+                        <select th:name="newRole">
+                            <option th:each="role : ${roles}"
+                                    th:value="${role.id}"
+                                    th:text="${role.name}" />
+                            <input type="submit" value="Change role"/>
+                        </select>
+                    </form>
+                </td>
+                <td>
+                    <form th:action="@{/admin}" method="post">
+                        <input type="hidden" name="hiddenAction" value="changeAccountStatus" />
+                        <input type="hidden" th:name="username" th:value="${user.username}"/>
+                        <span th:if="${user.accountNonLocked}">
+                            &#9989; <input type="submit" value="Lock &#10060;"/>
+                        </span>
+                        <span th:if="${!user.accountNonLocked}" >
+                            &#10060; <input type="submit" value="Unlock &#9989;"/>
+                        </span>
+                    </form>
+                </td>
+                <td th:text="${user.firstName != null} ? ${user.firstName} : '&mdash;'" />
+                <td th:text="${user.surname != null} ? ${user.surname} : '&mdash;'" />
+                <td th:text="${user.phoneNumber != null} ? ${user.phoneNumber} : '&mdash;'" />
+                <td>
+                    <a th:href="@{/admin/userOrders(username=${user.username})}" target="_blank">View user's orders</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+
+</html>

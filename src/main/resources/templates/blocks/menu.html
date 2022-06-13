@@ -4,7 +4,7 @@
 
 <nav th:fragment="menu_fragment">
     <ul>
-        <li><a th:href="@{/}">Main page</a></li>
+        <li><a th:href="@{/}">Main Page</a></li>
         <li><a th:href="@{/onlineScoreboard}">Online Scoreboard</a></li>
         <li><a th:href="@{/departures}">Departures</a></li>
         <span class="auth" sec:authorize="!isAuthenticated()">
@@ -13,7 +13,10 @@
         </span>
         <span class="auth" sec:authorize="isAuthenticated()">
             <li><a th:href="@{/logout}">Logout</a></lI>
-            <li><a id="account" th:href="@{/account}" sec:authentication="name"></a></lI>
+            <li><a id="account" th:href="@{/account}" sec:authentication="name"></a></li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')">
+                <a th:href="@{/admin}">Admin Page</a>
+            </li>
         </span>
     </ul>
 </nav>

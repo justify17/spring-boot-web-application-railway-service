@@ -3,7 +3,7 @@ package com.academy.springwebapplication.dto;
 import lombok.Data;
 
 @Data
-public class UserInformationDto {
+public class ChangedUserInformationDto {
     private String username;
     private String firstName;
     private String surname;

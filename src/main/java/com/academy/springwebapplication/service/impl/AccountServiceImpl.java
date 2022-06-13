@@ -1,7 +1,7 @@
 package com.academy.springwebapplication.service.impl;
 
 import com.academy.springwebapplication.dto.ChangedAccountDataDto;
-import com.academy.springwebapplication.dto.UserInformationDto;
+import com.academy.springwebapplication.dto.ChangedUserInformationDto;
 import com.academy.springwebapplication.mapper.UserInformationMapper;
 import com.academy.springwebapplication.model.entity.User;
 import com.academy.springwebapplication.model.entity.UserInformation;
@@ -21,26 +21,26 @@ public class AccountServiceImpl implements AccountService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserInformationDto getUserInformation(String username) {
+    public ChangedUserInformationDto getUserInformation(String username) {
         User user = userRepository.findByUsername(username);
 
         UserInformation userInformation = user.getUserInformation();
 
         if (userInformation == null) {
-            UserInformationDto userInformationDto = new UserInformationDto();
-            userInformationDto.setUsername(username);
+            ChangedUserInformationDto changedUserInformationDto = new ChangedUserInformationDto();
+            changedUserInformationDto.setUsername(username);
 
-            return userInformationDto;
+            return changedUserInformationDto;
         }
 
         return userInformationMapper.userInformationToUserInformationDto(userInformation);
     }
 
     @Override
-    public void saveUserInformation(UserInformationDto userInformationDto) {
-        User user = userRepository.findByUsername(userInformationDto.getUsername());
+    public void saveUserInformation(ChangedUserInformationDto changedUserInformationDto) {
+        User user = userRepository.findByUsername(changedUserInformationDto.getUsername());
 
-        UserInformation userInformation = userInformationMapper.userInformationDtoToUserInformation(userInformationDto);
+        UserInformation userInformation = userInformationMapper.userInformationDtoToUserInformation(changedUserInformationDto);
 
         if (user.getUserInformation() != null) {
             userInformation.setId(user.getId());

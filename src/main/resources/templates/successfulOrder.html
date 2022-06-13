@@ -10,9 +10,6 @@
 
 <body>
 <div class="menu" th:insert="blocks/menu :: menu_fragment" />
-<div th:if="${ticket == null}">
-    Choose a route first, please: <a th:href="@{/departures}">Choose a route</a>
-</div>
 <div th:if="${ticket != null}" class="order">
     <h3>Payment was successful!</h3>
     <h3>Your ticket: </h3>

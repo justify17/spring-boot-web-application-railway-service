@@ -10,10 +10,6 @@
     }
   }
 
-  function startingData() {
-            document.getElementById("defaultOpen").click();
-        }
-
   function mask(e) {
     var matrix = this.placeholder,// .defaultValue
         i = 0,
@@ -34,10 +30,6 @@
     input.focus();
     setCursorPosition(3, input);
   });
-
-  /*function startingData() {
-          document.getElementById("defaultOpen").click();
-      }*/
 
   function openData(evt, dataName) {
       // Declare all variables
