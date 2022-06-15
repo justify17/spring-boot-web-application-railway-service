@@ -32,8 +32,8 @@
     <tr th:each="ticket : ${tickets}">
         <td align="center">
             <span th:text="${ticket.departure.train.number}" />
-            <span th:text="|${ticket.departure.stationSchedules[0].station.title} &mdash;
-                ${ticket.departure.stationSchedules[ticket.departure.stationSchedules.size()-1].station.title}|" />
+            <span th:text="|${ticket.departure.route.routeStations[0].station.title} &mdash;
+                ${ticket.departure.route.routeStations[ticket.departure.route.routeStations.size()-1].station.title}|" />
             <br>
             <span th:text="${ticket.departure.route.type}" />
         </td>

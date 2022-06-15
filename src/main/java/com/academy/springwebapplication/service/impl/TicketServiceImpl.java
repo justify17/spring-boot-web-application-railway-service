@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -38,11 +39,8 @@ public class TicketServiceImpl implements TicketService {
     }
 
     private void moneyTransfer(CreditCard card) {
-        if (card.getNumber().trim().length() < 16) {
-            throw new RuntimeException("Ticket payment error");
-        }
 
-        System.out.println("Payment was successful!");
+        System.out.printf("Payment by card: %s was successful!",card.getNumber());
     }
 
     private void saveTicket(TicketDto ticketDto) {
@@ -70,6 +68,7 @@ public class TicketServiceImpl implements TicketService {
         return departures.stream()
                 .map(departure -> createTicketForDepartureAlongRoute(departure, userRouteDto))
                 .filter(ticketDto -> isTicketSuitableForUserRoute(ticketDto, userRouteDto))
+                .sorted(Comparator.comparing(TicketDto::getDepartureDate))
                 .collect(Collectors.toList());
     }
 
@@ -121,15 +120,15 @@ public class TicketServiceImpl implements TicketService {
     }
 
     private void setTicketDepartureAndArrivalDates(TicketDto ticketDto) {
-        List<StationSchedule> stationSchedules = ticketDto.getDeparture().getStationSchedules();
+        List<RouteStationDto> routeStations = ticketDto.getDeparture().getRoute().getRouteStations();
 
-        for (StationSchedule stationSchedule : stationSchedules) {
-            String stationTitle = stationSchedule.getStation().getTitle();
+        for (RouteStationDto routeStationDto : routeStations) {
+            String stationTitle = routeStationDto.getStation().getTitle();
 
             if (stationTitle.equals(ticketDto.getDepartureStation().getTitle())) {
-                ticketDto.setDepartureDate(stationSchedule.getDepartureDate());
+                ticketDto.setDepartureDate(routeStationDto.getDepartureDate());
             } else if (stationTitle.equals(ticketDto.getArrivalStation().getTitle())) {
-                ticketDto.setArrivalDate(stationSchedule.getArrivalDate());
+                ticketDto.setArrivalDate(routeStationDto.getArrivalDate());
             }
         }
     }
@@ -223,7 +222,6 @@ public class TicketServiceImpl implements TicketService {
 
         return tickets.stream()
                 .map(ticketMapper::ticketToTicketDto)
-                .peek(ticketDto -> ticketDto.setUsername(username))
                 .peek(this::setCarriageComfortLevelForTicket)
                 .collect(Collectors.toList());
     }
@@ -231,5 +229,21 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public void deleteTicketById(Integer ticketId) {
         ticketRepository.deleteById(ticketId);
+    }
+
+    @Override
+    public int getNumberOfPurchasedTicketsForDeparture(Integer departureId) {
+
+        return ticketRepository.countAllByDeparture_Id(departureId);
+    }
+
+    @Override
+    public List<TicketDto> getAllTicketsByDeparture(Integer departureId) {
+        List<Ticket> tickets = ticketRepository.findByDeparture_Id(departureId);
+
+        return tickets.stream()
+                .map(ticketMapper::ticketToTicketDto)
+                .peek(this::setCarriageComfortLevelForTicket)
+                .collect(Collectors.toList());
     }
 }

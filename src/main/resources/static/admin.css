@@ -42,25 +42,25 @@ body {font-family: Arial;}
     to {opacity: 1;}
 }
 
-.users table {
+.table table {
     border-collapse: collapse;
 }
 
-.users th {
+.table th {
     color: #ffebcd;
     background: #008b8b;
     cursor: pointer;
 }
 
-.users td,
-.users th {
-    width: 170px;
+.table td,
+.table th {
+    width: max-content;
     height: 40px;
     text-align: center;
     border: 2px solid #846868;
 }
 
-.users tbody tr:nth-child(even) {
+.table tbody tr:nth-child(even) {
     background: #e3e3e3;
 }
 

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Online scoreboard</title>
+    <title>Online Scoreboard</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="menu.css" />
     <link rel="stylesheet" type="text/css" href="onlineScoreboard.css" />
@@ -28,23 +28,23 @@
     <tr class="active-row" th:each="departure : ${departures}">
         <td align="center">
             <span th:text="${departure.train.number}" />
-            <span th:text="|${departure.stationSchedules[0].station.title} &mdash;
-                ${departure.stationSchedules[departure.stationSchedules.size()-1].station.title}|" />
+            <span th:text="|${departure.route.routeStations[0].station.title} &mdash;
+                ${departure.route.routeStations[departure.route.routeStations.size()-1].station.title}|" />
             <br>
             <span th:text="${departure.route.type}" />
         </td>
         <td align="center">
-            <span th:each="stationSchedule : ${departure.stationSchedules}">
-                <span th:if="${stationSchedule.station.title} eq ${station.title}"
-                    th:text="${stationSchedule.arrivalDate != null} ?
-                    ${#temporals.format(stationSchedule.arrivalDate, 'dd MMM HH:mm')} : '&mdash;'" />
+            <span th:each="routeStation : ${departure.route.routeStations}">
+                <span th:if="${routeStation.station.title} eq ${station.title}"
+                    th:text="${routeStation.arrivalDate != null} ?
+                    ${#temporals.format(routeStation.arrivalDate, 'dd MMM HH:mm')} : '&mdash;'" />
             </span>
         </td>
         <td align="center">
-            <span th:each="stationSchedule : ${departure.stationSchedules}">
-                <span th:if="${stationSchedule.station.title} eq ${station.title}"
-                    th:text="${stationSchedule.departureDate != null} ?
-                    ${#temporals.format(stationSchedule.departureDate, 'dd MMM HH:mm')} : '&mdash;'" />
+            <span th:each="routeStation : ${departure.route.routeStations}">
+                <span th:if="${routeStation.station.title} eq ${station.title}"
+                    th:text="${routeStation.departureDate != null} ?
+                    ${#temporals.format(routeStation.departureDate, 'dd MMM HH:mm')} : '&mdash;'" />
             </span>
         </td>
     </tr>

@@ -13,17 +13,18 @@
 <div class="menu" th:insert="blocks/menu :: menu_fragment" />
 
 <div class="tab">
-    <button class="tablinks" onclick="openData(event, 'userDetails')" id="openUserDetails">User Details</button>
+    <button class="tablinks" onclick="openData(event, 'userDetails')" id="openDefault">User Details</button>
+    <button class="tablinks" onclick="openData(event, 'departuresManagement')" id="openDepartures">Departures Management</button>
 </div>
 
 <div id="userDetails" class="tabcontent">
-    <div th:if="${openUserDetails}">
+    <div th:if="${openDefault}">
         <script>
-            document.getElementById("openUserDetails").click();
+            document.getElementById("openDefault").click();
         </script>
     </div>
     <h3>User Details</h3>
-    <table class="users">
+    <table class="table">
         <thead>
             <tr>
                 <th>№</th>
@@ -74,6 +75,68 @@
             </tr>
         </tbody>
     </table>
+</div>
+
+<div id="departuresManagement" class="tabcontent">
+    <div th:if="${openDepartures}">
+        <script>
+            document.getElementById("openDepartures").click();
+        </script>
+    </div>
+    <h3>Departures Management</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>№</th>
+            <th>Train</th>
+            <th>Route</th>
+            <th>Departure date</th>
+            <th>Arrival date</th>
+            <th>Purchased tickets</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="departure, state : ${departures}">
+            <td th:text="${state.count}" />
+            <td th:text="${departure.train.number}" />
+            <td>
+                <span th:text="|${departure.route.routeStations[0].station.title} &mdash;
+                ${departure.route.routeStations[departure.route.routeStations.size()-1].station.title}|" />
+                <a th:href="@{/departures/route(departureId=${departure.id})} " target="_blank">View schedule</a>
+                <br>
+                <span th:text="${departure.route.type}" />
+            </td>
+            <td th:text="${#temporals.format(departure.departureDate, 'dd MMM HH:mm')}" />
+            <td th:text="${#temporals.format(departure.route.routeStations[departure.route.routeStations.size()-1].arrivalDate, 'dd MMM HH:mm')}" />
+            <td>
+                <span th:text="${departure.purchasedTickets}" /><br>
+                <a th:href="@{/admin/departureDetails(departureId=${departure.id})}" target="_blank">View details</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <form th:action="@{/admin}" method="post" th:object="${newDeparture}">
+        <p>Create new departure:</p>
+        <input type="hidden" name="hiddenAction" value="createNewDeparture" />
+        <span>Train:
+            <select th:field="*{train.id}">
+                <option th:each="train : ${trains}"
+                        th:value="${train.id}"
+                        th:text="|${train.number} (${train.type})|" />
+            </select>
+        </span>
+        <span>Route:
+            <select th:field="*{route.id}">
+                <option th:each="route : ${routes}"
+                        th:value="${route.id}"
+                        th:text="|${route.routeStations[0].station.title} &mdash;
+                ${route.routeStations[route.routeStations.size()-1].station.title} (${route.type})|" />
+            </select>
+        </span>
+        <span><label for="date">When:</label>
+            <input type="datetime-local" id="date" th:field="*{departureDate}"/></span>
+        <input type="submit" value="Create"/>
+    </form>
 </div>
 </body>
 

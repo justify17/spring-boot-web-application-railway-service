@@ -2,25 +2,27 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>User's orders</title>
+    <title>Departure details</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" th:href="@{/styles/menu.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/styles/userOrders.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/departureDetails.css}" />
 </head>
 
 <body>
 <div class="menu" th:insert="blocks/menu :: menu_fragment" />
 
 <div th:if="${not #lists.isEmpty(tickets)}">
-    <h3 th:text="|Orders user: ${tickets[0].username}|"></h3>
+    <h3 th:text="|Tickets for departure: ${tickets[0].departure.route.routeStations[0].station.title} &mdash;
+                ${tickets[0].departure.route.routeStations[tickets[0].departure.route.routeStations.size()-1].station.title}
+                at ${#temporals.format(tickets[0].departure.departureDate, 'dd.MM.yyyy HH:mm')}|"></h3>
     <table border="5">
         <tr>
             <th>№</th>
-            <th>Train</th>
-            <th>Departure Station</th>
-            <th>Departure Date</th>
-            <th>Arrival Station</th>
-            <th>Arrival Date</th>
+            <th>User</th>
+            <th>User Departure Station</th>
+            <th>User Departure Date</th>
+            <th>User Arrival Station</th>
+            <th>User Arrival Date</th>
             <th>Carriage</th>
             <th>Seat Number</th>
             <th>Price</th>
@@ -28,11 +30,7 @@
         </tr>
         <tr th:each="ticket,state : ${tickets}">
             <td th:text="${state.count}" />
-            <td>
-                <span th:text="${ticket.departure.train.number}" />
-                <span th:text="|${ticket.departure.route.routeStations[0].station.title} &mdash;
-                ${ticket.departure.route.routeStations[ticket.departure.route.routeStations.size()-1].station.title}|" />
-            </td>
+            <td th:text="${ticket.username}" />
             <td th:text="${ticket.departureStation.title}" />
             <td th:text="${#temporals.format(ticket.departureDate, 'dd MMM HH:mm')}" />
             <td th:text="${ticket.arrivalStation.title}" />
@@ -42,10 +40,10 @@
             <td th:text="|${ticket.finalPrice} BYN|" />
             <td>
                 <span>Paid &#10003; </span>
-                <form th:action="@{/admin/userOrders}" method="post">
-                    <input type="hidden" th:name="username" th:value="${tickets[0].username}"/>
+                <form th:action="@{/admin/departureDetails}" method="post">
+                    <input type="hidden" th:name="departureId" th:value="${ticket.departure.id}"/>
                     <input type="hidden" th:name="ticketId" th:value="${ticket.id}"/>
-                    <input type="submit" value="Delete Order"/>
+                    <input type="submit" value="Delete Ticket"/>
                 </form>
             </td>
         </tr>

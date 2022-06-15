@@ -19,5 +19,6 @@ public interface TicketMapper {
     Ticket ticketDtoToTicket(TicketDto ticketDto);
 
     @InheritInverseConfiguration
+    @Mapping(source = "ticket.user.username", target = "username")
     TicketDto ticketToTicketDto(Ticket ticket);
 }

@@ -10,20 +10,20 @@
 <body>
 <div class="menu" th:insert="blocks/menu :: menu_fragment" />
 <div class="route">
-    <span th:utext="|Route: ${departure.stationSchedules[0].station.title} &mdash;
-        ${departure.stationSchedules[departure.stationSchedules.size()-1].station.title}|"/>
+    <span th:utext="|Route: ${departure.route.routeStations[0].station.title} &mdash;
+        ${departure.route.routeStations[departure.route.routeStations.size()-1].station.title}|"/>
     <table border="5">
         <tr>
             <th>Station</th>
             <th>Arrival time</th>
             <th>Departure time</th>
         </tr>
-        <tr th:each="stationSchedule : ${departure.stationSchedules}">
-            <td th:text="${stationSchedule.station.title}" />
-            <td align="center" th:utext="${stationSchedule.arrivalDate != null} ?
-                            ${#temporals.format(stationSchedule.arrivalDate, 'dd MMM HH:mm')} : '&mdash;'" />
-            <td align="center" th:utext="${stationSchedule.departureDate != null} ?
-                            ${#temporals.format(stationSchedule.departureDate, 'dd MMM HH:mm')} : '&mdash;'" />
+        <tr th:each="routeStation : ${departure.route.routeStations}">
+            <td th:text="${routeStation.station.title}" />
+            <td align="center" th:utext="${routeStation.arrivalDate != null} ?
+                            ${#temporals.format(routeStation.arrivalDate, 'dd MMM HH:mm')} : '&mdash;'" />
+            <td align="center" th:utext="${routeStation.departureDate != null} ?
+                            ${#temporals.format(routeStation.departureDate, 'dd MMM HH:mm')} : '&mdash;'" />
         </tr>
     </table>
     <br>

@@ -3,8 +3,12 @@ package com.academy.springwebapplication.service.impl;
 import com.academy.springwebapplication.dto.*;
 import com.academy.springwebapplication.mapper.DepartureMapper;
 import com.academy.springwebapplication.model.entity.Departure;
+import com.academy.springwebapplication.model.entity.Route;
+import com.academy.springwebapplication.model.entity.Train;
 import com.academy.springwebapplication.model.repository.DepartureRepository;
+import com.academy.springwebapplication.model.repository.RouteRepository;
 import com.academy.springwebapplication.model.repository.RouteStationRepository;
+import com.academy.springwebapplication.model.repository.TrainRepository;
 import com.academy.springwebapplication.service.DepartureService;
 import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +27,22 @@ import java.util.stream.Collectors;
 public class DepartureServiceImpl implements DepartureService {
     private final DepartureRepository departureRepository;
     private final RouteStationRepository routeStationRepository;
+    private final TrainRepository trainRepository;
+    private final RouteRepository routeRepository;
     private final TicketService ticketService;
     private final DepartureMapper departureMapper;
+
+    @Override
+    public List<DepartureDto> getAllDepartures() {
+        List<Departure> departures = departureRepository.findAll();
+
+        return departures.stream()
+                .map(departureMapper::departureToDepartureDto)
+                .sorted(Comparator.comparing(DepartureDto::getDepartureDate))
+                .peek(departureDto ->
+                        departureDto.setPurchasedTickets(ticketService.getNumberOfPurchasedTicketsForDeparture(departureDto.getId())))
+                .collect(Collectors.toList());
+    }
 
     @Override
     public List<DepartureDto> getDeparturesByStation(StationDto stationDto) {
@@ -94,5 +112,20 @@ public class DepartureServiceImpl implements DepartureService {
         }
 
         return seats;
+    }
+
+    @Override
+    public void saveNewDeparture(DepartureDto departureDto){
+        Departure departure = new Departure();
+
+        Train train = trainRepository.getById(departureDto.getTrain().getId());
+        departure.setTrain(train);
+
+        Route route = routeRepository.getById(departureDto.getRoute().getId());
+        departure.setRoute(route);
+
+        departure.setDepartureDate(departureDto.getDepartureDate());
+
+        departureRepository.save(departure);
     }
 }

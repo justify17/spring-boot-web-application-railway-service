@@ -11,4 +11,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     Ticket findByDeparture_IdAndCarriageNumberAndSeatNumber(Integer departureId, Integer carriageNumber, Integer seatNumber);
 
     List<Ticket> findByUser_Username(String username);
+
+    int countAllByDeparture_Id(Integer departureId);
+
+    List<Ticket> findByDeparture_Id(Integer departureId);
 }

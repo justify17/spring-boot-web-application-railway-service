@@ -8,8 +8,8 @@ import java.util.Set;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"id", "number"})
-@ToString(of = {"id", "number"})
+@EqualsAndHashCode(of = {"id", "number","type"})
+@ToString(of = {"id", "number","type"})
 @NoArgsConstructor
 @Entity
 @Table(name = "trains")
@@ -20,6 +20,9 @@ public class Train {
 
     @Column
     private String number;
+
+    @Column
+    private String type;
 
     @OneToMany(mappedBy = "train", cascade = CascadeType.ALL)
     private Set<Departure> departures;

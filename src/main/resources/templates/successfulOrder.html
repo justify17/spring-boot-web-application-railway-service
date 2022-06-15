@@ -15,8 +15,8 @@
     <h3>Your ticket: </h3>
     <p>Train:
     <span th:text="${ticket.departure.train.number}" />
-    <span th:text="|${ticket.departure.stationSchedules[0].station.title} &mdash;
-                ${ticket.departure.stationSchedules[ticket.departure.stationSchedules.size()-1].station.title}|" /></p>
+    <span th:text="|${ticket.departure.route.routeStations[0].station.title} &mdash;
+                ${ticket.departure.route.routeStations[ticket.departure.route.routeStations.size()-1].station.title}|" /></p>
     <p>Departure Station:
     <span th:text="${ticket.departureStation.title}" /></p>
     <p>Departure Date:

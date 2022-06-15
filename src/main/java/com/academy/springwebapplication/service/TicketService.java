@@ -23,4 +23,8 @@ public interface TicketService {
     List<TicketDto> getUserTickets(String username);
 
     void deleteTicketById(Integer ticketId);
+
+    int getNumberOfPurchasedTicketsForDeparture(Integer departureId);
+
+    List<TicketDto> getAllTicketsByDeparture(Integer departureId);
 }

@@ -37,6 +37,6 @@ function openData(evt, dataName) {
               cell.classList.toggle('sorted', cell === target);
       };
 
-      document.querySelectorAll('.users thead').forEach(tableTH => tableTH.addEventListener('click', () => getSort(event)));
+      document.querySelectorAll('.table thead').forEach(tableTH => tableTH.addEventListener('click', () => getSort(event)));
 
   });

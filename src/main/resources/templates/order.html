@@ -17,8 +17,8 @@
     <div>
         <p>Train:</p>
         <span th:text="${session.ticket.departure.train.number}" />
-        <span th:text="|${session.ticket.departure.stationSchedules[0].station.title} &mdash;
-                ${session.ticket.departure.stationSchedules[session.ticket.departure.stationSchedules.size()-1].station.title}|" />
+        <span th:text="|${session.ticket.departure.route.routeStations[0].station.title} &mdash;
+                ${session.ticket.departure.route.routeStations[session.ticket.departure.route.routeStations.size()-1].station.title}|" />
         <br>
         <span th:text="${session.ticket.departure.route.type}" />
     </div>
@@ -34,8 +34,8 @@
         <div id="wholeRoute">
             <div id="modal">
                 <div>
-                    <span th:text="|Route: ${session.ticket.departure.stationSchedules[0].station.title} &mdash;
-                    ${session.ticket.departure.stationSchedules[session.ticket.departure.stationSchedules.size()-1].station.title}|" />
+                    <span th:text="|Route: ${session.ticket.departure.route.routeStations[0].station.title} &mdash;
+                    ${session.ticket.departure.route.routeStations[session.ticket.departure.route.routeStations.size()-1].station.title}|" />
                 </div>
                 <table border="5">
                     <tr>
@@ -43,12 +43,12 @@
                         <th>Arrival time</th>
                         <th>Departure time</th>
                     </tr>
-                    <tr th:each="stationSchedule : ${session.ticket.departure.stationSchedules}">
-                        <td th:text="${stationSchedule.station.title}" />
-                        <td align="center" th:text="${stationSchedule.arrivalDate != null} ?
-                            ${#temporals.format(stationSchedule.arrivalDate, 'dd MMM HH:mm')} : '&mdash;'" />
-                        <td align="center" th:utext="${stationSchedule.departureDate != null} ?
-                            ${#temporals.format(stationSchedule.departureDate, 'dd MMM HH:mm')} : '&mdash;'" />
+                    <tr th:each="routeStation : ${session.ticket.departure.route.routeStations}">
+                        <td th:text="${routeStation.station.title}" />
+                        <td align="center" th:text="${routeStation.arrivalDate != null} ?
+                            ${#temporals.format(routeStation.arrivalDate, 'dd MMM HH:mm')} : '&mdash;'" />
+                        <td align="center" th:utext="${routeStation.departureDate != null} ?
+                            ${#temporals.format(routeStation.departureDate, 'dd MMM HH:mm')} : '&mdash;'" />
                     </tr>
                 </table>
                 <br>

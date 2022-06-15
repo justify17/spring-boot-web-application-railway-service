@@ -29,7 +29,8 @@ CREATE TABLE ticket_office.carriages(
 
 CREATE TABLE ticket_office.trains(
 	id INT PRIMARY KEY AUTO_INCREMENT,
-	number VARCHAR(30) NOT NULL
+	number VARCHAR(30) NOT NULL,
+	type VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE ticket_office.trains_carriages(

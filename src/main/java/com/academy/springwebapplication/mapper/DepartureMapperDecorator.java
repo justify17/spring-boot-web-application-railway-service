@@ -1,8 +1,8 @@
 package com.academy.springwebapplication.mapper;
 
 import com.academy.springwebapplication.dto.DepartureDto;
+import com.academy.springwebapplication.dto.RouteStationDto;
 import com.academy.springwebapplication.dto.StationDto;
-import com.academy.springwebapplication.dto.StationSchedule;
 import com.academy.springwebapplication.model.entity.Departure;
 import com.academy.springwebapplication.model.entity.RouteStation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,35 +20,35 @@ public abstract class DepartureMapperDecorator implements DepartureMapper {
     @Override
     public DepartureDto departureToDepartureDto(Departure departure) {
         DepartureDto departureDto = delegate.departureToDepartureDto(departure);
-        departureDto.setStationSchedules(getStationSchedules(departure));
+        departureDto.getRoute().setRouteStations(getRouteStations(departure));
 
         return departureDto;
     }
 
-    private List<StationSchedule> getStationSchedules(Departure departure) {
-        List<StationSchedule> stationSchedules = new ArrayList<>();
+    private List<RouteStationDto> getRouteStations(Departure departure) {
+        List<RouteStationDto> routeStationsDto = new ArrayList<>();
 
         List<RouteStation> routeStations = departure.getRoute().getRouteStations();
 
         LocalDateTime arrivalDateAtNextStation = departure.getDepartureDate();
         for (RouteStation routeStation : routeStations) {
-            StationSchedule stationSchedule = new StationSchedule();
+            RouteStationDto routeStationDto = new RouteStationDto();
 
             StationDto stationDto = new StationDto();
             stationDto.setTitle(routeStation.getStation().getTitle());
-            stationSchedule.setStation(stationDto);
+            routeStationDto.setStation(stationDto);
 
-            stationSchedule.setArrivalDate(arrivalDateAtNextStation);
-            stationSchedule.setDepartureDate(stationSchedule.getArrivalDate().plusMinutes(routeStation.getStopMinutes()));
+            routeStationDto.setArrivalDate(arrivalDateAtNextStation);
+            routeStationDto.setDepartureDate(routeStationDto.getArrivalDate().plusMinutes(routeStation.getStopMinutes()));
 
-            stationSchedules.add(stationSchedule);
+            routeStationsDto.add(routeStationDto);
 
-            arrivalDateAtNextStation = stationSchedule.getDepartureDate().plusMinutes(routeStation.getMinutesToNextStation());
+            arrivalDateAtNextStation = routeStationDto.getDepartureDate().plusMinutes(routeStation.getMinutesToNextStation());
         }
 
-        stationSchedules.get(0).setArrivalDate(null);
-        stationSchedules.get(stationSchedules.size() - 1).setDepartureDate(null);
+        routeStationsDto.get(0).setArrivalDate(null);
+        routeStationsDto.get(routeStationsDto.size() - 1).setDepartureDate(null);
 
-        return stationSchedules;
+        return routeStationsDto;
     }
 }
