@@ -30,49 +30,52 @@ public class AccountController {
     private final Validator changeUsernameValidator;
 
     @GetMapping("/account")
-    public String account(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String account(@AuthenticationPrincipal UserDetails userDetails,
+                          Model model) {
         setModelData(model, userDetails.getUsername());
 
-        model.addAttribute("openDefault",true);
+        model.addAttribute("openDefault", true);
 
         return "account";
     }
 
     @PostMapping(value = "/account", params = {"hiddenAction=cancelOrder"})
-    public String cancelOrder(@RequestParam("ticketId") Integer ticketId, Model model,
-                              @AuthenticationPrincipal UserDetails userDetails) {
+    public String cancelOrder(@RequestParam("ticketId") Integer ticketId,
+                              @AuthenticationPrincipal UserDetails userDetails,
+                              Model model) {
         ticketService.deleteTicketById(ticketId);
 
-        setModelData(model,userDetails.getUsername());
+        setModelData(model, userDetails.getUsername());
 
-        model.addAttribute("openDefault",true);
+        model.addAttribute("openDefault", true);
 
         return "account";
     }
 
     @PostMapping(value = "/account", params = {"hiddenAction=changeInformation"})
-    public String changePersonalInformation(@ModelAttribute("userInformation") ChangedUserInformationDto changedUserInformationDto,
-                                            @AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String changeUserInformation(@ModelAttribute("userInformation") ChangedUserInformationDto changedUserInformationDto,
+                                        @AuthenticationPrincipal UserDetails userDetails,
+                                        Model model) {
         accountService.saveUserInformation(changedUserInformationDto);
 
         setModelData(model, userDetails.getUsername());
 
-        model.addAttribute("successfulSave","Data successfully saved!");
-        model.addAttribute("openInformation",true);
+        model.addAttribute("successfulSave", "Data successfully saved!");
+        model.addAttribute("openInformation", true);
 
         return "account";
     }
 
     @PostMapping(value = "/account", params = {"hiddenAction=changeUsername"})
     public String changeUsername(@ModelAttribute("changedAccountData") ChangedAccountDataDto changedAccountDataDto,
-                                 HttpSession session, BindingResult bindingResult,
-                                 @AuthenticationPrincipal UserDetails userDetails, Model model) {
-        changeUsernameValidator.validate(changedAccountDataDto,bindingResult);
+                                 @AuthenticationPrincipal UserDetails userDetails,
+                                 HttpSession session, BindingResult bindingResult, Model model) {
+        changeUsernameValidator.validate(changedAccountDataDto, bindingResult);
 
         if (bindingResult.hasErrors()) {
             setModelData(model, userDetails.getUsername());
 
-            model.addAttribute("openChangeUsername",true);
+            model.addAttribute("openChangeUsername", true);
 
             return "account";
         }
@@ -86,14 +89,14 @@ public class AccountController {
 
     @PostMapping(value = "/account", params = {"hiddenAction=changePassword"})
     public String changePassword(@ModelAttribute("changedAccountData") ChangedAccountDataDto changedAccountDataDto,
-                                 HttpSession session, BindingResult bindingResult,
-                                 @AuthenticationPrincipal UserDetails userDetails, Model model) {
+                                 @AuthenticationPrincipal UserDetails userDetails,
+                                 HttpSession session, BindingResult bindingResult, Model model) {
         changePasswordValidator.validate(changedAccountDataDto, bindingResult);
 
         if (bindingResult.hasErrors()) {
             setModelData(model, userDetails.getUsername());
 
-            model.addAttribute("openChangePassword",true);
+            model.addAttribute("openChangePassword", true);
 
             return "account";
         }
@@ -108,7 +111,7 @@ public class AccountController {
     private void setModelData(Model model, String username) {
         List<TicketDto> tickets = ticketService.getUserTickets(username);
 
-        model.addAttribute("tickets",tickets);
+        model.addAttribute("tickets", tickets);
 
         if (model.getAttribute("userInformation") == null) {
             ChangedUserInformationDto changedUserInformationDto = accountService.getUserInformation(username);

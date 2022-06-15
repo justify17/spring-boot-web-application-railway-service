@@ -32,7 +32,8 @@ public class DeparturesController {
     }
 
     @PostMapping("/departures")
-    public String findingDeparturesForRoute(@ModelAttribute("userRoute") UserRouteDto route, Model model) {
+    public String findingDeparturesForRoute(@ModelAttribute("userRoute") UserRouteDto route,
+                                            Model model) {
         List<Departure> departures = departureService.getDeparturesForRoute(route);
 
         List<TicketDto> tickets = ticketService.generateTicketsSuitableForUserRoute(departures, route);
@@ -43,7 +44,8 @@ public class DeparturesController {
     }
 
     @GetMapping("/departures/route")
-    public String departureRoute(@RequestParam(name = "departureId") Integer departureId, Model model) {
+    public String departureRoute(@RequestParam(name = "departureId") Integer departureId,
+                                 Model model) {
         Departure departure = departureService.getDepartureById(departureId);
 
         DepartureDto departureDto = departureMapper.departureToDepartureDto(departure);

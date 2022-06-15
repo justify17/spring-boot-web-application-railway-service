@@ -43,7 +43,8 @@ public class OrderController {
 
     @PostMapping(value = "/order", params = {"hiddenAction=carriage"})
     public String ticketCarriage(@RequestParam(value = "carriageNumber") int carriageNumber,
-                                 @SessionAttribute("ticket") TicketDto ticket, Model model) {
+                                 @SessionAttribute("ticket") TicketDto ticket,
+                                 Model model) {
         ticket.setCarriageNumber(carriageNumber);
         ticket.setSeatNumber(null);
 
@@ -56,7 +57,8 @@ public class OrderController {
 
     @PostMapping(value = "/order", params = {"hiddenAction=seat"})
     public String ticketSeat(@RequestParam(value = "seatNumber") int seatNumber,
-                             @SessionAttribute("ticket") TicketDto ticket, Model model) {
+                             @SessionAttribute("ticket") TicketDto ticket,
+                             Model model) {
         ticket.setSeatNumber(seatNumber);
 
         ticketService.setTicketFinalPrice(ticket);
@@ -67,9 +69,10 @@ public class OrderController {
     }
 
     @PostMapping(value = "/order", params = {"hiddenAction=payment"})
-    public String ticketPayment(@SessionAttribute("ticket") TicketDto ticket, HttpSession session,
-                                @AuthenticationPrincipal UserDetails userDetails, Model model,
-                                @ModelAttribute("card") CreditCard card) {
+    public String ticketPayment(@ModelAttribute("card") CreditCard card,
+                                @SessionAttribute("ticket") TicketDto ticket,
+                                @AuthenticationPrincipal UserDetails userDetails,
+                                HttpSession session, Model model) {
         ticket.setUsername(userDetails.getUsername());
 
         try {

@@ -25,105 +25,114 @@ public class AdminController {
     public String admin(Model model) {
         setModelData(model);
 
-        model.addAttribute("openDefault",true);
+        model.addAttribute("openDefault", true);
 
         return "admin";
     }
 
     @PostMapping(value = "/admin", params = {"hiddenAction=changeUserRole"})
     public String changeUserRole(@RequestParam("username") String username,
-                                 @RequestParam("newRole") Integer newRoleId, Model model) {
-        adminService.setNewUserRole(username,newRoleId);
+                                 @RequestParam("newRole") Integer newRoleId,
+                                 Model model) {
+        adminService.setNewUserRole(username, newRoleId);
 
         setModelData(model);
 
-        model.addAttribute("openDefault",true);
+        model.addAttribute("openDefault", true);
 
         return "admin";
     }
 
     @PostMapping(value = "/admin", params = {"hiddenAction=changeAccountStatus"})
-    public String changeAccountStatus(@RequestParam("username") String username, Model model) {
+    public String changeAccountStatus(@RequestParam("username") String username,
+                                      Model model) {
         adminService.setNewAccountStatus(username);
 
         setModelData(model);
 
-        model.addAttribute("openDefault",true);
+        model.addAttribute("openDefault", true);
 
         return "admin";
     }
 
     @PostMapping(value = "/admin", params = {"hiddenAction=deleteUser"})
-    public String deleteUser(@RequestParam("userId") Integer userId, Model model) {
+    public String deleteUser(@RequestParam("userId") Integer userId,
+                             Model model) {
         adminService.deleteUserById(userId);
 
         setModelData(model);
 
-        model.addAttribute("openDefault",true);
+        model.addAttribute("openDefault", true);
 
         return "admin";
     }
 
     @PostMapping(value = "/admin", params = {"hiddenAction=cancelDeparture"})
-    public String cancelDeparture(@RequestParam("departureId") Integer departureId, Model model) {
+    public String cancelDeparture(@RequestParam("departureId") Integer departureId,
+                                  Model model) {
         departureService.deleteDepartureById(departureId);
 
         setModelData(model);
 
-        model.addAttribute("openDepartures",true);
+        model.addAttribute("openDepartures", true);
 
         return "admin";
     }
 
     @PostMapping(value = "/admin", params = {"hiddenAction=createNewDeparture"})
-    public String addNewDeparture(@ModelAttribute("newDeparture") DepartureDto departureDto, Model model) {
+    public String addNewDeparture(@ModelAttribute("newDeparture") DepartureDto departureDto,
+                                  Model model) {
         departureService.saveNewDeparture(departureDto);
 
         setModelData(model);
 
-        model.addAttribute("openDepartures",true);
+        model.addAttribute("openDepartures", true);
 
         return "admin";
     }
 
     @GetMapping("/admin/userOrders")
-    public String userOrders(@RequestParam("username") String username, Model model) {
+    public String userOrders(@RequestParam("username") String username,
+                             Model model) {
         List<TicketDto> userTickets = ticketService.getUserTickets(username);
 
-        model.addAttribute("tickets",userTickets);
+        model.addAttribute("tickets", userTickets);
 
         return "userOrders";
     }
 
     @PostMapping(value = "/admin/userOrders")
     public String deleteUserOrder(@RequestParam("ticketId") int ticketId,
-                                  @RequestParam("username") String username, Model model) {
+                                  @RequestParam("username") String username,
+                                  Model model) {
         ticketService.deleteTicketById(ticketId);
 
         List<TicketDto> userTickets = ticketService.getUserTickets(username);
 
-        model.addAttribute("tickets",userTickets);
+        model.addAttribute("tickets", userTickets);
 
         return "userOrders";
     }
 
     @GetMapping("/admin/departureDetails")
-    public String departureDetails(@RequestParam("departureId") int departureId, Model model) {
+    public String departureDetails(@RequestParam("departureId") int departureId,
+                                   Model model) {
         List<TicketDto> departureTickets = ticketService.getAllTicketsByDeparture(departureId);
 
-        model.addAttribute("tickets",departureTickets);
+        model.addAttribute("tickets", departureTickets);
 
         return "departureDetails";
     }
 
     @PostMapping("/admin/departureDetails")
     public String deleteTicket(@RequestParam("ticketId") int ticketId,
-                               @RequestParam("departureId") int departureId, Model model) {
+                               @RequestParam("departureId") int departureId,
+                               Model model) {
         ticketService.deleteTicketById(ticketId);
 
         List<TicketDto> departureTickets = ticketService.getAllTicketsByDeparture(departureId);
 
-        model.addAttribute("tickets",departureTickets);
+        model.addAttribute("tickets", departureTickets);
 
         return "departureDetails";
     }
@@ -136,14 +145,14 @@ public class AdminController {
         model.addAttribute("roles", roles);
 
         List<DepartureDto> departures = departureService.getAllDepartures();
-        model.addAttribute("departures",departures);
+        model.addAttribute("departures", departures);
 
         List<RouteDto> routes = adminService.getAllRoutes();
-        model.addAttribute("routes",routes);
+        model.addAttribute("routes", routes);
 
         List<TrainDto> trains = adminService.getAllTrains();
-        model.addAttribute("trains",trains);
+        model.addAttribute("trains", trains);
 
-        model.addAttribute("newDeparture",new DepartureDto());
+        model.addAttribute("newDeparture", new DepartureDto());
     }
 }

@@ -25,7 +25,8 @@ public class OnlineScoreboardController {
     }
 
     @PostMapping("/onlineScoreboard")
-    public String findingDeparturesByStation(@ModelAttribute("station") StationDto station, Model model) {
+    public String findingDeparturesByStation(@ModelAttribute("station") StationDto station,
+                                             Model model) {
         List<DepartureDto> departures = departureService.getDeparturesByStation(station);
 
         model.addAttribute("departures", departures);
