@@ -84,7 +84,7 @@ public class DepartureServiceImpl implements DepartureService {
     }
 
     @Override
-    public Departure getDepartureById(Integer id){
+    public Departure getDepartureById(Integer id) {
 
         return departureRepository.getById(id);
     }
@@ -115,7 +115,7 @@ public class DepartureServiceImpl implements DepartureService {
     }
 
     @Override
-    public void saveNewDeparture(DepartureDto departureDto){
+    public void saveNewDeparture(DepartureDto departureDto) {
         Departure departure = new Departure();
 
         Train train = trainRepository.getById(departureDto.getTrain().getId());
@@ -127,5 +127,10 @@ public class DepartureServiceImpl implements DepartureService {
         departure.setDepartureDate(departureDto.getDepartureDate());
 
         departureRepository.save(departure);
+    }
+
+    @Override
+    public void deleteDepartureById(Integer departureId) {
+        departureRepository.deleteById(departureId);
     }
 }

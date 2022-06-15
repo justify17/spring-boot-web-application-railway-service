@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class UserDto {
+    private Integer id;
     private String username;
     private RoleDto role;
     private boolean accountNonLocked;

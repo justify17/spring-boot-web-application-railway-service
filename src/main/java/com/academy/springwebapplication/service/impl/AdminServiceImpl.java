@@ -72,6 +72,16 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public void setNewUserRole(String username, Integer newRoleId){
+        Role newUserRole = roleRepository.getById(newRoleId);
+
+        User user = userRepository.findByUsername(username);
+        user.setRole(newUserRole);
+
+        userRepository.save(user);
+    }
+
+    @Override
     public void setNewAccountStatus(String username) {
         User user = userRepository.findByUsername(username);
 
@@ -83,12 +93,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void setNewUserRole(String username, Integer newRoleId){
-        Role newUserRole = roleRepository.getById(newRoleId);
-
-        User user = userRepository.findByUsername(username);
-        user.setRole(newUserRole);
-
-        userRepository.save(user);
+    public void deleteUserById(Integer userId) {
+        userRepository.deleteById(userId);
     }
 }

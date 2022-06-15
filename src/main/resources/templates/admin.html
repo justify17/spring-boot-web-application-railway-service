@@ -4,9 +4,9 @@
 <head>
     <title>Admin Page</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" href="menu.css" />
-    <link rel="stylesheet" type="text/css" href="admin.css" />
-    <script type="text/javascript" src="admin.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/menu.css" />
+    <link rel="stylesheet" type="text/css" href="css/admin.css" />
+    <script type="text/javascript" src="js/admin.js"></script>
 </head>
 
 <body>
@@ -24,7 +24,7 @@
         </script>
     </div>
     <h3>User Details</h3>
-    <table class="table">
+    <table th:if="${not #lists.isEmpty(users)}" class="table">
         <thead>
             <tr>
                 <th>№</th>
@@ -35,6 +35,7 @@
                 <th>Surname</th>
                 <th>Phone Number</th>
                 <th>Orders</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -72,6 +73,13 @@
                 <td>
                     <a th:href="@{/admin/userOrders(username=${user.username})}" target="_blank">View user's orders</a>
                 </td>
+                <td>
+                    <form th:action="@{/admin}" method="post">
+                        <input type="hidden" name="hiddenAction" value="deleteUser" />
+                        <input type="hidden" th:name="userId" th:value="${user.id}"/>
+                        <input type="submit" value="Delete User"/>
+                    </form>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -84,7 +92,7 @@
         </script>
     </div>
     <h3>Departures Management</h3>
-    <table class="table">
+    <table th:if="${not #lists.isEmpty(departures)}" class="table">
         <thead>
         <tr>
             <th>№</th>
@@ -93,6 +101,7 @@
             <th>Departure date</th>
             <th>Arrival date</th>
             <th>Purchased tickets</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -111,6 +120,13 @@
             <td>
                 <span th:text="${departure.purchasedTickets}" /><br>
                 <a th:href="@{/admin/departureDetails(departureId=${departure.id})}" target="_blank">View details</a>
+            </td>
+            <td>
+                <form th:action="@{/admin}" method="post">
+                    <input type="hidden" name="hiddenAction" value="cancelDeparture" />
+                    <input type="hidden" th:name="departureId" th:value="${departure.id}"/>
+                    <input type="submit" value="Cancel Departure"/>
+                </form>
             </td>
         </tr>
         </tbody>

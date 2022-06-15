@@ -4,9 +4,9 @@
 <head>
     <title>My account</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" href="menu.css" />
-    <link rel="stylesheet" type="text/css" href="account.css" />
-    <script type="text/javascript" src="account.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/menu.css" />
+    <link rel="stylesheet" type="text/css" href="css/account.css" />
+    <script type="text/javascript" src="js/account.js"></script>
 </head>
 
 <body>
@@ -26,7 +26,7 @@
         </script>
     </div>
     <h3>My orders:</h3>
-    <table border="5">
+    <table th:if="${not #lists.isEmpty(tickets)}" border="5">
         <tr>
             <th>Train</th>
             <th>Departure Station</th>

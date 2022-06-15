@@ -30,6 +30,18 @@ public class AdminController {
         return "admin";
     }
 
+    @PostMapping(value = "/admin", params = {"hiddenAction=changeUserRole"})
+    public String changeUserRole(@RequestParam("username") String username,
+                                 @RequestParam("newRole") Integer newRoleId, Model model) {
+        adminService.setNewUserRole(username,newRoleId);
+
+        setModelData(model);
+
+        model.addAttribute("openDefault",true);
+
+        return "admin";
+    }
+
     @PostMapping(value = "/admin", params = {"hiddenAction=changeAccountStatus"})
     public String changeAccountStatus(@RequestParam("username") String username, Model model) {
         adminService.setNewAccountStatus(username);
@@ -41,14 +53,24 @@ public class AdminController {
         return "admin";
     }
 
-    @PostMapping(value = "/admin", params = {"hiddenAction=changeUserRole"})
-    public String changeUserRole(@RequestParam("username") String username,
-                                 @RequestParam("newRole") Integer newRoleId, Model model) {
-        adminService.setNewUserRole(username,newRoleId);
+    @PostMapping(value = "/admin", params = {"hiddenAction=deleteUser"})
+    public String deleteUser(@RequestParam("userId") Integer userId, Model model) {
+        adminService.deleteUserById(userId);
 
         setModelData(model);
 
         model.addAttribute("openDefault",true);
+
+        return "admin";
+    }
+
+    @PostMapping(value = "/admin", params = {"hiddenAction=cancelDeparture"})
+    public String cancelDeparture(@RequestParam("departureId") Integer departureId, Model model) {
+        departureService.deleteDepartureById(departureId);
+
+        setModelData(model);
+
+        model.addAttribute("openDepartures",true);
 
         return "admin";
     }

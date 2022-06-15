@@ -1,6 +1,7 @@
-package com.academy.springwebapplication.mapper;
+package com.academy.springwebapplication.mapper.decorator;
 
 import com.academy.springwebapplication.dto.TicketDto;
+import com.academy.springwebapplication.mapper.TicketMapper;
 import com.academy.springwebapplication.model.entity.Ticket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

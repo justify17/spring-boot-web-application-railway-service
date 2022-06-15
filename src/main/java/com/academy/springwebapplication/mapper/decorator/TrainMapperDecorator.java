@@ -1,7 +1,8 @@
-package com.academy.springwebapplication.mapper;
+package com.academy.springwebapplication.mapper.decorator;
 
 import com.academy.springwebapplication.dto.CarriageDto;
 import com.academy.springwebapplication.dto.TrainDto;
+import com.academy.springwebapplication.mapper.TrainMapper;
 import com.academy.springwebapplication.model.entity.Train;
 import com.academy.springwebapplication.model.entity.TrainCarriage;
 import org.springframework.beans.factory.annotation.Autowired;

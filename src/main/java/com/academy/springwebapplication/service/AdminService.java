@@ -16,7 +16,9 @@ public interface AdminService {
 
     List<TrainDto> getAllTrains();
 
+    void setNewUserRole(String username, Integer newRoleId);
+
     void setNewAccountStatus(String username);
 
-    void setNewUserRole(String username, Integer newRoleId);
+    void deleteUserById(Integer userId);
 }

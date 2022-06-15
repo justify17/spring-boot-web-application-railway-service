@@ -1,6 +1,7 @@
-package com.academy.springwebapplication.mapper;
+package com.academy.springwebapplication.mapper.decorator;
 
 import com.academy.springwebapplication.dto.RouteDto;
+import com.academy.springwebapplication.mapper.RouteMapper;
 import com.academy.springwebapplication.model.entity.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

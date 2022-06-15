@@ -1,8 +1,9 @@
-package com.academy.springwebapplication.mapper;
+package com.academy.springwebapplication.mapper.decorator;
 
 import com.academy.springwebapplication.dto.DepartureDto;
 import com.academy.springwebapplication.dto.RouteStationDto;
 import com.academy.springwebapplication.dto.StationDto;
+import com.academy.springwebapplication.mapper.DepartureMapper;
 import com.academy.springwebapplication.model.entity.Departure;
 import com.academy.springwebapplication.model.entity.RouteStation;
 import org.springframework.beans.factory.annotation.Autowired;

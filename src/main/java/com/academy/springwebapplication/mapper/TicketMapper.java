@@ -1,8 +1,7 @@
 package com.academy.springwebapplication.mapper;
 
 import com.academy.springwebapplication.dto.TicketDto;
-import com.academy.springwebapplication.dto.UserRouteDto;
-import com.academy.springwebapplication.model.entity.Departure;
+import com.academy.springwebapplication.mapper.decorator.TicketMapperDecorator;
 import com.academy.springwebapplication.model.entity.Ticket;
 import org.mapstruct.*;
 
