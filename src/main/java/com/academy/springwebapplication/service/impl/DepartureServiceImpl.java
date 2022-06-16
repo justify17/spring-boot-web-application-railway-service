@@ -12,11 +12,8 @@ import com.academy.springwebapplication.model.repository.TrainRepository;
 import com.academy.springwebapplication.service.DepartureService;
 import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -90,8 +87,8 @@ public class DepartureServiceImpl implements DepartureService {
     }
 
     @Override
-    public List<Seat> getCarriageSeatsForDeparture(DepartureDto departureDto, int carriageNumber) {
-        List<Seat> seats = new ArrayList<>();
+    public List<SeatDto> getCarriageSeatsForDeparture(DepartureDto departureDto, int carriageNumber) {
+        List<SeatDto> seats = new ArrayList<>();
 
         CarriageDto carriageDto = departureDto.getTrain().getCarriages().stream()
                 .filter(carriage -> carriage.getNumber() == carriageNumber)
@@ -100,7 +97,7 @@ public class DepartureServiceImpl implements DepartureService {
         int numberOfSeats = carriageDto.getNumberOfSeats();
 
         for (int i = 1; i <= numberOfSeats; i++) {
-            Seat seat = new Seat();
+            SeatDto seat = new SeatDto();
 
             seat.setCarriageNumber(carriageNumber);
             seat.setNumber(i);

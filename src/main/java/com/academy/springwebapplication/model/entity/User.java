@@ -10,12 +10,12 @@ import java.util.*;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"id", "username","role","accountNonLocked","userInformation"})
-@ToString(of = {"id", "username","role","accountNonLocked","userInformation"})
+@EqualsAndHashCode(of = {"id", "username", "role", "accountNonLocked", "userInformation"})
+@ToString(of = {"id", "username", "role", "accountNonLocked", "userInformation"})
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -35,25 +35,4 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserInformation userInformation;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-
-        return Collections.<GrantedAuthority>singleton(new SimpleGrantedAuthority(role.getName()));
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }

@@ -33,12 +33,12 @@ public class TicketServiceImpl implements TicketService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void payTicket(CreditCard card, TicketDto ticketDto) {
+    public void payTicket(CreditCardDto card, TicketDto ticketDto) {
         saveTicket(ticketDto);
         moneyTransfer(card);
     }
 
-    private void moneyTransfer(CreditCard card) {
+    private void moneyTransfer(CreditCardDto card) {
 
         System.out.printf("Payment by card: %s was successful!",card.getNumber());
     }
@@ -153,10 +153,10 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public boolean isTicketExists(DepartureDto departureDto, Seat seat) {
+    public boolean isTicketExists(DepartureDto departureDto, SeatDto seatDto) {
         Ticket existingTicket = ticketRepository.
                 findByDeparture_IdAndCarriageNumberAndSeatNumber
-                        (departureDto.getId(), seat.getCarriageNumber(), seat.getNumber());
+                        (departureDto.getId(), seatDto.getCarriageNumber(), seatDto.getNumber());
 
         if (existingTicket != null) {
             return true;

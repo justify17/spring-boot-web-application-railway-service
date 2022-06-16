@@ -15,5 +15,5 @@ public class DepartureDto {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime departureDate;
 
-    private Integer purchasedTickets;
+    private int purchasedTickets;
 }

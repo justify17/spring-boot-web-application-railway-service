@@ -69,7 +69,7 @@ public class OrderController {
     }
 
     @PostMapping(value = "/order", params = {"hiddenAction=payment"})
-    public String ticketPayment(@ModelAttribute("card") CreditCard card,
+    public String ticketPayment(@ModelAttribute("card") CreditCardDto card,
                                 @SessionAttribute("ticket") TicketDto ticket,
                                 @AuthenticationPrincipal UserDetails userDetails,
                                 HttpSession session, Model model) {
@@ -93,10 +93,10 @@ public class OrderController {
     }
 
     private void setModelData(Model model, TicketDto ticket) {
-        model.addAttribute("card", new CreditCard());
+        model.addAttribute("card", new CreditCardDto());
 
         if (ticket.getCarriageNumber() != null) {
-            List<Seat> seats = departureService.getCarriageSeatsForDeparture(ticket.getDeparture(), ticket.getCarriageNumber());
+            List<SeatDto> seats = departureService.getCarriageSeatsForDeparture(ticket.getDeparture(), ticket.getCarriageNumber());
 
             model.addAttribute("seats", seats);
         }
