@@ -146,7 +146,7 @@
                 <option th:each="route : ${routes}"
                         th:value="${route.id}"
                         th:text="|${route.routeStations[0].station.title} &mdash;
-                ${route.routeStations[route.routeStations.size()-1].station.title} (${route.type})|" />
+                ${route.routeStations[route.routeStations.size()-1].station.title} (${route.type}, ${route.routeStations.size()} stops)|" />
             </select>
         </span>
         <span><label for="date">When:</label>

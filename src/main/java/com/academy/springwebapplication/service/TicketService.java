@@ -8,8 +8,6 @@ import java.util.List;
 public interface TicketService {
     void payTicket(CreditCardDto card, TicketDto ticketDto);
 
-    boolean isTicketExists(DepartureDto departureDto, SeatDto seatDto);
-
     List<TicketDto> generateTicketsSuitableForUserRoute(List<Departure> departures, UserRouteDto userRouteDto);
 
     TicketDto createTicketForDepartureAlongRoute(Departure departure, UserRouteDto userRouteDto);
@@ -17,6 +15,8 @@ public interface TicketService {
     void setCarriageComfortLevelForTicket(TicketDto ticketDto);
 
     void setTicketFinalPrice(TicketDto ticketDto);
+
+    List<SeatDto> getSeatsByTicketData(TicketDto ticketDto);
 
     List<TicketDto> getUserTickets(String username);
 

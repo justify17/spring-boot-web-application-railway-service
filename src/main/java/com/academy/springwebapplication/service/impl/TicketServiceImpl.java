@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -40,7 +41,7 @@ public class TicketServiceImpl implements TicketService {
 
     private void moneyTransfer(CreditCardDto card) {
 
-        System.out.printf("Payment by card: %s was successful!",card.getNumber());
+        System.out.printf("Payment by card: %s was successful!", card.getNumber());
     }
 
     private void saveTicket(TicketDto ticketDto) {
@@ -153,16 +154,44 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public boolean isTicketExists(DepartureDto departureDto, SeatDto seatDto) {
-        Ticket existingTicket = ticketRepository.
-                findByDeparture_IdAndCarriageNumberAndSeatNumber
-                        (departureDto.getId(), seatDto.getCarriageNumber(), seatDto.getNumber());
+    public List<SeatDto> getSeatsByTicketData(TicketDto ticketDto) {
+        List<SeatDto> seats = new ArrayList<>();
 
-        if (existingTicket != null) {
-            return true;
+        Integer ticketSeatNumber = ticketDto.getSeatNumber() != null ? ticketDto.getSeatNumber() : null;
+
+        int numberOfSeats = getNumberOfSeatsInCarriage(ticketDto);
+
+        for (int i = 1; i <= numberOfSeats; i++) {
+            SeatDto seat = new SeatDto();
+            seat.setNumber(i);
+
+            ticketDto.setSeatNumber(i);
+
+            boolean seatFree = isTicketExists(ticketDto) ? false : true;
+            seat.setFree(seatFree);
+
+            seats.add(seat);
         }
 
-        return false;
+        ticketDto.setSeatNumber(ticketSeatNumber);
+
+        return seats;
+    }
+
+    private int getNumberOfSeatsInCarriage(TicketDto ticketDto) {
+        CarriageDto ticketCarriage = ticketDto.getDeparture().getTrain().getCarriages().stream()
+                .filter(carriage -> carriage.getNumber() == ticketDto.getCarriageNumber())
+                .findFirst().get();
+
+        return ticketCarriage.getNumberOfSeats();
+    }
+
+    private boolean isTicketExists(TicketDto ticketDto) {
+        List<Ticket> existingTickets = ticketRepository.findByTicketData(ticketDto.getDeparture().getId(),
+                ticketDto.getCarriageNumber(), ticketDto.getSeatNumber(),
+                ticketDto.getDepartureDate(), ticketDto.getArrivalDate());
+
+        return !existingTickets.isEmpty();
     }
 
     @Override

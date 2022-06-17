@@ -17,11 +17,11 @@
     <form th:action="@{/registration}" method="post" th:object="${user}">
         <p><label for="username">Username:</label>
             <input type="text" id="username" th:field="*{username}"/></p>
+        <p th:if="${isUserExists}" th:text="'User with this username already exists'" />
         <p><label for="password">Password:</label>
             <input type="password" id="password" th:field="*{password}"/></p>
         <p><input type="submit" value="Sign up"/></p>
         <h3>Do you have an account? <a class="link" th:href="@{/login}">Sign in</a></h3>
-        <span th:if="${isUserExists}" th:text="'User with this username already exists'" />
     </form>
 </body>
 

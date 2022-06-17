@@ -87,31 +87,6 @@ public class DepartureServiceImpl implements DepartureService {
     }
 
     @Override
-    public List<SeatDto> getCarriageSeatsForDeparture(DepartureDto departureDto, int carriageNumber) {
-        List<SeatDto> seats = new ArrayList<>();
-
-        CarriageDto carriageDto = departureDto.getTrain().getCarriages().stream()
-                .filter(carriage -> carriage.getNumber() == carriageNumber)
-                .findFirst().get();
-
-        int numberOfSeats = carriageDto.getNumberOfSeats();
-
-        for (int i = 1; i <= numberOfSeats; i++) {
-            SeatDto seat = new SeatDto();
-
-            seat.setCarriageNumber(carriageNumber);
-            seat.setNumber(i);
-
-            boolean isFree = ticketService.isTicketExists(departureDto, seat) ? false : true;
-            seat.setFree(isFree);
-
-            seats.add(seat);
-        }
-
-        return seats;
-    }
-
-    @Override
     public void saveNewDeparture(DepartureDto departureDto) {
         Departure departure = new Departure();
 

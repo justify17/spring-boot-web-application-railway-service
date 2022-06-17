@@ -96,7 +96,7 @@ public class OrderController {
         model.addAttribute("card", new CreditCardDto());
 
         if (ticket.getCarriageNumber() != null) {
-            List<SeatDto> seats = departureService.getCarriageSeatsForDeparture(ticket.getDeparture(), ticket.getCarriageNumber());
+            List<SeatDto> seats = ticketService.getSeatsByTicketData(ticket);
 
             model.addAttribute("seats", seats);
         }

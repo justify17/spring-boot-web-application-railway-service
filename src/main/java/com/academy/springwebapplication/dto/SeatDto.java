@@ -6,5 +6,5 @@ import lombok.Data;
 public class SeatDto {
     private int carriageNumber;
     private int number;
-    private boolean isFree;
+    private boolean free;
 }

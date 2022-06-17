@@ -89,8 +89,8 @@
                 <form class="seat" th:action="@{/order}" method="post">
                     <input type="hidden" name="hiddenAction" value="seat" />
                     <input type="hidden" th:name="seatNumber" th:value="${seat.number}" />
-                    <input th:if="${seat.isFree}" class="seatFree" type="submit" th:value="${seat.number}"/>
-                    <input th:if="${!seat.isFree}" class="seatTaken" type="button" th:value="${seat.number}"/>
+                    <input th:if="${seat.free}" class="seatFree" type="submit" th:value="${seat.number}"/>
+                    <input th:if="${!seat.free}" class="seatTaken" type="button" th:value="${seat.number}"/>
                     <span class="partition" th:if="${state.index + 2 < state.size/2}">|</span>
                 </form>
             </span>
@@ -100,8 +100,8 @@
                 <form class="seat" th:action="@{/order}" method="post">
                     <input type="hidden" name="hiddenAction" value="seat" />
                     <input type="hidden" th:name="seatNumber" th:value="${seat.number}" />
-                    <input th:if="${seat.isFree}" class="seatFree" type="submit" th:value="${seat.number}"/>
-                    <input th:if="${!seat.isFree}" class="seatTaken" type="button" th:value="${seat.number}"/>
+                    <input th:if="${seat.free}" class="seatFree" type="submit" th:value="${seat.number}"/>
+                    <input th:if="${!seat.free}" class="seatTaken" type="button" th:value="${seat.number}"/>
                     <span class="partition" th:if="${state.index + 1 < state.size/2}">|</span>
                 </form>
             </span>
@@ -111,8 +111,8 @@
                 <form class="seat" th:action="@{/order}" method="post">
                     <input type="hidden" name="hiddenAction" value="seat" />
                     <input type="hidden" th:name="seatNumber" th:value="${seat.number}" />
-                    <input th:if="${seat.isFree}" class="seatFree" type="submit" th:value="${seat.number}"/>
-                    <input th:if="${!seat.isFree}" class="seatTaken" type="button" th:value="${seat.number}"/>
+                    <input th:if="${seat.free}" class="seatFree" type="submit" th:value="${seat.number}"/>
+                    <input th:if="${!seat.free}" class="seatTaken" type="button" th:value="${seat.number}"/>
                     <span class="partition" th:if="${state.index + 2 < state.size}">|</span>
                 </form>
             </span>
@@ -122,8 +122,8 @@
                 <form class="seat" th:action="@{/order}" method="post">
                     <input type="hidden" name="hiddenAction" value="seat" />
                     <input type="hidden" th:name="seatNumber" th:value="${seat.number}" />
-                    <input th:if="${seat.isFree}" class="seatFree" type="submit" th:value="${seat.number}"/>
-                    <input th:if="${!seat.isFree}" class="seatTaken" type="button" th:value="${seat.number}"/>
+                    <input th:if="${seat.free}" class="seatFree" type="submit" th:value="${seat.number}"/>
+                    <input th:if="${!seat.free}" class="seatTaken" type="button" th:value="${seat.number}"/>
                     <span class="partition" th:if="${state.index + 1 < state.size}">|</span>
                 </form>
             </span>
@@ -162,8 +162,8 @@
                     <form class="seat" th:action="@{/order}" method="post">
                         <input type="hidden" name="hiddenAction" value="seat" />
                         <input type="hidden" th:name="seatNumber" th:value="${seat.number}" />
-                        <input th:if="${seat.isFree}" class="seatFree" type="submit" th:value="${seat.number}"/>
-                        <input th:if="${!seat.isFree}" class="seatTaken" type="button" th:value="${seat.number}"/>
+                        <input th:if="${seat.free}" class="seatFree" type="submit" th:value="${seat.number}"/>
+                        <input th:if="${!seat.free}" class="seatTaken" type="button" th:value="${seat.number}"/>
                         <span class="partition" th:if="${state.even and state.index + 1 < state.size/2}">|</span>
                     </form>
                 </span>
@@ -173,8 +173,8 @@
                     <form class="seat" th:action="@{/order}" method="post">
                         <input type="hidden" name="hiddenAction" value="seat" />
                         <input type="hidden" th:name="seatNumber" th:value="${seat.number}" />
-                        <input th:if="${seat.isFree}" class="seatFree" type="submit" th:value="${seat.number}"/>
-                        <input th:if="${!seat.isFree}" class="seatTaken" type="button" th:value="${seat.number}"/>
+                        <input th:if="${seat.free}" class="seatFree" type="submit" th:value="${seat.number}"/>
+                        <input th:if="${!seat.free}" class="seatTaken" type="button" th:value="${seat.number}"/>
                         <span class="partition" th:if="${state.even and state.index + 1 < state.size}">|</span>
                     </form>
                 </span>
@@ -188,8 +188,8 @@
                     <form class="seat" th:action="@{/order}" method="post">
                         <input type="hidden" name="hiddenAction" value="seat" />
                         <input type="hidden" th:name="seatNumber" th:value="${seat.number}" />
-                        <input th:if="${seat.isFree}" title="upper" class="seatFree" type="submit" th:value="${seat.number}"/>
-                        <input th:if="${!seat.isFree}" class="seatTaken" type="button" th:value="${seat.number}"/>
+                        <input th:if="${seat.free}" title="upper" class="seatFree" type="submit" th:value="${seat.number}"/>
+                        <input th:if="${!seat.free}" class="seatTaken" type="button" th:value="${seat.number}"/>
                     </form>
                 </span>
                 <br>
@@ -198,8 +198,8 @@
                     <form class="seat" th:action="@{/order}" method="post">
                         <input type="hidden" name="hiddenAction" value="seat" />
                         <input type="hidden" th:name="seatNumber" th:value="${seat.number}" />
-                        <input th:if="${seat.isFree}" title="lower" class="seatFree" type="submit" th:value="${seat.number}"/>
-                        <input th:if="${!seat.isFree}" class="seatTaken" type="button" th:value="${seat.number}"/>
+                        <input th:if="${seat.free}" title="lower" class="seatFree" type="submit" th:value="${seat.number}"/>
+                        <input th:if="${!seat.free}" class="seatTaken" type="button" th:value="${seat.number}"/>
                     </form>
                 </span>
                 <br><br><br>
@@ -212,8 +212,8 @@
                 <form class="seat" th:action="@{/order}" method="post">
                     <input type="hidden" name="hiddenAction" value="seat" />
                     <input type="hidden" th:name="seatNumber" th:value="${seat.number}" />
-                    <input th:if="${seat.isFree}" title="upper" class="seatFree" type="submit" th:value="${seat.number}"/>
-                    <input th:if="${!seat.isFree}" class="seatTaken" type="button" th:value="${seat.number}"/>
+                    <input th:if="${seat.free}" title="upper" class="seatFree" type="submit" th:value="${seat.number}"/>
+                    <input th:if="${!seat.free}" class="seatTaken" type="button" th:value="${seat.number}"/>
                 </form>
             </span>
                 <br>
@@ -222,8 +222,8 @@
                 <form class="seat" th:action="@{/order}" method="post">
                     <input type="hidden" name="hiddenAction" value="seat" />
                     <input type="hidden" th:name="seatNumber" th:value="${seat.number}" />
-                    <input th:if="${seat.isFree}" title="lower" class="seatFree" type="submit" th:value="${seat.number}"/>
-                    <input th:if="${!seat.isFree}" class="seatTaken" type="button" th:value="${seat.number}"/>
+                    <input th:if="${seat.free}" title="lower" class="seatFree" type="submit" th:value="${seat.number}"/>
+                    <input th:if="${!seat.free}" class="seatTaken" type="button" th:value="${seat.number}"/>
                 </form>
             </span>
                 <br><br><br>
@@ -232,11 +232,11 @@
                 <form class="seat" th:action="@{/order}" method="post">
                     <input type="hidden" name="hiddenAction" value="seat">
                     <input type="hidden" th:name="seatNumber" th:value="${seat.number}">
-                    <input th:if="${seat.isFree and state.odd}" title="upper" class="seatFree"
+                    <input th:if="${seat.free and state.odd}" title="upper" class="seatFree"
                            type="submit" th:value="${seat.number}"/>
-                    <input th:if="${seat.isFree and state.even}" title="lower" class="seatFree"
+                    <input th:if="${seat.free and state.even}" title="lower" class="seatFree"
                            type="submit" th:value="${seat.number}"/>
-                    <input th:if="${!seat.isFree}" class="seatTaken" type="button" th:value="${seat.number}"/>
+                    <input th:if="${!seat.free}" class="seatTaken" type="button" th:value="${seat.number}"/>
                 </form>
             </span>
             </div>
