@@ -167,7 +167,7 @@ public class TicketServiceImpl implements TicketService {
 
             ticketDto.setSeatNumber(i);
 
-            boolean seatFree = isTicketExists(ticketDto) ? false : true;
+            boolean seatFree = isTicketExisting(ticketDto) ? false : true;
             seat.setFree(seatFree);
 
             seats.add(seat);
@@ -186,7 +186,7 @@ public class TicketServiceImpl implements TicketService {
         return ticketCarriage.getNumberOfSeats();
     }
 
-    private boolean isTicketExists(TicketDto ticketDto) {
+    private boolean isTicketExisting(TicketDto ticketDto) {
         List<Ticket> existingTickets = ticketRepository.findByTicketData(ticketDto.getDeparture().getId(),
                 ticketDto.getCarriageNumber(), ticketDto.getSeatNumber(),
                 ticketDto.getDepartureDate(), ticketDto.getArrivalDate());

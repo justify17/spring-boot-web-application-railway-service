@@ -5,11 +5,12 @@ import com.academy.springwebapplication.model.entity.User;
 import com.academy.springwebapplication.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class ChangePasswordValidator implements Validator {
     private final UserRepository userRepository;
@@ -24,28 +25,28 @@ public class ChangePasswordValidator implements Validator {
     public void validate(Object target, Errors errors) {
         ChangedAccountDataDto changedAccountDataDto = (ChangedAccountDataDto) target;
 
-        if (!isOldPasswordMatch(changedAccountDataDto)){
+        if (isOldPasswordNotMatch(changedAccountDataDto)){
             errors.rejectValue("password","error.password","Invalid password");
         }
 
-        if(!isNewPasswordsEquals(changedAccountDataDto)){
+        if(isNewPasswordsNotEqual(changedAccountDataDto)){
             errors.rejectValue("newPassword","error.newPassword", "New passwords do not match");
         }
     }
 
-    private boolean isOldPasswordMatch(ChangedAccountDataDto changedAccountDataDto) {
+    private boolean isOldPasswordNotMatch(ChangedAccountDataDto changedAccountDataDto) {
         String oldPassword = changedAccountDataDto.getPassword();
 
         User user = userRepository.findByUsername(changedAccountDataDto.getUsername());
 
-        return passwordEncoder.matches(oldPassword, user.getPassword());
+        return !passwordEncoder.matches(oldPassword, user.getPassword());
     }
 
-    private boolean isNewPasswordsEquals(ChangedAccountDataDto changedAccountDataDto) {
+    private boolean isNewPasswordsNotEqual(ChangedAccountDataDto changedAccountDataDto) {
         String newPassword = changedAccountDataDto.getNewPassword();
         String confirmNewPassword = changedAccountDataDto.getConfirmNewPassword();
 
-        return newPassword.equals(confirmNewPassword);
+        return !newPassword.equals(confirmNewPassword);
     }
 
 }

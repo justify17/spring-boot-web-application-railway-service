@@ -10,11 +10,14 @@ import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.Validator;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -23,6 +26,12 @@ public class DeparturesController {
     private final DepartureService departureService;
     private final TicketService ticketService;
     private final DepartureMapper departureMapper;
+    private final Validator userRouteValidator;
+
+    @InitBinder
+    private void initBinder(WebDataBinder binder) {
+        binder.setValidator(userRouteValidator);
+    }
 
     @GetMapping("/departures")
     public String departures(Model model) {
@@ -32,13 +41,25 @@ public class DeparturesController {
     }
 
     @PostMapping("/departures")
-    public String findingDeparturesForRoute(@ModelAttribute("userRoute") UserRouteDto route,
-                                            Model model) {
+    public String findingDeparturesForRoute(@Validated @ModelAttribute("userRoute") UserRouteDto route,
+                                            BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+
+            return "departures";
+        }
+
         List<Departure> departures = departureService.getDeparturesForRoute(route);
 
         List<TicketDto> tickets = ticketService.generateTicketsSuitableForUserRoute(departures, route);
 
-        model.addAttribute("tickets", tickets);
+        if (tickets.isEmpty()) {
+            bindingResult.reject("error.route", "Route does not exist!");
+
+            return "departures";
+        } else {
+
+            model.addAttribute("tickets", tickets);
+        }
 
         return "departures";
     }
@@ -50,7 +71,7 @@ public class DeparturesController {
 
         DepartureDto departureDto = departureMapper.departureToDepartureDto(departure);
 
-        model.addAttribute("departure",departureDto);
+        model.addAttribute("departure", departureDto);
 
         return "departureRoute";
     }

@@ -12,16 +12,20 @@
 <div class="menu" th:insert="blocks/menu :: menu_fragment" />
 <form class="form-style" th:action="@{/departures}" method="post" th:object="${userRoute}">
     <span><label for="from">From:</label>
-        <input type="text" id="from" placeholder="Station" th:field="*{departureStation.title}" /></span>
+        <input type="text" id="from" placeholder="Departure Station" th:field="*{departureStation.title}" /></span>
     <span><label for="to">To:</label>
-        <input type="text" id="to" placeholder="Station" th:field="*{arrivalStation.title}" /></span>
+        <input type="text" id="to" placeholder="Arrival Station" th:field="*{arrivalStation.title}" /></span>
     <span><label for="date">When:</label>
             <input type="date" id="date" th:field="*{departureDate}"/></span>
     <span><label for="time">at</label>
             <input type="time" id="time" th:field="*{departureTime}"/></span>
     <input type="submit" value="Search"/>
-    <br><br>
+    <p th:if="${#fields.hasErrors('departureStation.title')}" class="error" th:errors="*{departureStation.title}" />
+    <p th:if="${#fields.hasErrors('arrivalStation.title')}" class="error" th:errors="*{arrivalStation.title}" />
+    <p th:if="${#fields.hasGlobalErrors()}" class="error" th:errors="*{global}" />
+    <br>
 </form>
+
 <table th:if="${not #lists.isEmpty(tickets)}" border="5">
     <h1 th:text="|Route: ${tickets[0].departureStation.title} &mdash; ${tickets[0].arrivalStation.title}|" />
     <tr>

@@ -14,9 +14,9 @@
     <h3 sec:authorize="isAuthenticated()">Welcome, <span sec:authentication="name"/></h3>
     <form class="form-style" th:action="@{/departures}" method="post" th:object="${userRoute}">
         <span><label for="from">From:</label>
-            <input type="text" id="from" placeholder="Station" th:field="*{departureStation.title}" /></span>
+            <input type="text" id="from" placeholder="Departure Station" th:field="*{departureStation.title}" /></span>
         <span><label for="to">To:</label>
-            <input type="text" id="to" placeholder="Station" th:field="*{arrivalStation.title}" /></span>
+            <input type="text" id="to" placeholder="Arrival Station" th:field="*{arrivalStation.title}" /></span>
         <span><label for="date">When:</label>
             <input type="date" id="date" placeholder="dd.mm.yyyy" th:field="*{departureDate}"/></span>
         <span><label for="time">at</label>

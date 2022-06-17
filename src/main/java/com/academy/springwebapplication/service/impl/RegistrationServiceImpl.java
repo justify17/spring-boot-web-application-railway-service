@@ -32,7 +32,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
-    public boolean isUserExists(String username){
+    public boolean isUserExisting(String username){
         User existingUser = userRepository.findByUsername(username);
 
         if(existingUser != null){
