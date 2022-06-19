@@ -1,12 +1,11 @@
 package com.academy.springwebapplication.validator;
 
-import com.academy.springwebapplication.dto.ChangedAccountDataDto;
+import com.academy.springwebapplication.dto.ChangedPasswordDto;
 import com.academy.springwebapplication.model.entity.User;
 import com.academy.springwebapplication.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -18,35 +17,35 @@ public class ChangePasswordValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return ChangedAccountDataDto.class.equals(clazz);
+        return ChangedPasswordDto.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        ChangedAccountDataDto changedAccountDataDto = (ChangedAccountDataDto) target;
+        ChangedPasswordDto changedPasswordDto = (ChangedPasswordDto) target;
 
-        if (isOldPasswordNotMatch(changedAccountDataDto)){
-            errors.rejectValue("password","error.password","Invalid password");
+        if (!changedPasswordDto.getPassword().trim().isEmpty() && isOldPasswordNotMatching(changedPasswordDto)) {
+            errors.rejectValue("password", "error.password", "Invalid old password");
         }
 
-        if(isNewPasswordsNotEqual(changedAccountDataDto)){
-            errors.rejectValue("newPassword","error.newPassword", "New passwords do not match");
+        if (!changedPasswordDto.getConfirmNewPassword().trim().isEmpty() && isNewPasswordsNotEqual(changedPasswordDto)) {
+            errors.rejectValue("confirmNewPassword", "error.confirmNewPassword",
+                    "New passwords do not match");
         }
     }
 
-    private boolean isOldPasswordNotMatch(ChangedAccountDataDto changedAccountDataDto) {
-        String oldPassword = changedAccountDataDto.getPassword();
+    private boolean isOldPasswordNotMatching(ChangedPasswordDto changedPasswordDto) {
+        String oldPassword = changedPasswordDto.getPassword();
 
-        User user = userRepository.findByUsername(changedAccountDataDto.getUsername());
+        User user = userRepository.findByUsername(changedPasswordDto.getUsername());
 
         return !passwordEncoder.matches(oldPassword, user.getPassword());
     }
 
-    private boolean isNewPasswordsNotEqual(ChangedAccountDataDto changedAccountDataDto) {
-        String newPassword = changedAccountDataDto.getNewPassword();
-        String confirmNewPassword = changedAccountDataDto.getConfirmNewPassword();
+    private boolean isNewPasswordsNotEqual(ChangedPasswordDto changedPasswordDto) {
+        String newPassword = changedPasswordDto.getNewPassword();
+        String confirmNewPassword = changedPasswordDto.getConfirmNewPassword();
 
         return !newPassword.equals(confirmNewPassword);
     }
-
 }

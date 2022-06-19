@@ -14,6 +14,9 @@
     <p><label for="station">Please enter the station:</label>
         <input type="text" id="station" th:field="*{title}" />
         <input type="submit" value="Search"/></p>
+    <div th:if="${#fields.hasAnyErrors()}">
+        <p th:each="err : ${#fields.allErrors()}" class="error" th:text="${err}" />
+    </div>
 </form>
 <table th:if="${departures} != null" class="table">
     <h3 th:text="|Online scoreboard station: ${station.title}|" />

@@ -1,7 +1,8 @@
 package com.academy.springwebapplication.service.impl;
 
-import com.academy.springwebapplication.dto.ChangedAccountDataDto;
+import com.academy.springwebapplication.dto.ChangedPasswordDto;
 import com.academy.springwebapplication.dto.ChangedUserInformationDto;
+import com.academy.springwebapplication.dto.ChangedUsernameDto;
 import com.academy.springwebapplication.mapper.UserInformationMapper;
 import com.academy.springwebapplication.model.entity.User;
 import com.academy.springwebapplication.model.entity.UserInformation;
@@ -43,6 +44,7 @@ public class AccountServiceImpl implements AccountService {
         UserInformation userInformation = userInformationMapper.userInformationDtoToUserInformation(changedUserInformationDto);
 
         if (user.getUserInformation() != null) {
+
             userInformation.setId(user.getId());
         }
 
@@ -52,19 +54,19 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void saveNewUsername(ChangedAccountDataDto changedAccountDataDto) {
-        User user = userRepository.findByUsername(changedAccountDataDto.getUsername());
+    public void saveNewUsername(ChangedUsernameDto changedUsernameDto) {
+        User user = userRepository.findByUsername(changedUsernameDto.getUsername());
 
-        user.setUsername(changedAccountDataDto.getNewUsername());
+        user.setUsername(changedUsernameDto.getNewUsername());
 
         userRepository.save(user);
     }
 
     @Override
-    public void saveNewPassword(ChangedAccountDataDto changedAccountDataDto) {
-        User user = userRepository.findByUsername(changedAccountDataDto.getUsername());
+    public void saveNewPassword(ChangedPasswordDto changedPasswordDto) {
+        User user = userRepository.findByUsername(changedPasswordDto.getUsername());
 
-        String encryptedPassword = passwordEncoder.encode(changedAccountDataDto.getNewPassword());
+        String encryptedPassword = passwordEncoder.encode(changedPasswordDto.getNewPassword());
         user.setPassword(encryptedPassword);
 
         userRepository.save(user);

@@ -36,12 +36,12 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public void payTicket(CreditCardDto card, TicketDto ticketDto) {
         saveTicket(ticketDto);
-        moneyTransfer(card);
+        moneyWriteOff(card,ticketDto.getFinalPrice());
     }
 
-    private void moneyTransfer(CreditCardDto card) {
+    private void moneyWriteOff(CreditCardDto card, double price) {
 
-        System.out.printf("Payment by card: %s was successful!", card.getNumber());
+        System.out.printf("Payment by card: %s was successful! Written off %f BYN", card.getNumber(), price);
     }
 
     private void saveTicket(TicketDto ticketDto) {
@@ -52,6 +52,7 @@ public class TicketServiceImpl implements TicketService {
 
         Station departureStation = stationRepository.findByTitle(ticketDto.getDepartureStation().getTitle());
         ticket.setUserDepartureStation(departureStation);
+
 
         Station arrivalStation = stationRepository.findByTitle(ticketDto.getArrivalStation().getTitle());
         ticket.setUserArrivalStation(arrivalStation);

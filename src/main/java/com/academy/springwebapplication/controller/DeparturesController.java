@@ -18,6 +18,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Controller
@@ -26,12 +28,6 @@ public class DeparturesController {
     private final DepartureService departureService;
     private final TicketService ticketService;
     private final DepartureMapper departureMapper;
-    private final Validator userRouteValidator;
-
-    @InitBinder
-    private void initBinder(WebDataBinder binder) {
-        binder.setValidator(userRouteValidator);
-    }
 
     @GetMapping("/departures")
     public String departures(Model model) {
@@ -41,7 +37,7 @@ public class DeparturesController {
     }
 
     @PostMapping("/departures")
-    public String findingDeparturesForRoute(@Validated @ModelAttribute("userRoute") UserRouteDto route,
+    public String findingDeparturesForRoute(@Valid @ModelAttribute("userRoute") UserRouteDto route,
                                             BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
 
@@ -53,7 +49,7 @@ public class DeparturesController {
         List<TicketDto> tickets = ticketService.generateTicketsSuitableForUserRoute(departures, route);
 
         if (tickets.isEmpty()) {
-            bindingResult.reject("error.route", "Route does not exist!");
+            bindingResult.reject("error.route", "The entered route for the specified date was not found");
 
             return "departures";
         } else {

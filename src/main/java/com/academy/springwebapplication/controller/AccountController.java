@@ -1,24 +1,28 @@
 package com.academy.springwebapplication.controller;
 
-
-import com.academy.springwebapplication.dto.ChangedAccountDataDto;
-import com.academy.springwebapplication.dto.TicketDto;
+import com.academy.springwebapplication.dto.ChangedPasswordDto;
 import com.academy.springwebapplication.dto.ChangedUserInformationDto;
+import com.academy.springwebapplication.dto.ChangedUsernameDto;
+import com.academy.springwebapplication.dto.TicketDto;
 import com.academy.springwebapplication.service.AccountService;
 import com.academy.springwebapplication.service.TicketService;
+import com.academy.springwebapplication.validator.ChangePasswordValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -27,7 +31,6 @@ public class AccountController {
     private final AccountService accountService;
     private final TicketService ticketService;
     private final Validator changePasswordValidator;
-    private final Validator changeUsernameValidator;
 
     @GetMapping("/account")
     public String account(@AuthenticationPrincipal UserDetails userDetails,
@@ -53,9 +56,18 @@ public class AccountController {
     }
 
     @PostMapping(value = "/account", params = {"hiddenAction=changeInformation"})
-    public String changeUserInformation(@ModelAttribute("userInformation") ChangedUserInformationDto changedUserInformationDto,
+    public String changeUserInformation(@Valid @ModelAttribute("userInformation") ChangedUserInformationDto changedUserInformationDto,
+                                        BindingResult bindingResult,
                                         @AuthenticationPrincipal UserDetails userDetails,
                                         Model model) {
+        if (bindingResult.hasErrors()) {
+            setModelData(model, userDetails.getUsername());
+
+            model.addAttribute("openInformation", true);
+
+            return "account";
+        }
+
         accountService.saveUserInformation(changedUserInformationDto);
 
         setModelData(model, userDetails.getUsername());
@@ -67,11 +79,10 @@ public class AccountController {
     }
 
     @PostMapping(value = "/account", params = {"hiddenAction=changeUsername"})
-    public String changeUsername(@ModelAttribute("changedAccountData") ChangedAccountDataDto changedAccountDataDto,
+    public String changeUsername(@Valid @ModelAttribute("changedUsername") ChangedUsernameDto changedUsernameDto,
+                                 BindingResult bindingResult,
                                  @AuthenticationPrincipal UserDetails userDetails,
-                                 HttpSession session, BindingResult bindingResult, Model model) {
-        changeUsernameValidator.validate(changedAccountDataDto, bindingResult);
-
+                                 HttpSession session, Model model) {
         if (bindingResult.hasErrors()) {
             setModelData(model, userDetails.getUsername());
 
@@ -80,7 +91,7 @@ public class AccountController {
             return "account";
         }
 
-        accountService.saveNewUsername(changedAccountDataDto);
+        accountService.saveNewUsername(changedUsernameDto);
 
         session.invalidate();
 
@@ -88,10 +99,11 @@ public class AccountController {
     }
 
     @PostMapping(value = "/account", params = {"hiddenAction=changePassword"})
-    public String changePassword(@ModelAttribute("changedAccountData") ChangedAccountDataDto changedAccountDataDto,
+    public String changePassword(@Valid @ModelAttribute("changedPassword") ChangedPasswordDto changedPasswordDto,
+                                 BindingResult bindingResult,
                                  @AuthenticationPrincipal UserDetails userDetails,
-                                 HttpSession session, BindingResult bindingResult, Model model) {
-        changePasswordValidator.validate(changedAccountDataDto, bindingResult);
+                                 HttpSession session, Model model) {
+        changePasswordValidator.validate(changedPasswordDto, bindingResult);
 
         if (bindingResult.hasErrors()) {
             setModelData(model, userDetails.getUsername());
@@ -101,7 +113,7 @@ public class AccountController {
             return "account";
         }
 
-        accountService.saveNewPassword(changedAccountDataDto);
+        accountService.saveNewPassword(changedPasswordDto);
 
         session.invalidate();
 
@@ -119,11 +131,18 @@ public class AccountController {
             model.addAttribute("userInformation", changedUserInformationDto);
         }
 
-        if (model.getAttribute("changedAccountData") == null) {
-            ChangedAccountDataDto changedAccountDataDto = new ChangedAccountDataDto();
-            changedAccountDataDto.setUsername(username);
+        if (model.getAttribute("changedUsername") == null) {
+            ChangedUsernameDto changedUsernameDto = new ChangedUsernameDto();
+            changedUsernameDto.setUsername(username);
 
-            model.addAttribute("changedAccountData", changedAccountDataDto);
+            model.addAttribute("changedUsername", changedUsernameDto);
+        }
+
+        if (model.getAttribute("changedPassword") == null) {
+            ChangedPasswordDto changedPasswordDto = new ChangedPasswordDto();
+            changedPasswordDto.setUsername(username);
+
+            model.addAttribute("changedPassword", changedPasswordDto);
         }
     }
 }

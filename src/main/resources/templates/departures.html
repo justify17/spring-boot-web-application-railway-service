@@ -20,9 +20,9 @@
     <span><label for="time">at</label>
             <input type="time" id="time" th:field="*{departureTime}"/></span>
     <input type="submit" value="Search"/>
-    <p th:if="${#fields.hasErrors('departureStation.title')}" class="error" th:errors="*{departureStation.title}" />
-    <p th:if="${#fields.hasErrors('arrivalStation.title')}" class="error" th:errors="*{arrivalStation.title}" />
-    <p th:if="${#fields.hasGlobalErrors()}" class="error" th:errors="*{global}" />
+    <div th:if="${#fields.hasAnyErrors()}">
+        <p th:each="err : ${#fields.allErrors()}" class="error" th:text="${err}" />
+    </div>
     <br>
 </form>
 

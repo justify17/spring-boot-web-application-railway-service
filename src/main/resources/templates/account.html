@@ -76,13 +76,15 @@
         <input type="hidden" name="hiddenAction" value="changeInformation" />
         <input type="hidden" th:field="*{username}" />
         <p><label for="firstName">First name:</label>
-            <input type="text" id="firstName" th:field="*{firstName}"/></p>
+            <input type="text" id="firstName" th:field="*{firstName}"/>
+        <span th:if="${#fields.hasErrors('firstName')}" class="error" th:errors="*{firstName}" /></p>
         <p><label for="surname">Surname:</label>
-            <input type="text" id="surname" th:field="*{surname}"/></p>
+            <input type="text" id="surname" th:field="*{surname}"/>
+            <span th:if="${#fields.hasErrors('surname')}" class="error" th:errors="*{surname}" /></p>
         <p><label for="phoneNumber">Phone number:</label>
-            <input type="tel" id="phoneNumber" autofocus="autofocus" required="required"
-                   pattern="\+375\s?[\(]{0,1}[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}"
-                   placeholder="+375(__)___-__-__" th:field="*{phoneNumber}"/></p>
+            <input type="tel" id="phoneNumber" autofocus="autofocus"
+                   placeholder="+375(__)___-__-__" th:field="*{phoneNumber}"/>
+            <span th:if="${#fields.hasErrors('phoneNumber')}" class="error" th:errors="*{phoneNumber}" /></p>
         <p><input type="submit" value="Save changes"/>
         <span th:if="${successfulSave != null}" class="successful" th:text="${successfulSave}"/></p>
     </form>
@@ -94,12 +96,12 @@
             document.getElementById("openChangeUsername").click();
         </script>
     </div>
-    <form th:action="@{/account}" method="post" th:object="${changedAccountData}">
+    <form th:action="@{/account}" method="post" th:object="${changedUsername}">
         <input type="hidden" name="hiddenAction" value="changeUsername" />
         <input type="hidden" th:field="*{username}" />
         <p><label for="newUsername">Please enter your new username:</label>
             <input type="text" id="newUsername" th:field="*{newUsername}"/>
-            <span th:if="${#fields.hasErrors('username')}" class="error" th:errors="*{username}" /></p></p>
+            <span th:if="${#fields.hasErrors('newUsername')}" class="error" th:errors="*{newUsername}" /></p>
         <p><input type="submit" value="Change username"/></p>
         <p><small>*After changing your username, you will be redirected to the login page</small></p>
     </form>
@@ -111,17 +113,18 @@
             document.getElementById("openChangePassword").click();
         </script>
     </div>
-    <form th:action="@{/account}" method="post" th:object="${changedAccountData}">
+    <form th:action="@{/account}" method="post" th:object="${changedPassword}">
         <input type="hidden" th:name="hiddenAction" th:value="changePassword" />
         <input type="hidden" th:field="*{username}" />
         <p><label for="password">Please enter your old password:</label>
             <input type="text" id="password" th:field="*{password}"/>
-            <span th:if="${#fields.hasErrors('password')}" class="error" th:errors="*{password}" /></p>
+        <span th:if="${#fields.hasErrors('password')}" class="error" th:errors="*{password}" /></p>
         <p><label for="newPassword">Enter a new password:</label>
             <input type="text" id="newPassword" th:field="*{newPassword}"/>
-            <span th:if="${#fields.hasErrors('newPassword')}" class="error" th:errors="*{newPassword}" /></p>
+        <span th:if="${#fields.hasErrors('newPassword')}" class="error" th:errors="*{newPassword}" /></p>
         <p><label for="confirmNewPassword">Confirm a new password:</label>
             <input type="text" id="confirmNewPassword" th:field="*{confirmNewPassword}"/></p>
+        <p th:if="${#fields.hasErrors('confirmNewPassword')}" class="error" th:errors="*{confirmNewPassword}" />
         <p><input type="submit" value="Change password"/></p>
         <p><small>*After changing your password, you will be redirected to the login page</small></p>
     </form>
