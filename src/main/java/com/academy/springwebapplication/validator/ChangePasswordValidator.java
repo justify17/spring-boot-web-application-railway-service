@@ -1,37 +1,45 @@
 package com.academy.springwebapplication.validator;
 
+import com.academy.springwebapplication.annotation.PasswordChangeConstraint;
 import com.academy.springwebapplication.dto.ChangedPasswordDto;
 import com.academy.springwebapplication.model.entity.User;
 import com.academy.springwebapplication.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
-@Component
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
 @RequiredArgsConstructor
-public class ChangePasswordValidator implements Validator {
+public class ChangePasswordValidator implements ConstraintValidator<PasswordChangeConstraint, ChangedPasswordDto> {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public boolean supports(Class<?> clazz) {
-        return ChangedPasswordDto.class.equals(clazz);
-    }
-
-    @Override
-    public void validate(Object target, Errors errors) {
-        ChangedPasswordDto changedPasswordDto = (ChangedPasswordDto) target;
+    public boolean isValid(ChangedPasswordDto changedPasswordDto, ConstraintValidatorContext constraintValidatorContext) {
+        boolean valid = true;
 
         if (!changedPasswordDto.getPassword().trim().isEmpty() && isOldPasswordNotMatching(changedPasswordDto)) {
-            errors.rejectValue("password", "error.password", "Invalid old password");
+            constraintValidatorContext.buildConstraintViolationWithTemplate("Invalid old password")
+                    .addPropertyNode("password")
+                    .addConstraintViolation();
+
+            valid = false;
         }
 
         if (!changedPasswordDto.getConfirmNewPassword().trim().isEmpty() && isNewPasswordsNotEqual(changedPasswordDto)) {
-            errors.rejectValue("confirmNewPassword", "error.confirmNewPassword",
-                    "New passwords do not match");
+            constraintValidatorContext.buildConstraintViolationWithTemplate("New passwords do not match")
+                    .addPropertyNode("confirmNewPassword")
+                    .addConstraintViolation();
+
+            valid = false;
         }
+
+        if(!valid){
+            constraintValidatorContext.disableDefaultConstraintViolation();
+        }
+
+        return valid;
     }
 
     private boolean isOldPasswordNotMatching(ChangedPasswordDto changedPasswordDto) {

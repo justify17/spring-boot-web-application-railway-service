@@ -63,7 +63,7 @@
             <p th:text="|Price: ${session.ticket.finalPrice} BYN|" />
         </div>
         <h3 th:if="${error}" th:text="'Operation failed, please try again'" />
-        <a th:href="@{#payment}">Proceed to payment</a>
+        <a th:href="@{#payment}" class="openPayment">Proceed to payment</a>
     </div>
 
     <!--interregional train order-->
@@ -133,7 +133,7 @@
             <p th:text="|Selected seat: № ${session.ticket.seatNumber}|" />
             <p th:text="|Price: ${session.ticket.finalPrice} BYN|" />
         <h3 th:if="${error}" th:text="'Operation failed, please try again'" />
-        <a th:href="@{#payment}">Proceed to payment</a>
+        <a th:href="@{#payment}" class="openPayment">Proceed to payment</a>
         </div>
     </div>
 
@@ -245,7 +245,7 @@
             <p th:text="|Selected seat: № ${session.ticket.seatNumber}|" />
             <p th:text="|Price: ${session.ticket.finalPrice} BYN|" />
             <h3 th:if="${error}" th:text="'Operation failed, please try again'" />
-            <a th:href="@{#payment}">Proceed to payment</a>
+            <a th:href="@{#payment}" class="openPayment">Proceed to payment</a>
         </div>
     </div>
 
@@ -256,18 +256,26 @@
                 <input type="hidden" name="hiddenAction" value="payment" />
                 <p><label for="number">Card Number:</label>
                     <input type="text" id="number" onKeyPress="CreditCard(this)" th:field="*{number}"/></p>
+                <p th:if="${#fields.hasErrors('number')}" class="error" th:errors="*{number}" />
                 <span><label for="month">MM/YY: </label>
                     <input type="number" id="month" placeholder="MM"
                            min="1" max="12" th:field="*{monthOfCardExpiration}">
                 <label for="year">/</label>
                     <input type="number" id="year" placeholder="YY"
                            min="22" max="99" th:field="*{yearOfCardExpiration}"></span>
-                <br><br>
+                <p th:if="${#fields.hasErrors('monthOfCardExpiration')}" class="error" th:errors="*{monthOfCardExpiration}" />
+                <p th:if="${#fields.hasErrors('yearOfCardExpiration')}" class="error" th:errors="*{yearOfCardExpiration}" />
+                <br>
                 <p th:text="|Price: ${session.ticket.finalPrice} BYN|" />
+                <p th:if="${#fields.hasGlobalErrors()}" class="error" th:errors="*{global}"></p>
                 <a href="#" class="submit">Back</a>
                 <input class="submit" type="submit" value="Pay"/>
             </form>
         </div>
+    </div>
+
+    <div th:if="${openPayment}">
+        <script>document.getElementsByClassName('openPayment')[0].click();</script>
     </div>
 
 </div>

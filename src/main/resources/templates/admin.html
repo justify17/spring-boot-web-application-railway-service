@@ -152,6 +152,9 @@
         <span><label for="date">When:</label>
             <input type="datetime-local" id="date" th:field="*{departureDate}"/></span>
         <input type="submit" value="Create"/>
+        <div th:if="${#fields.hasAnyErrors()}">
+            <p th:each="err : ${#fields.allErrors()}" class="error" th:text="${err}" />
+        </div>
     </form>
 </div>
 </body>

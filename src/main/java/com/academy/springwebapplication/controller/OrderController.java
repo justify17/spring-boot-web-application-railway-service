@@ -9,9 +9,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -69,10 +71,19 @@ public class OrderController {
     }
 
     @PostMapping(value = "/order", params = {"hiddenAction=payment"})
-    public String ticketPayment(@ModelAttribute("card") CreditCardDto card,
+    public String ticketPayment(@Valid @ModelAttribute("card") CreditCardDto card,
+                                BindingResult bindingResult, Model model,
                                 @SessionAttribute("ticket") TicketDto ticket,
                                 @AuthenticationPrincipal UserDetails userDetails,
-                                HttpSession session, Model model) {
+                                HttpSession session) {
+        if(bindingResult.hasErrors()){
+            setModelData(model, ticket);
+
+            model.addAttribute("openPayment", true);
+
+            return "order";
+        }
+
         ticket.setUsername(userDetails.getUsername());
 
         try {
@@ -80,7 +91,7 @@ public class OrderController {
         } catch (Exception e) {
             setModelData(model, ticket);
 
-            model.addAttribute("error", true);
+            bindingResult.reject("operationError", "Operation failed, please try again");
 
             return "order";
         }
@@ -93,7 +104,10 @@ public class OrderController {
     }
 
     private void setModelData(Model model, TicketDto ticket) {
-        model.addAttribute("card", new CreditCardDto());
+        if(!model.containsAttribute("card")){
+
+            model.addAttribute("card", new CreditCardDto());
+        }
 
         if (ticket.getCarriageNumber() != null) {
             List<SeatDto> seats = ticketService.getSeatsByTicketData(ticket);

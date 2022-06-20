@@ -41,7 +41,7 @@ public class TicketServiceImpl implements TicketService {
 
     private void moneyWriteOff(CreditCardDto card, double price) {
 
-        System.out.printf("Payment by card: %s was successful! Written off %f BYN", card.getNumber(), price);
+        System.out.printf("Payment by card: %s was successful! Written off %.2f BYN.", card.getNumber(), price);
     }
 
     private void saveTicket(TicketDto ticketDto) {

@@ -82,3 +82,7 @@ th.sorted[data-order="-1"]::after {
 th.sorted[data-order="1"]::after {
 	content: "▲"
 }
+
+.error {
+    color: #FF0000;
+}

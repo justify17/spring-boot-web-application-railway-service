@@ -13,7 +13,8 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StationDto {
-    @NotBlank(message = "The field Station must not be empty")
+
+    @NotBlank(message = "The field station must not be empty")
     @StationExists
     private String title;
 }

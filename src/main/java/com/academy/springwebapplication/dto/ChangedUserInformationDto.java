@@ -9,15 +9,15 @@ import javax.validation.constraints.Pattern;
 public class ChangedUserInformationDto {
     private String username;
 
-    @NotNull
+    @NotNull(message = "The field first name cannot be null")
     @Pattern(regexp = "()|([a-zA-Zа-яА-ЯёЁ-]+)", message = "Incorrect first name")
     private String firstName;
 
-    @NotNull
+    @NotNull(message = "The field surname cannot be null")
     @Pattern(regexp = "()|([a-zA-Zа-яА-ЯёЁ-]+)", message = "Incorrect surname")
     private String surname;
 
-    @NotNull
+    @NotNull(message = "The field phone number cannot be null")
     @Pattern(regexp = "()|(\\+375\\(__\\)___-__-__)|(\\+375\\s?[(]?[0-9]{2}[)]?\\s?\\d{3}[-]?\\d{2}[-]?\\d{2})",
             message = "Incorrect phone number")
     private String phoneNumber;

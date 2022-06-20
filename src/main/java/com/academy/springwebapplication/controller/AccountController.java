@@ -6,16 +6,12 @@ import com.academy.springwebapplication.dto.ChangedUsernameDto;
 import com.academy.springwebapplication.dto.TicketDto;
 import com.academy.springwebapplication.service.AccountService;
 import com.academy.springwebapplication.service.TicketService;
-import com.academy.springwebapplication.validator.ChangePasswordValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +26,6 @@ import java.util.List;
 public class AccountController {
     private final AccountService accountService;
     private final TicketService ticketService;
-    private final Validator changePasswordValidator;
 
     @GetMapping("/account")
     public String account(@AuthenticationPrincipal UserDetails userDetails,
@@ -60,20 +55,18 @@ public class AccountController {
                                         BindingResult bindingResult,
                                         @AuthenticationPrincipal UserDetails userDetails,
                                         Model model) {
-        if (bindingResult.hasErrors()) {
-            setModelData(model, userDetails.getUsername());
+        setModelData(model, userDetails.getUsername());
 
-            model.addAttribute("openInformation", true);
+        model.addAttribute("openInformation", true);
+
+        if (bindingResult.hasErrors()) {
 
             return "account";
         }
 
         accountService.saveUserInformation(changedUserInformationDto);
 
-        setModelData(model, userDetails.getUsername());
-
         model.addAttribute("successfulSave", "Data successfully saved!");
-        model.addAttribute("openInformation", true);
 
         return "account";
     }
@@ -103,8 +96,6 @@ public class AccountController {
                                  BindingResult bindingResult,
                                  @AuthenticationPrincipal UserDetails userDetails,
                                  HttpSession session, Model model) {
-        changePasswordValidator.validate(changedPasswordDto, bindingResult);
-
         if (bindingResult.hasErrors()) {
             setModelData(model, userDetails.getUsername());
 
@@ -125,20 +116,20 @@ public class AccountController {
 
         model.addAttribute("tickets", tickets);
 
-        if (model.getAttribute("userInformation") == null) {
+        if (!model.containsAttribute("userInformation")) {
             ChangedUserInformationDto changedUserInformationDto = accountService.getUserInformation(username);
 
             model.addAttribute("userInformation", changedUserInformationDto);
         }
 
-        if (model.getAttribute("changedUsername") == null) {
+        if (!model.containsAttribute("changedUsername")) {
             ChangedUsernameDto changedUsernameDto = new ChangedUsernameDto();
             changedUsernameDto.setUsername(username);
 
             model.addAttribute("changedUsername", changedUsernameDto);
         }
 
-        if (model.getAttribute("changedPassword") == null) {
+        if (!model.containsAttribute("changedPassword")) {
             ChangedPasswordDto changedPasswordDto = new ChangedPasswordDto();
             changedPasswordDto.setUsername(username);
 

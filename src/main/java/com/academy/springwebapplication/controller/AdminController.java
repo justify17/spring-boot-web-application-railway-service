@@ -7,11 +7,14 @@ import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -80,13 +83,19 @@ public class AdminController {
     }
 
     @PostMapping(value = "/admin", params = {"hiddenAction=createNewDeparture"})
-    public String addNewDeparture(@ModelAttribute("newDeparture") DepartureDto departureDto,
-                                  Model model) {
+    public String addNewDeparture(@Valid @ModelAttribute("newDeparture") DepartureDto departureDto,
+                                  BindingResult bindingResult, Model model) {
+        model.addAttribute("openDepartures", true);
+
+        if (bindingResult.hasErrors()) {
+            setModelData(model);
+
+            return "admin";
+        }
+
         departureService.saveNewDeparture(departureDto);
 
         setModelData(model);
-
-        model.addAttribute("openDepartures", true);
 
         return "admin";
     }
@@ -153,6 +162,9 @@ public class AdminController {
         List<TrainDto> trains = adminService.getAllTrains();
         model.addAttribute("trains", trains);
 
-        model.addAttribute("newDeparture", new DepartureDto());
+        if (!model.containsAttribute("newDeparture")) {
+
+            model.addAttribute("newDeparture", new DepartureDto());
+        }
     }
 }
