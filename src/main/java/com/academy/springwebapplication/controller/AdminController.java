@@ -35,7 +35,7 @@ public class AdminController {
 
     @PostMapping(value = "/admin", params = {"hiddenAction=changeUserRole"})
     public String changeUserRole(@RequestParam("username") String username,
-                                 @RequestParam("newRole") Integer newRoleId,
+                                 @RequestParam("newRole") int newRoleId,
                                  Model model) {
         adminService.setNewUserRole(username, newRoleId);
 
@@ -59,7 +59,7 @@ public class AdminController {
     }
 
     @PostMapping(value = "/admin", params = {"hiddenAction=deleteUser"})
-    public String deleteUser(@RequestParam("userId") Integer userId,
+    public String deleteUser(@RequestParam("userId") int userId,
                              Model model) {
         adminService.deleteUserById(userId);
 
@@ -71,7 +71,7 @@ public class AdminController {
     }
 
     @PostMapping(value = "/admin", params = {"hiddenAction=cancelDeparture"})
-    public String cancelDeparture(@RequestParam("departureId") Integer departureId,
+    public String cancelDeparture(@RequestParam("departureId") int departureId,
                                   Model model) {
         departureService.deleteDepartureById(departureId);
 
@@ -110,7 +110,7 @@ public class AdminController {
         return "userOrders";
     }
 
-    @PostMapping(value = "/admin/userOrders")
+    @PostMapping("/admin/userOrders")
     public String deleteUserOrder(@RequestParam("ticketId") int ticketId,
                                   @RequestParam("username") String username,
                                   Model model) {

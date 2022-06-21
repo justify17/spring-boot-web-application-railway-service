@@ -52,7 +52,7 @@
         <td align="center">
             <span th:text="|${ticket.routePrice / 100},${ticket.routePrice % 100} BYN|" />
             <br>
-            <a th:href="@{/order(idDeparture=${ticket.departure.id},departureStation=${ticket.departureStation.title},
+            <a th:href="@{/order(departureId=${ticket.departure.id},departureStation=${ticket.departureStation.title},
             arrivalStation=${ticket.arrivalStation.title})}">Make an order</a>
         </td>
     </tr>

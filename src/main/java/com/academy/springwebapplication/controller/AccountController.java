@@ -38,7 +38,7 @@ public class AccountController {
     }
 
     @PostMapping(value = "/account", params = {"hiddenAction=cancelOrder"})
-    public String cancelOrder(@RequestParam("ticketId") Integer ticketId,
+    public String cancelOrder(@RequestParam("ticketId") int ticketId,
                               @AuthenticationPrincipal UserDetails userDetails,
                               Model model) {
         ticketService.deleteTicketById(ticketId);

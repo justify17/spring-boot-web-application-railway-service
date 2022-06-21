@@ -1,4 +1,4 @@
-package com.academy.springwebapplication.config;
+package com.academy.springwebapplication.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

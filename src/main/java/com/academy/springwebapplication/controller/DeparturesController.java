@@ -27,7 +27,7 @@ public class DeparturesController {
     private final DepartureMapper departureMapper;
 
     @GetMapping("/departures")
-    public String departures(Model model) throws Exception {
+    public String departures(Model model) {
         model.addAttribute("userRoute", new UserRouteDto());
 
         return "departures";
@@ -58,7 +58,7 @@ public class DeparturesController {
     }
 
     @GetMapping("/departures/route")
-    public String departureRoute(@RequestParam(name = "departureId") Integer departureId,
+    public String departureRoute(@RequestParam(name = "departureId") int departureId,
                                  Model model) {
         Departure departure = departureService.getDepartureById(departureId);
 

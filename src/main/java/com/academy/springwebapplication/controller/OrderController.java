@@ -23,11 +23,11 @@ public class OrderController {
     private final TicketService ticketService;
 
     @GetMapping("/order")
-    public String order(@RequestParam(name = "idDeparture") int idDeparture,
+    public String order(@RequestParam(name = "departureId") int departureId,
                         @RequestParam(name = "departureStation") String departureStation,
                         @RequestParam(name = "arrivalStation") String arrivalStation,
                         Model model, HttpSession session) {
-        Departure departure = departureService.getDepartureById(idDeparture);
+        Departure departure = departureService.getDepartureById(departureId);
         UserRouteDto userRouteDto = new UserRouteDto(new StationDto(departureStation), new StationDto(arrivalStation));
 
         TicketDto ticket = ticketService.createTicketForDepartureAlongRoute(departure, userRouteDto);
