@@ -1,6 +1,8 @@
 package com.academy.springwebapplication.dto;
 
 import com.academy.springwebapplication.annotation.DepartureDateConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +17,8 @@ import java.time.LocalTime;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserRouteDto {
     @Valid
     private StationDto departureStation;
@@ -28,9 +32,4 @@ public class UserRouteDto {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalTime departureTime;
-
-    public UserRouteDto(StationDto departureStation, StationDto arrivalStation) {
-        this.departureStation = departureStation;
-        this.arrivalStation = arrivalStation;
-    }
 }

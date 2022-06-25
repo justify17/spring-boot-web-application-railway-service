@@ -9,7 +9,7 @@
 
 <body>
 <div class="menu" th:insert="blocks/menu :: menu_fragment" />
-<div class="route">
+<div th:if="${departure}" class="route">
     <span th:utext="|Route: ${departure.route.routeStations[0].station.title} &mdash;
         ${departure.route.routeStations[departure.route.routeStations.size()-1].station.title}|"/>
     <table border="5">

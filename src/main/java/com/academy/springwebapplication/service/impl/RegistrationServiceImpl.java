@@ -30,15 +30,4 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         userRepository.save(user);
     }
-
-    @Override
-    public boolean isUserExisting(String username){
-        User existingUser = userRepository.findByUsername(username);
-
-        if(existingUser != null){
-            return true;
-        }
-
-        return false;
-    }
 }

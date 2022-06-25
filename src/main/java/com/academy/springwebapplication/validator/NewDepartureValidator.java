@@ -2,6 +2,8 @@ package com.academy.springwebapplication.validator;
 
 import com.academy.springwebapplication.annotation.NewDepartureConstraint;
 import com.academy.springwebapplication.dto.DepartureDto;
+import com.academy.springwebapplication.dto.RouteDto;
+import com.academy.springwebapplication.dto.TrainDto;
 import com.academy.springwebapplication.model.entity.Route;
 import com.academy.springwebapplication.model.entity.Train;
 import com.academy.springwebapplication.model.repository.RouteRepository;
@@ -10,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class NewDepartureValidator implements ConstraintValidator<NewDepartureConstraint, DepartureDto> {
@@ -20,31 +24,49 @@ public class NewDepartureValidator implements ConstraintValidator<NewDepartureCo
     public boolean isValid(DepartureDto departureDto, ConstraintValidatorContext constraintValidatorContext) {
         boolean valid = true;
 
-        Train trainForNewDeparture = trainRepository.getById(departureDto.getTrain().getId());
-        String trainType = trainForNewDeparture.getType();
+        String trainType = getTrainType(departureDto.getTrain());
+        String routeType = getRouteType(departureDto.getRoute());
 
-        Route routeForNewDeparture = routeRepository.getById(departureDto.getRoute().getId());
-        String routeType = routeForNewDeparture.getType();
+        if (trainType == null || routeType == null) {
 
-        if (trainType.equals("suburban") && !routeType.equals("regional")) {
+            return false;
+        }
 
-            valid = false;
-        } else if (trainType.equals("local") && !routeType.equals("interregional")) {
+        switch (trainType) {
+            case "suburban":
 
-            valid = false;
-        } else if (trainType.equals("distant") && !routeType.equals("interregional_long")) {
+                valid = routeType.equals("regional");
+                break;
+            case "local":
 
-            valid = false;
+                valid = routeType.equals("interregional");
+                break;
+            case "distant":
+
+                valid = routeType.equals("interregional_long") || routeType.equals("international");
+                break;
         }
 
         if (!valid) {
             constraintValidatorContext.disableDefaultConstraintViolation();
 
             constraintValidatorContext.buildConstraintViolationWithTemplate
-                    (String.format("A %s type train cannot be used for a %s type route", trainType, routeType))
+                            (String.format("A %s type train cannot be used for a %s type route", trainType, routeType))
                     .addConstraintViolation();
         }
 
         return valid;
+    }
+
+    private String getTrainType(TrainDto trainDto) {
+        Optional<Train> trainForNewDeparture = trainRepository.findById(trainDto.getId());
+
+        return trainForNewDeparture.map(Train::getType).orElse(null);
+    }
+
+    private String getRouteType(RouteDto routeDto) {
+        Optional<Route> routeForNewDeparture = routeRepository.findById(routeDto.getId());
+
+        return routeForNewDeparture.map(Route::getType).orElse(null);
     }
 }

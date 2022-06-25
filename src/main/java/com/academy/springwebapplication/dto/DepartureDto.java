@@ -1,8 +1,10 @@
 package com.academy.springwebapplication.dto;
 
-import com.academy.springwebapplication.annotation.DepartureDateConstraint;
 import com.academy.springwebapplication.annotation.NewDepartureConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
@@ -11,6 +13,9 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @NewDepartureConstraint
 public class DepartureDto {
     private Integer id;

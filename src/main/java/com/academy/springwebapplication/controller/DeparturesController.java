@@ -3,6 +3,7 @@ package com.academy.springwebapplication.controller;
 import com.academy.springwebapplication.dto.DepartureDto;
 import com.academy.springwebapplication.dto.TicketDto;
 import com.academy.springwebapplication.dto.UserRouteDto;
+import com.academy.springwebapplication.exception.EntityByIdNotFoundException;
 import com.academy.springwebapplication.mapper.DepartureMapper;
 import com.academy.springwebapplication.model.entity.Departure;
 import com.academy.springwebapplication.service.DepartureService;
@@ -45,21 +46,16 @@ public class DeparturesController {
 
         List<TicketDto> tickets = ticketService.generateTicketsSuitableForUserRoute(departures, route);
 
-        if (tickets.isEmpty()) {
-            bindingResult.reject("error.route", "The entered route for the specified date was not found");
-
-            return "departures";
-        } else {
-
-            model.addAttribute("tickets", tickets);
-        }
+        model.addAttribute("tickets", tickets);
 
         return "departures";
     }
 
     @GetMapping("/departures/route")
-    public String departureRoute(@RequestParam(name = "departureId") int departureId,
+    public String departureRoute(@RequestParam(name = "departureId") Integer departureId,
                                  Model model) {
+        departureService.checkIfDepartureIdIsValid(departureId);
+
         Departure departure = departureService.getDepartureById(departureId);
 
         DepartureDto departureDto = departureMapper.departureToDepartureDto(departure);

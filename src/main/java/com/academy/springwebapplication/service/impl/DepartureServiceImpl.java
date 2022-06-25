@@ -1,14 +1,14 @@
 package com.academy.springwebapplication.service.impl;
 
 import com.academy.springwebapplication.dto.*;
+import com.academy.springwebapplication.exception.EntityByIdNotFoundException;
+import com.academy.springwebapplication.exception.EntityByTitleNotFoundException;
 import com.academy.springwebapplication.mapper.DepartureMapper;
 import com.academy.springwebapplication.model.entity.Departure;
 import com.academy.springwebapplication.model.entity.Route;
+import com.academy.springwebapplication.model.entity.Station;
 import com.academy.springwebapplication.model.entity.Train;
-import com.academy.springwebapplication.model.repository.DepartureRepository;
-import com.academy.springwebapplication.model.repository.RouteRepository;
-import com.academy.springwebapplication.model.repository.RouteStationRepository;
-import com.academy.springwebapplication.model.repository.TrainRepository;
+import com.academy.springwebapplication.model.repository.*;
 import com.academy.springwebapplication.service.DepartureService;
 import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;
@@ -104,5 +104,13 @@ public class DepartureServiceImpl implements DepartureService {
     @Override
     public void deleteDepartureById(Integer departureId) {
         departureRepository.deleteById(departureId);
+    }
+
+    @Override
+    public void checkIfDepartureIdIsValid(Integer departureId) {
+        if(!departureRepository.existsById(departureId)){
+
+            throw new EntityByIdNotFoundException(departureId);
+        }
     }
 }

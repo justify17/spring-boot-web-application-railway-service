@@ -4,7 +4,7 @@
 <head>
     <title>Error page</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" href="css/menu.css" />
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/css/menu.css}" />
 </head>
 
 <body>
@@ -18,6 +18,10 @@
     <p th:if="${status}">
         <b>Response Status:</b> <span th:text="${status}">status-code</span>
         <span th:if="${error}" th:text="'('+${error}+')'">error</span>
+    </p>
+
+    <p th:if="${message}">
+        <b>Details:</b> <span th:text="${message}">error-details</span>
     </p>
 </body>
 

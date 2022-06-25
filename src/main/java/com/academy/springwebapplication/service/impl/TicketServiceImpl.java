@@ -1,6 +1,10 @@
 package com.academy.springwebapplication.service.impl;
 
 import com.academy.springwebapplication.dto.*;
+import com.academy.springwebapplication.exception.EntityByIdNotFoundException;
+import com.academy.springwebapplication.exception.EntityByTitleNotFoundException;
+import com.academy.springwebapplication.exception.FailedPaymentException;
+import com.academy.springwebapplication.exception.FailedSavingTicketException;
 import com.academy.springwebapplication.mapper.DepartureMapper;
 import com.academy.springwebapplication.mapper.TicketMapper;
 import com.academy.springwebapplication.model.entity.*;
@@ -40,6 +44,9 @@ public class TicketServiceImpl implements TicketService {
     }
 
     private void moneyWriteOff(CreditCardDto card, double price) {
+        if (card.getNumber().isEmpty()) {
+            throw new FailedPaymentException(card.getNumber());
+        }
 
         System.out.printf("Payment by card: %s was successful! Written off %.2f BYN.", card.getNumber(), price);
     }
@@ -60,7 +67,7 @@ public class TicketServiceImpl implements TicketService {
         ticketRepository.save(ticket);
 
         if (ticket.getId() == null) {
-            throw new RuntimeException("Error saving ticket");
+            throw new FailedSavingTicketException(ticketDto.getUsername());
         }
     }
 
@@ -275,5 +282,12 @@ public class TicketServiceImpl implements TicketService {
                 .map(ticketMapper::ticketToTicketDto)
                 .peek(this::setCarriageComfortLevelForTicket)
                 .collect(Collectors.toList());
+    }
+
+    public void checkIfTicketIdIsValid(Integer ticketId) {
+        if(!ticketRepository.existsById(ticketId)){
+
+            throw new EntityByIdNotFoundException(ticketId);
+        }
     }
 }

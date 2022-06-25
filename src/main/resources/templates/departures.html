@@ -26,6 +26,10 @@
     <br>
 </form>
 
+<div th:if="${tickets}">
+    <div th:if="${#lists.isEmpty(tickets)}" th:text="'The entered route for the specified date was not found'" />
+</div>
+
 <table th:if="${not #lists.isEmpty(tickets)}" border="5">
     <h1 th:text="|Route: ${tickets[0].departureStation.title} &mdash; ${tickets[0].arrivalStation.title}|" />
     <tr>

@@ -1,6 +1,9 @@
 package com.academy.springwebapplication.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -8,6 +11,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CreditCardDto {
 
     @NotBlank(message = "The field card number must not be empty")

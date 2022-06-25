@@ -17,4 +17,6 @@ public interface DepartureService {
     List<Departure> getDeparturesForRoute(UserRouteDto userRouteDto);
 
     Departure getDepartureById(Integer id);
+
+    void checkIfDepartureIdIsValid(Integer departureId);
 }

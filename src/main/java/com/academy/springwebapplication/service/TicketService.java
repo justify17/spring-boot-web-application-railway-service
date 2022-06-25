@@ -22,6 +22,8 @@ public interface TicketService {
 
     void deleteTicketById(Integer ticketId);
 
+    void checkIfTicketIdIsValid(Integer ticketId);
+
     int getNumberOfPurchasedTicketsForDeparture(Integer departureId);
 
     List<TicketDto> getAllTicketsByDeparture(Integer departureId);
