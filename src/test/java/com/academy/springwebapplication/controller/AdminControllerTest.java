@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(username = AdminControllerTest.MOCK_USERNAME, roles = "ADMIN")
-public class AdminControllerTest {
+class AdminControllerTest {
 
     public static final Integer MOCK_ID = 1;
     public static final String MOCK_USERNAME = "user";

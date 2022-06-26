@@ -22,7 +22,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-public class DeparturesController {
+public class DepartureController {
     private final DepartureService departureService;
     private final TicketService ticketService;
     private final DepartureMapper departureMapper;

@@ -8,6 +8,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -23,6 +25,14 @@ public class LoggingAspect {
     public void beanPointcut() {
     }
 
+    @Pointcut("execution(* com.academy.springwebapplication.controller.*.*(..))")
+    public void controllerPointcut() {
+    }
+
+    @Pointcut("execution(* com.academy.springwebapplication.service.*.*(..))")
+    public void servicePointcut() {
+    }
+
     @AfterThrowing(pointcut = "beanPointcut()", throwing = "throwable")
     public void loggingAfterThrowing(JoinPoint joinPoint, Throwable throwable) {
 
@@ -31,18 +41,46 @@ public class LoggingAspect {
 
     }
 
-    @Around("beanPointcut()")
-    public Object loggingAround(ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("controllerPointcut()")
+    public Object controllerLogging(ProceedingJoinPoint joinPoint) throws Throwable {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
         if (logger.isDebugEnabled()) {
-            logger.debug("Enter: {}.{}() with argument[s] = {}", joinPoint.getSignature().getDeclaringTypeName(),
-                    joinPoint.getSignature().getName(), Arrays.toString(joinPoint.getArgs()));
+            logger.debug("ENTRY ---> Controller: {}. Method: {}() with argument[s] = {}. User: '{}'.",
+                    joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(),
+                    Arrays.toString(joinPoint.getArgs()), username);
         }
         try {
             Object result = joinPoint.proceed();
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Exit: {}.{}() with result = {}", joinPoint.getSignature().getDeclaringTypeName(),
-                        joinPoint.getSignature().getName(), result);
+                logger.debug("EXIT <--- Controller: {}.Method: {}() with result = {}. User: '{}'.",
+                        joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(), result, username);
+            }
+
+            return result;
+        } catch (IllegalArgumentException exception) {
+            logger.error("Illegal argument: {} in {}.{}()", Arrays.toString(joinPoint.getArgs()),
+                    joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
+
+            throw exception;
+        }
+    }
+
+    @Around("servicePointcut()")
+    public Object serviceLogging(ProceedingJoinPoint joinPoint) throws Throwable {
+        if (logger.isDebugEnabled()) {
+            logger.debug("ENTRY ---> Service: {}. Method: {}() with argument[s] = {}",
+                    joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(),
+                    Arrays.toString(joinPoint.getArgs()));
+        }
+        try {
+            Object result = joinPoint.proceed();
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("EXIT <--- Service: {}.Method: {}() with result = {}",
+                        joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(), result);
             }
 
             return result;
