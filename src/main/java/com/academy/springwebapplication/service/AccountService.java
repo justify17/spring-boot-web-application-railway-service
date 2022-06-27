@@ -7,7 +7,7 @@ import com.academy.springwebapplication.dto.ChangedUsernameDto;
 public interface AccountService {
     ChangedUserInformationDto getUserInformation(String username);
 
-    void saveUserInformation(ChangedUserInformationDto changedUserInformationDto);
+    void saveNewUserInformation(ChangedUserInformationDto changedUserInformationDto);
 
     void saveNewUsername(ChangedUsernameDto changedUsernameDto);
 

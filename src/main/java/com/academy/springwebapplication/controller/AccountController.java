@@ -67,7 +67,7 @@ public class AccountController {
             return "account";
         }
 
-        accountService.saveUserInformation(changedUserInformationDto);
+        accountService.saveNewUserInformation(changedUserInformationDto);
 
         model.addAttribute("successfulSave", "Data successfully saved!");
 

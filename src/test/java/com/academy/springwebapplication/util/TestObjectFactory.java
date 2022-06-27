@@ -1,6 +1,9 @@
 package com.academy.springwebapplication.util;
 
 import com.academy.springwebapplication.dto.*;
+import com.academy.springwebapplication.model.entity.Departure;
+import com.academy.springwebapplication.model.entity.Route;
+import com.academy.springwebapplication.model.entity.RouteStation;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -182,5 +185,22 @@ public class TestObjectFactory {
                 .yearOfCardExpiration(invalidYearOfCardExpiration)
                 .build();
     }
+
+    public Departure getDeparture() {
+        Departure departure = new Departure();
+        departure.setId(1);
+        departure.setRoute(getRoute());
+
+        return departure;
+    }
+
+    public Route getRoute() {
+        Route route = new Route();
+        route.setId(1);
+        route.setRouteStations(List.of(new RouteStation(), new RouteStation()));
+
+        return route;
+    }
+
 }
 

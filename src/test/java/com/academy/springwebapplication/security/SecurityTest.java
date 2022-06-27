@@ -10,67 +10,72 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest
 @AutoConfigureMockMvc
 class SecurityTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @WithAnonymousUser
     @Test
+    @WithAnonymousUser
     void accessTest_whenMainPage_AndUserIsAnonymous() throws Exception {
 
         this.mockMvc.perform(get("/"))
                 .andExpect(status().isOk());
     }
 
-    @WithAnonymousUser
     @Test
+    @WithAnonymousUser
     void accessTest_whenRegistrationPage_AndUserIsAnonymous() throws Exception {
 
         this.mockMvc.perform(get("/registration"))
                 .andExpect(status().isOk());
     }
 
-    @WithAnonymousUser
     @Test
+    @WithAnonymousUser
     void accessTest_whenLoginPage_AndUserIsAnonymous() throws Exception {
 
         this.mockMvc.perform(get("/login"))
                 .andExpect(status().isOk());
     }
 
-    @WithAnonymousUser
     @Test
+    @WithAnonymousUser
     void accessTest_whenDeparturesPage_AndUserIsAnonymous() throws Exception {
 
         this.mockMvc.perform(get("/departures"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("http://localhost/login"));
     }
 
-    @WithMockUser
+
     @Test
+    @WithMockUser
     void accessTest_whenDeparturesPage_AndUserIsNotAnonymous() throws Exception {
 
         this.mockMvc.perform(get("/departures"))
                 .andExpect(status().isOk());
     }
 
-    @WithMockUser
     @Test
+    @WithMockUser
     void accessTest_whenAdminPage_AndUserIsNotAdmin() throws Exception {
 
         this.mockMvc.perform(get("/admin"))
                 .andExpect(status().isForbidden());
     }
 
-    @WithMockUser
     @Test
+    @WithMockUser
     void accessTest_whenAdminDepartureDetailsPage_AndUserIsNotAdmin() throws Exception {
 
         this.mockMvc.perform(get("/admin/departureDetails")
@@ -78,11 +83,29 @@ class SecurityTest {
                 .andExpect(status().isForbidden());
     }
 
-    @WithMockUser(roles = {"ADMIN"})
     @Test
+    @WithMockUser(roles = {"ADMIN"})
     void accessTest_whenAdminPage_AndUserIsAdmin() throws Exception {
 
         this.mockMvc.perform(get("/admin"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void successfulLoginTest() throws Exception {
+
+        this.mockMvc.perform(formLogin().user("user").password("user"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+    }
+
+    @Test
+    void badCredentialsLoginTest() throws Exception {
+
+        this.mockMvc.perform(post("/login")
+                        .param("username", "user")
+                        .param("password", "invalidPassword"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login?error"));
     }
 }

@@ -135,7 +135,7 @@ class AccountControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("account"));
 
-        verify(accountService, times(1)).saveUserInformation(userInformation);
+        verify(accountService, times(1)).saveNewUserInformation(userInformation);
         verify(ticketService, times(1)).getUserTickets(MOCK_USERNAME);
         verify(accountService, never()).getUserInformation(MOCK_USERNAME);
         verifyNoMoreInteractions(accountService);
@@ -166,7 +166,7 @@ class AccountControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("account"));
 
-        verify(accountService, times(1)).saveUserInformation(userInformation);
+        verify(accountService, times(1)).saveNewUserInformation(userInformation);
         verify(ticketService, times(1)).getUserTickets(MOCK_USERNAME);
         verify(accountService, never()).getUserInformation(MOCK_USERNAME);
         verifyNoMoreInteractions(accountService);
@@ -199,7 +199,7 @@ class AccountControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("account"));
 
-        verify(accountService, never()).saveUserInformation(userInformation);
+        verify(accountService, never()).saveNewUserInformation(userInformation);
         verify(ticketService, times(1)).getUserTickets(MOCK_USERNAME);
         verify(accountService, never()).getUserInformation(MOCK_USERNAME);
         verifyNoMoreInteractions(accountService);

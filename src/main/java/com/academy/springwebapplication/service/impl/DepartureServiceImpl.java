@@ -50,6 +50,7 @@ public class DepartureServiceImpl implements DepartureService {
 
         return departuresByStation.stream()
                 .map(departureMapper::departureToDepartureDto)
+                .sorted(Comparator.comparing(DepartureDto::getDepartureDate))
                 .collect(Collectors.toList());
     }
 

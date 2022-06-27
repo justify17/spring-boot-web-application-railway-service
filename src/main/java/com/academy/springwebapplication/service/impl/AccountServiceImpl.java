@@ -38,7 +38,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void saveUserInformation(ChangedUserInformationDto changedUserInformationDto) {
+    public void saveNewUserInformation(ChangedUserInformationDto changedUserInformationDto) {
         User user = userRepository.findByUsername(changedUserInformationDto.getUsername());
 
         UserInformation userInformation = userInformationMapper.userInformationDtoToUserInformation(changedUserInformationDto);
