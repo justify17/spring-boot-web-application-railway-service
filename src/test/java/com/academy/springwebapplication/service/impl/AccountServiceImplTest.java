@@ -135,12 +135,12 @@ class AccountServiceImplTest {
 
         assertEquals(changedUsernameDto.getNewUsername(), user.getUsername());
 
-        verify(userRepository,times(1)).findByUsername(changedUsernameDto.getUsername());
-        verify(userRepository,times(1)).save(user);
+        verify(userRepository, times(1)).findByUsername(changedUsernameDto.getUsername());
+        verify(userRepository, times(1)).save(user);
     }
 
     @Test
-    void whenSaveNewPassword(){
+    void whenSaveNewPassword() {
         ChangedPasswordDto changedPasswordDto = new ChangedPasswordDto();
         changedPasswordDto.setUsername(TEST_USERNAME);
         changedPasswordDto.setNewPassword("newPassword");
@@ -152,10 +152,10 @@ class AccountServiceImplTest {
 
         accountService.saveNewPassword(changedPasswordDto);
 
-        assertEquals(encryptedPassword,user.getPassword());
+        assertEquals(encryptedPassword, user.getPassword());
 
-        verify(userRepository,times(1)).findByUsername(changedPasswordDto.getUsername());
-        verify(passwordEncoder,times(1)).encode(changedPasswordDto.getNewPassword());
-        verify(userRepository,times(1)).save(user);
+        verify(userRepository, times(1)).findByUsername(changedPasswordDto.getUsername());
+        verify(passwordEncoder, times(1)).encode(changedPasswordDto.getNewPassword());
+        verify(userRepository, times(1)).save(user);
     }
 }

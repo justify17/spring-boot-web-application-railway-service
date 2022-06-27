@@ -2,11 +2,13 @@ package com.academy.springwebapplication.service.impl;
 
 import com.academy.springwebapplication.dto.DepartureDto;
 import com.academy.springwebapplication.dto.StationDto;
+import com.academy.springwebapplication.exception.EntityByIdNotFoundException;
 import com.academy.springwebapplication.mapper.DepartureMapper;
 import com.academy.springwebapplication.model.entity.Departure;
+import com.academy.springwebapplication.model.entity.Route;
+import com.academy.springwebapplication.model.entity.Train;
 import com.academy.springwebapplication.model.repository.DepartureRepository;
 import com.academy.springwebapplication.model.repository.RouteRepository;
-import com.academy.springwebapplication.model.repository.RouteStationRepository;
 import com.academy.springwebapplication.model.repository.TrainRepository;
 import com.academy.springwebapplication.service.TicketService;
 import com.academy.springwebapplication.util.TestObjectFactory;
@@ -15,31 +17,32 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
 @SpringBootTest
 class DepartureServiceImplTest {
 
     @InjectMocks
     private DepartureServiceImpl departureService;
 
-    @Mock
-    private DepartureRepository departureRepository;
+    @InjectMocks
+    private TestObjectFactory testObjectFactory;
 
     @Mock
-    private RouteStationRepository routeStationRepository;
+    private DepartureRepository departureRepository;
 
     @Mock
     private TrainRepository trainRepository;
@@ -52,9 +55,6 @@ class DepartureServiceImplTest {
 
     @Mock
     private DepartureMapper departureMapper;
-
-    @Spy
-    private TestObjectFactory testObjectFactory;
 
     @Test
     void whenGetAllDepartures() {
@@ -131,15 +131,16 @@ class DepartureServiceImplTest {
     @Test
     void whenGetDeparturesForRoute() {
         Departure firstDeparture = testObjectFactory.getDeparture();
-        Departure secondDeparture = testObjectFactory.getDeparture();
-
-        List<Departure> departures = List.of(firstDeparture, secondDeparture);
-
+        firstDeparture.setId(1);
         firstDeparture.getRoute().getRouteStations().get(0).setRouteStopNumber(2);
         firstDeparture.getRoute().getRouteStations().get(1).setRouteStopNumber(1);
 
+        Departure secondDeparture = testObjectFactory.getDeparture();
+        secondDeparture.setId(2);
         secondDeparture.getRoute().getRouteStations().get(0).setRouteStopNumber(1);
         secondDeparture.getRoute().getRouteStations().get(1).setRouteStopNumber(2);
+
+        List<Departure> departures = List.of(firstDeparture, secondDeparture);
 
         List<Departure> actual = departures.stream()
                 .filter(departure -> {
@@ -155,20 +156,116 @@ class DepartureServiceImplTest {
         Assertions.assertEquals(result, actual);
     }
 
-    private List<Departure> getCommonDeparturesForStations(StationDto firstStation, StationDto secondStation) {
-        List<Departure> departuresByFirstStation = departureRepository.
-                findByRoute_RouteStations_Station_TitleIgnoreCase(firstStation.getTitle());
-        List<Departure> departuresBySecondStation = departureRepository.
-                findByRoute_RouteStations_Station_TitleIgnoreCase(secondStation.getTitle());
+    @Test
+    void whenGetCommonDeparturesForStations() throws Exception {
+        StationDto firstStation = new StationDto();
+        firstStation.setTitle("Гомель");
 
-        return departuresByFirstStation.stream()
-                .filter(departuresBySecondStation::contains)
-                .sorted(Comparator.comparing(Departure::getDepartureDate))
-                .collect(Collectors.toList());
+        StationDto secondStation = new StationDto();
+        firstStation.setTitle("Минск");
+
+        Departure departure1 = new Departure();
+        departure1.setId(1);
+        departure1.setDepartureDate(LocalDateTime.now().plusDays(3));
+
+        Departure departure2 = new Departure();
+        departure2.setId(2);
+        departure2.setDepartureDate(LocalDateTime.now().plusDays(2));
+
+        Departure departure3 = new Departure();
+        departure3.setId(3);
+        departure3.setDepartureDate(LocalDateTime.now().plusDays(1));
+
+        List<Departure> departureByFirstStation = List.of(departure1, departure2);
+        List<Departure> departureBySecondStation = List.of(departure1, departure2, departure3);
+
+        PowerMockito.when(departureRepository.findByRoute_RouteStations_Station_TitleIgnoreCase(firstStation.getTitle()))
+                .thenReturn(departureByFirstStation);
+        PowerMockito.when(departureRepository.findByRoute_RouteStations_Station_TitleIgnoreCase(secondStation.getTitle()))
+                .thenReturn(departureBySecondStation);
+
+        List<Departure> result = List.of(departure2, departure1);
+
+        List<Departure> actual = Whitebox.invokeMethod(departureService, "getCommonDeparturesForStations",
+                firstStation, secondStation);
+
+        Assertions.assertEquals(result, actual);
+
+        Mockito.verify(departureRepository, times(1))
+                .findByRoute_RouteStations_Station_TitleIgnoreCase(firstStation.getTitle());
+
+        Mockito.verify(departureRepository, times(1))
+                .findByRoute_RouteStations_Station_TitleIgnoreCase(secondStation.getTitle());
     }
 
     @Test
-    void whenGetCommonDeparturesForStations() {
+    void whenGetDepartureById() {
+        Integer id = 10;
 
+        Departure result = new Departure();
+        result.setId(id);
+
+        when(departureRepository.getById(id)).thenReturn(result);
+
+        Assertions.assertEquals(result, departureService.getDepartureById(id));
+
+        verify(departureRepository, times(1)).getById(id);
+    }
+
+    @Test
+    void whenSaveNewDeparture() {
+        DepartureDto departureDto = testObjectFactory.getDepartureDto();
+
+        Train train = new Train();
+        train.setId(departureDto.getTrain().getId());
+
+        when(trainRepository.getById(departureDto.getTrain().getId())).thenReturn(train);
+
+        Route route = new Route();
+        route.setId(departureDto.getRoute().getId());
+
+        when(routeRepository.getById(departureDto.getRoute().getId())).thenReturn(route);
+
+        Departure result = new Departure();
+        result.setTrain(train);
+        result.setRoute(route);
+        result.setDepartureDate(departureDto.getDepartureDate());
+
+        departureService.saveNewDeparture(departureDto);
+
+        verify(trainRepository, times(1)).getById(departureDto.getTrain().getId());
+        verify(routeRepository, times(1)).getById(departureDto.getRoute().getId());
+        verify(departureRepository, times(1)).save(result);
+    }
+
+    @Test
+    void whenDeleteDepartureById() {
+        Integer departureId = 1;
+
+        departureService.deleteDepartureById(departureId);
+
+        verify(departureRepository, times(1)).deleteById(departureId);
+    }
+
+    @Test
+    void whenCheckIfDepartureIdIsValid_AndDepartureIsNotExisting() {
+        Integer departureId = 0;
+
+        when(departureRepository.existsById(departureId)).thenReturn(false);
+
+        assertThrows(EntityByIdNotFoundException.class, () -> departureService.checkIfDepartureIdIsValid(departureId));
+
+        verify(departureRepository, times(1)).existsById(departureId);
+    }
+
+    @Test
+    void whenCheckIfDepartureIdIsValid_AndDepartureIsExisting() {
+        Integer departureId = 10;
+
+        when(departureRepository.existsById(departureId)).thenReturn(true);
+
+        departureService.checkIfDepartureIdIsValid(departureId);
+
+        verify(departureRepository, times(1)).existsById(departureId);
     }
 }

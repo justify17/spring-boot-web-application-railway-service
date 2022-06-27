@@ -143,18 +143,18 @@ public class TicketServiceImpl implements TicketService {
     }
 
     private void setTicketRoutePricePerDeparture(TicketDto ticketDto, Departure departure) {
-        RouteStation departureRouteStation =
+        RouteStation userDepartureRouteStation =
                 routeStationRepository.findByRoute_IdAndStation_Title(departure.getRoute().getId(),
                         ticketDto.getDepartureStation().getTitle());
-        RouteStation arrivalRouteStation =
+        RouteStation userArrivalRouteStation =
                 routeStationRepository.findByRoute_IdAndStation_Title(departure.getRoute().getId(),
                         ticketDto.getArrivalStation().getTitle());
 
         List<RouteStation> routeStations = departure.getRoute().getRouteStations();
 
         int price = routeStations.stream()
-                .filter(routeStation -> routeStation.getRouteStopNumber() >= departureRouteStation.getRouteStopNumber()
-                        && routeStation.getRouteStopNumber() < arrivalRouteStation.getRouteStopNumber())
+                .filter(routeStation -> routeStation.getRouteStopNumber() >= userDepartureRouteStation.getRouteStopNumber()
+                        && routeStation.getRouteStopNumber() < userArrivalRouteStation.getRouteStopNumber())
                 .mapToInt(RouteStation::getPriceToNextStation)
                 .sum();
 
@@ -213,6 +213,21 @@ public class TicketServiceImpl implements TicketService {
         }
     }
 
+    @Override
+    public void setTicketFinalPrice(TicketDto ticketDto) {
+        setTicketAdditionalPrice(ticketDto);
+
+        double finalPrice;
+
+        if (ticketDto.getAdditionalPrice() != null) {
+            finalPrice = (ticketDto.getRoutePrice() + ticketDto.getAdditionalPrice()) / 100.0;
+        } else {
+            finalPrice = ticketDto.getRoutePrice() / 100.0;
+        }
+
+        ticketDto.setFinalPrice(finalPrice);
+    }
+
     private void setTicketAdditionalPrice(TicketDto ticketDto) {
         if (ticketDto.getDeparture().getRoute().getType().equals("Региональные линии")) {
             return;
@@ -236,21 +251,6 @@ public class TicketServiceImpl implements TicketService {
         }
 
         return 0;
-    }
-
-    @Override
-    public void setTicketFinalPrice(TicketDto ticketDto) {
-        setTicketAdditionalPrice(ticketDto);
-
-        double finalPrice;
-
-        if (ticketDto.getAdditionalPrice() != null) {
-            finalPrice = (ticketDto.getRoutePrice() + ticketDto.getAdditionalPrice()) / 100.0;
-        } else {
-            finalPrice = ticketDto.getRoutePrice() / 100.0;
-        }
-
-        ticketDto.setFinalPrice(finalPrice);
     }
 
     @Override

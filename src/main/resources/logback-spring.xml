@@ -14,7 +14,6 @@
             <charset>UTF-8</charset>
             <pattern>%d{dd.MM.yyyy HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
-        <!-- Архивирование основного лога приложения. 10 файлов по 10 мб -->
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <FileNamePattern>application.%i.log.zip</FileNamePattern>
             <MinIndex>1</MinIndex>

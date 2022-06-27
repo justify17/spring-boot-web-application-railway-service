@@ -118,7 +118,7 @@ public class TestObjectFactory {
                 .build();
     }
 
-    private RouteStationDto getRouteStationDto() {
+    public RouteStationDto getRouteStationDto() {
 
         return RouteStationDto.builder()
                 .station(getValidStationDto())
