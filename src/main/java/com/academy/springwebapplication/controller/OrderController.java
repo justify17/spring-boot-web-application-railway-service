@@ -2,9 +2,7 @@ package com.academy.springwebapplication.controller;
 
 import com.academy.springwebapplication.dto.*;
 import com.academy.springwebapplication.model.entity.Departure;
-import com.academy.springwebapplication.service.DepartureService;
-import com.academy.springwebapplication.service.StationService;
-import com.academy.springwebapplication.service.TicketService;
+import com.academy.springwebapplication.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,8 +19,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
     private final DepartureService departureService;
-    private final TicketService ticketService;
     private final StationService stationService;
+    private final TicketGenerationService ticketGenerationService;
+    private final OrderService orderService;
 
     @GetMapping("/order")
     public String order(@RequestParam(name = "departureId") int departureId,
@@ -39,11 +38,7 @@ public class OrderController {
                 .arrivalStation(StationDto.builder().title(arrivalStation).build())
                 .build();
 
-        TicketDto ticket = ticketService.createTicketForDepartureAlongRoute(departure, userRouteDto);
-
-        if (ticket.getDeparture().getRoute().getType().equals("Региональные линии")) {
-            ticketService.setTicketFinalPrice(ticket);
-        }
+        TicketDto ticket = ticketGenerationService.createTicketForDepartureAlongRoute(departure, userRouteDto);
 
         setModelData(model, ticket);
 
@@ -54,12 +49,12 @@ public class OrderController {
 
     @PostMapping(value = "/order", params = {"hiddenAction=carriage"})
     public String chooseTicketCarriage(@RequestParam(value = "carriageNumber") int carriageNumber,
-                                 @SessionAttribute("ticket") TicketDto ticket,
-                                 Model model) {
+                                       @SessionAttribute("ticket") TicketDto ticket,
+                                       Model model) {
         ticket.setCarriageNumber(carriageNumber);
         ticket.setSeatNumber(null);
 
-        ticketService.setCarriageComfortLevelForTicket(ticket);
+        orderService.setCarriageComfortLevelForTicket(ticket);
 
         setModelData(model, ticket);
 
@@ -68,11 +63,11 @@ public class OrderController {
 
     @PostMapping(value = "/order", params = {"hiddenAction=seat"})
     public String chooseTicketSeat(@RequestParam(value = "seatNumber") int seatNumber,
-                             @SessionAttribute("ticket") TicketDto ticket,
-                             Model model) {
+                                   @SessionAttribute("ticket") TicketDto ticket,
+                                   Model model) {
         ticket.setSeatNumber(seatNumber);
 
-        ticketService.setTicketFinalPrice(ticket);
+        orderService.setTicketFinalPrice(ticket);
 
         setModelData(model, ticket);
 
@@ -96,7 +91,7 @@ public class OrderController {
         ticket.setUsername(userDetails.getUsername());
 
         try {
-            ticketService.payTicket(card, ticket);
+            orderService.payTicket(card, ticket);
         } catch (Exception e) {
             setModelData(model, ticket);
 
@@ -119,7 +114,7 @@ public class OrderController {
         }
 
         if (ticket.getCarriageNumber() != null) {
-            List<SeatDto> seats = ticketService.getSeatsByTicketData(ticket);
+            List<SeatDto> seats = orderService.getSeatsByTicketData(ticket);
 
             model.addAttribute("seats", seats);
         }

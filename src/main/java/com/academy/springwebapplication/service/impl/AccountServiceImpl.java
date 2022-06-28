@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * This class is responsible for managing the user account
+ */
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
@@ -21,6 +24,12 @@ public class AccountServiceImpl implements AccountService {
     private final UserInformationMapper userInformationMapper;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Returns information about the user from the database
+     *
+     * @param username username of the user for whom the information is returned
+     * @return user information
+     */
     @Override
     public ChangedUserInformationDto getUserInformation(String username) {
         User user = userRepository.findByUsername(username);
@@ -37,6 +46,12 @@ public class AccountServiceImpl implements AccountService {
         return userInformationMapper.userInformationToUserInformationDto(userInformation);
     }
 
+
+    /**
+     * Saves information about the user in the database
+     *
+     * @param changedUserInformationDto user information to save
+     */
     @Override
     public void saveNewUserInformation(ChangedUserInformationDto changedUserInformationDto) {
         User user = userRepository.findByUsername(changedUserInformationDto.getUsername());
@@ -53,6 +68,12 @@ public class AccountServiceImpl implements AccountService {
         userInformationRepository.save(userInformation);
     }
 
+
+    /**
+     * Sets a new username for the user and saves it in the database
+     *
+     * @param changedUsernameDto an object containing the new username of the user
+     */
     @Override
     public void saveNewUsername(ChangedUsernameDto changedUsernameDto) {
         User user = userRepository.findByUsername(changedUsernameDto.getUsername());
@@ -62,6 +83,11 @@ public class AccountServiceImpl implements AccountService {
         userRepository.save(user);
     }
 
+    /**
+     * Sets a new password for the user and saves it in the database
+     *
+     * @param changedPasswordDto an object containing the new password of the user
+     */
     @Override
     public void saveNewPassword(ChangedPasswordDto changedPasswordDto) {
         User user = userRepository.findByUsername(changedPasswordDto.getUsername());

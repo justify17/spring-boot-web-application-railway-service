@@ -4,7 +4,6 @@ import com.academy.springwebapplication.dto.ChangedPasswordDto;
 import com.academy.springwebapplication.dto.ChangedUserInformationDto;
 import com.academy.springwebapplication.dto.ChangedUsernameDto;
 import com.academy.springwebapplication.dto.TicketDto;
-import com.academy.springwebapplication.exception.EntityByIdNotFoundException;
 import com.academy.springwebapplication.service.AccountService;
 import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;

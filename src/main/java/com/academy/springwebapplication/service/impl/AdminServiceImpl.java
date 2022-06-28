@@ -23,6 +23,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This class is responsible for the administrator functionality
+ */
 @Service
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
@@ -35,6 +38,11 @@ public class AdminServiceImpl implements AdminService {
     private final RouteMapper routeMapper;
     private final TrainMapper trainMapper;
 
+    /**
+     * Returns all users from the database
+     *
+     * @return all users
+     */
     @Override
     public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
@@ -44,8 +52,13 @@ public class AdminServiceImpl implements AdminService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Returns all roles from the database
+     *
+     * @return all roles
+     */
     @Override
-    public List<RoleDto> getAllRoles(){
+    public List<RoleDto> getAllRoles() {
         List<Role> roles = roleRepository.findAll();
 
         return roles.stream()
@@ -53,6 +66,11 @@ public class AdminServiceImpl implements AdminService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Returns all routes from the database
+     *
+     * @return all routes
+     */
     @Override
     public List<RouteDto> getAllRoutes() {
         List<Route> routes = routeRepository.findAll();
@@ -62,6 +80,11 @@ public class AdminServiceImpl implements AdminService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Returns all trains from the database
+     *
+     * @return all trains
+     */
     @Override
     public List<TrainDto> getAllTrains() {
         List<Train> trains = trainRepository.findAll();
@@ -71,8 +94,14 @@ public class AdminServiceImpl implements AdminService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Sets the new role for the user and saves it in the database
+     *
+     * @param username  username for which the new role is being set
+     * @param newRoleId new user role id
+     */
     @Override
-    public void setNewUserRole(String username, Integer newRoleId){
+    public void setNewUserRole(String username, Integer newRoleId) {
         Role newUserRole = roleRepository.getById(newRoleId);
 
         User user = userRepository.findByUsername(username);
@@ -81,6 +110,11 @@ public class AdminServiceImpl implements AdminService {
         userRepository.save(user);
     }
 
+    /**
+     * Sets the new account lockout status for the user and saves it in the database
+     *
+     * @param username username for which the new account status is being set
+     */
     @Override
     public void setNewAccountStatus(String username) {
         User user = userRepository.findByUsername(username);
@@ -92,8 +126,14 @@ public class AdminServiceImpl implements AdminService {
         userRepository.save(user);
     }
 
+    /**
+     * Deletes the user from the database
+     *
+     * @param userId user id
+     */
     @Override
     public void deleteUserById(Integer userId) {
+
         userRepository.deleteById(userId);
     }
 }

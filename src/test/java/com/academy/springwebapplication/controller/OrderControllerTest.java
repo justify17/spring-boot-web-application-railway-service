@@ -7,9 +7,7 @@ import com.academy.springwebapplication.dto.UserRouteDto;
 import com.academy.springwebapplication.exception.EntityByIdNotFoundException;
 import com.academy.springwebapplication.exception.FailedPaymentException;
 import com.academy.springwebapplication.model.entity.Departure;
-import com.academy.springwebapplication.service.DepartureService;
-import com.academy.springwebapplication.service.StationService;
-import com.academy.springwebapplication.service.TicketService;
+import com.academy.springwebapplication.service.*;
 import com.academy.springwebapplication.util.TestObjectFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,13 +43,16 @@ class OrderControllerTest {
     private DepartureService departureService;
 
     @MockBean
-    private TicketService ticketService;
+    private TicketGenerationService ticketGenerationService;
+
+    @MockBean
+    private OrderService orderService;
 
     @MockBean
     private StationService stationService;
 
     @Test
-    void whenOrder_AndRequestParamsAreValid_AndRouteTypeIsRegional() throws Exception {
+    void whenOrder_AndRequestParamsAreValid() throws Exception {
         Integer validDepartureId = 1;
         String validDepartureStation = "Гомель";
         String validArrivalStation = "Минск";
@@ -68,7 +69,7 @@ class OrderControllerTest {
         TicketDto ticketDto = testObjectFactory.getTicketDto();
         ticketDto.getDeparture().getRoute().setType("Региональные линии");
 
-        when(ticketService.createTicketForDepartureAlongRoute(departure, userRouteDto)).thenReturn(ticketDto);
+        when(ticketGenerationService.createTicketForDepartureAlongRoute(departure, userRouteDto)).thenReturn(ticketDto);
 
         this.mockMvc.perform(get("/order")
                         .param("departureId", String.valueOf(validDepartureId))
@@ -83,52 +84,10 @@ class OrderControllerTest {
         verify(stationService, times(1)).checkIfStationTitleIsValid(validDepartureStation);
         verify(stationService, times(1)).checkIfStationTitleIsValid(validArrivalStation);
         verify(departureService, times(1)).getDepartureById(validDepartureId);
-        verify(ticketService, times(1)).createTicketForDepartureAlongRoute(departure, userRouteDto);
-        verify(ticketService, times(1)).setTicketFinalPrice(ticketDto);
+        verify(ticketGenerationService, times(1)).createTicketForDepartureAlongRoute(departure, userRouteDto);
 
         verifyNoMoreInteractions(departureService);
-        verifyNoMoreInteractions(ticketService);
-        verifyNoMoreInteractions(stationService);
-    }
-
-    @Test
-    void whenOrder_AndRequestParamsAreValid_AndRouteTypeIsNotRegional() throws Exception {
-        Integer validDepartureId = 1;
-        String validDepartureStation = "Гомель";
-        String validArrivalStation = "Минск";
-
-        UserRouteDto userRouteDto = UserRouteDto.builder()
-                .departureStation(StationDto.builder().title(validDepartureStation).build())
-                .arrivalStation(StationDto.builder().title(validArrivalStation).build())
-                .build();
-
-        Departure departure = new Departure();
-
-        when(departureService.getDepartureById(validDepartureId)).thenReturn(departure);
-
-        TicketDto ticketDto = testObjectFactory.getTicketDto();
-        ticketDto.getDeparture().getRoute().setType("Международные линии");
-
-        when(ticketService.createTicketForDepartureAlongRoute(departure, userRouteDto)).thenReturn(ticketDto);
-
-        this.mockMvc.perform(get("/order")
-                        .param("departureId", String.valueOf(validDepartureId))
-                        .param("departureStation", validDepartureStation)
-                        .param("arrivalStation", validArrivalStation))
-                .andExpect(model().attributeExists("card"))
-                .andExpect(model().attributeDoesNotExist("seats"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("order"));
-
-        verify(departureService, times(1)).checkIfDepartureIdIsValid(validDepartureId);
-        verify(stationService, times(1)).checkIfStationTitleIsValid(validDepartureStation);
-        verify(stationService, times(1)).checkIfStationTitleIsValid(validArrivalStation);
-        verify(departureService, times(1)).getDepartureById(validDepartureId);
-        verify(ticketService, times(1)).createTicketForDepartureAlongRoute(departure, userRouteDto);
-        verify(ticketService, never()).setTicketFinalPrice(ticketDto);
-
-        verifyNoMoreInteractions(departureService);
-        verifyNoMoreInteractions(ticketService);
+        verifyNoMoreInteractions(ticketGenerationService);
         verifyNoMoreInteractions(stationService);
     }
 
@@ -153,11 +112,10 @@ class OrderControllerTest {
         verify(stationService, never()).checkIfStationTitleIsValid(validDepartureStation);
         verify(stationService, never()).checkIfStationTitleIsValid(validArrivalStation);
         verify(departureService, never()).getDepartureById(invalidDepartureId);
-        verify(ticketService, never()).createTicketForDepartureAlongRoute(any(Departure.class), any(UserRouteDto.class));
-        verify(ticketService, never()).setTicketFinalPrice(any(TicketDto.class));
+        verify(ticketGenerationService, never()).createTicketForDepartureAlongRoute(any(Departure.class), any(UserRouteDto.class));
 
         verifyNoMoreInteractions(departureService);
-        verifyNoMoreInteractions(ticketService);
+        verifyNoMoreInteractions(ticketGenerationService);
         verifyNoMoreInteractions(stationService);
     }
 
@@ -177,10 +135,10 @@ class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("order"));
 
-        verify(ticketService, times(1)).setCarriageComfortLevelForTicket(ticketDto);
-        verify(ticketService, times(1)).getSeatsByTicketData(ticketDto);
+        verify(orderService, times(1)).setCarriageComfortLevelForTicket(ticketDto);
+        verify(orderService, times(1)).getSeatsByTicketData(ticketDto);
 
-        verifyNoMoreInteractions(ticketService);
+        verifyNoMoreInteractions(orderService);
     }
 
     @Test
@@ -201,10 +159,10 @@ class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("order"));
 
-        verify(ticketService, times(1)).setTicketFinalPrice(ticketDto);
-        verify(ticketService, times(1)).getSeatsByTicketData(ticketDto);
+        verify(orderService, times(1)).setTicketFinalPrice(ticketDto);
+        verify(orderService, times(1)).getSeatsByTicketData(ticketDto);
 
-        verifyNoMoreInteractions(ticketService);
+        verifyNoMoreInteractions(orderService);
     }
 
     @Test
@@ -234,10 +192,10 @@ class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("order"));
 
-        verify(ticketService, never()).payTicket(invalidCreditCard, ticketDto);
-        verify(ticketService, times(1)).getSeatsByTicketData(ticketDto);
+        verify(orderService, never()).payTicket(invalidCreditCard, ticketDto);
+        verify(orderService, times(1)).getSeatsByTicketData(ticketDto);
 
-        verifyNoMoreInteractions(ticketService);
+        verifyNoMoreInteractions(orderService);
     }
 
     @Test
@@ -264,9 +222,9 @@ class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("successfulOrder"));
 
-        verify(ticketService, times(1)).payTicket(creditCard, ticketDto);
+        verify(orderService, times(1)).payTicket(creditCard, ticketDto);
 
-        verifyNoMoreInteractions(ticketService);
+        verifyNoMoreInteractions(orderService);
     }
 
     @Test
@@ -283,7 +241,7 @@ class OrderControllerTest {
         CreditCardDto creditCard = testObjectFactory.getValidCreditCardDto();
 
         doThrow(new FailedPaymentException(creditCard.getNumber()))
-                .when(ticketService)
+                .when(orderService)
                 .payTicket(creditCard, ticketDto);
 
         this.mockMvc.perform(post("/order")
@@ -297,9 +255,9 @@ class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("order"));
 
-        verify(ticketService, times(1)).payTicket(creditCard, ticketDto);
-        verify(ticketService, times(1)).getSeatsByTicketData(ticketDto);
+        verify(orderService, times(1)).payTicket(creditCard, ticketDto);
+        verify(orderService, times(1)).getSeatsByTicketData(ticketDto);
 
-        verifyNoMoreInteractions(ticketService);
+        verifyNoMoreInteractions(orderService);
     }
 }

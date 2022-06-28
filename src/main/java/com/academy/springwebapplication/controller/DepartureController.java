@@ -3,11 +3,10 @@ package com.academy.springwebapplication.controller;
 import com.academy.springwebapplication.dto.DepartureDto;
 import com.academy.springwebapplication.dto.TicketDto;
 import com.academy.springwebapplication.dto.UserRouteDto;
-import com.academy.springwebapplication.exception.EntityByIdNotFoundException;
 import com.academy.springwebapplication.mapper.DepartureMapper;
 import com.academy.springwebapplication.model.entity.Departure;
 import com.academy.springwebapplication.service.DepartureService;
-import com.academy.springwebapplication.service.TicketService;
+import com.academy.springwebapplication.service.TicketGenerationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DepartureController {
     private final DepartureService departureService;
-    private final TicketService ticketService;
+    private final TicketGenerationService ticketGenerationService;
     private final DepartureMapper departureMapper;
 
     @GetMapping("/departures")
@@ -44,7 +43,7 @@ public class DepartureController {
 
         List<Departure> departures = departureService.getDeparturesForRoute(route);
 
-        List<TicketDto> tickets = ticketService.generateTicketsSuitableForUserRoute(departures, route);
+        List<TicketDto> tickets = ticketGenerationService.generateTicketsSuitableForUserRoute(departures, route);
 
         model.addAttribute("tickets", tickets);
 

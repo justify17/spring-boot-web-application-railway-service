@@ -7,6 +7,7 @@ import com.academy.springwebapplication.exception.EntityByIdNotFoundException;
 import com.academy.springwebapplication.mapper.DepartureMapper;
 import com.academy.springwebapplication.model.entity.Departure;
 import com.academy.springwebapplication.service.DepartureService;
+import com.academy.springwebapplication.service.TicketGenerationService;
 import com.academy.springwebapplication.service.TicketService;
 import com.academy.springwebapplication.util.TestObjectFactory;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,7 @@ class DepartureControllerTest {
     private DepartureMapper departureMapper;
 
     @MockBean
-    private TicketService ticketService;
+    private TicketGenerationService ticketGenerationService;
 
     @Test
     void whenDepartures() throws Exception {
@@ -65,7 +66,7 @@ class DepartureControllerTest {
         List<TicketDto> tickets = List.of(testObjectFactory.getTicketDto());
 
         when(departureService.getDeparturesForRoute(userRoute)).thenReturn(departures);
-        when(ticketService.generateTicketsSuitableForUserRoute(departures, userRoute)).thenReturn(tickets);
+        when(ticketGenerationService.generateTicketsSuitableForUserRoute(departures, userRoute)).thenReturn(tickets);
 
         this.mockMvc.perform(post("/departures")
                         .param("departureStation.title", userRoute.getDepartureStation().getTitle())
@@ -78,9 +79,9 @@ class DepartureControllerTest {
                 .andExpect(view().name("departures"));
 
         verify(departureService, times(1)).getDeparturesForRoute(userRoute);
-        verify(ticketService, times(1)).generateTicketsSuitableForUserRoute(departures, userRoute);
+        verify(ticketGenerationService, times(1)).generateTicketsSuitableForUserRoute(departures, userRoute);
         verifyNoMoreInteractions(departureService);
-        verifyNoMoreInteractions(ticketService);
+        verifyNoMoreInteractions(ticketGenerationService);
     }
 
     @Test
@@ -100,7 +101,7 @@ class DepartureControllerTest {
                 .andExpect(view().name("departures"));
 
         verify(departureService, never()).getDeparturesForRoute(userRoute);
-        verify(ticketService, never()).generateTicketsSuitableForUserRoute(anyList(), eq(userRoute));
+        verify(ticketGenerationService, never()).generateTicketsSuitableForUserRoute(anyList(), eq(userRoute));
     }
 
     @Test

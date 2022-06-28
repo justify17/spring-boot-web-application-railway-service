@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * This class is responsible for registering users
+ */
 @Service
 @RequiredArgsConstructor
 public class RegistrationServiceImpl implements RegistrationService {
@@ -18,6 +21,11 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
+    /**
+     * Saves the user in the database
+     *
+     * @param userRegistrationDto the user to save
+     */
     @Override
     public void saveNewUser(UserRegistrationDto userRegistrationDto){
         User user = userMapper.userRegistrationDtoToUser(userRegistrationDto);
