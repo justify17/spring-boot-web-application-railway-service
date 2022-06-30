@@ -6,8 +6,8 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"id", "firstName","surname","phoneNumber"})
-@ToString(of = {"id", "firstName","surname","phoneNumber"})
+@EqualsAndHashCode(of = {"id", "firstName", "surname", "phoneNumber"})
+@ToString(of = {"id", "firstName", "surname", "phoneNumber"})
 @NoArgsConstructor
 @Entity
 @Table(name = "user_information")

@@ -21,7 +21,7 @@ public class OnlineScoreboardController {
 
     @GetMapping("/onlineScoreboard")
     public String onlineScoreboard(Model model) {
-        model.addAttribute("station",new StationDto());
+        model.addAttribute("station", new StationDto());
 
         return "onlineScoreboard";
     }

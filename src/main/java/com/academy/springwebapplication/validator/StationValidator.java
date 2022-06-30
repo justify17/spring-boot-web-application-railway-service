@@ -22,7 +22,7 @@ public class StationValidator implements ConstraintValidator<StationExists, Stri
         return true;
     }
 
-    public boolean isStationExisting(String stationTitle) {
+    private boolean isStationExisting(String stationTitle) {
         Station station = stationRepository.findByTitle(stationTitle);
 
         return station != null;

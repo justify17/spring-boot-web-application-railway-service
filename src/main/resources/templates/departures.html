@@ -3,64 +3,78 @@
 
 <head>
     <title>Departures</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" href="css/departures.css" />
-    <link rel="stylesheet" type="text/css" href="css/menu.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="css/departures.css"/>
+    <link rel="stylesheet" type="text/css" href="css/menu.css"/>
+    <link rel="stylesheet" type="text/css" href="css/footer.css"/>
 </head>
 
 <body>
-<div class="menu" th:insert="blocks/menu :: menu_fragment" />
-<form class="form-style" th:action="@{/departures}" method="post" th:object="${userRoute}">
+<div class="menu" th:insert="blocks/menu :: menu_fragment"/>
+<div class="wrapper">
+    <div class="content">
+        <form class="form-style" th:action="@{/departures}" method="post" th:object="${userRoute}">
     <span><label for="from">From:</label>
-        <input type="text" id="from" placeholder="Departure Station" th:field="*{departureStation.title}" /></span>
-    <span><label for="to">To:</label>
-        <input type="text" id="to" placeholder="Arrival Station" th:field="*{arrivalStation.title}" /></span>
-    <span><label for="date">When:</label>
+        <input type="text" id="from" placeholder="Departure Station" th:field="*{departureStation.title}"/></span>
+            <span><label for="to">To:</label>
+        <input type="text" id="to" placeholder="Arrival Station" th:field="*{arrivalStation.title}"/></span>
+            <span><label for="date">When:</label>
             <input type="date" id="date" th:field="*{departureDate}"/></span>
-    <span><label for="time">at</label>
+            <span><label for="time">at</label>
             <input type="time" id="time" th:field="*{departureTime}"/></span>
-    <input type="submit" value="Search"/>
-    <div th:if="${#fields.hasAnyErrors()}">
-        <p th:each="err : ${#fields.allErrors()}" class="error" th:text="${err}" />
-    </div>
-    <br>
-</form>
+            <input type="submit" value="Search"/>
+            <div th:if="${#fields.hasAnyErrors()}">
+                <p th:each="err : ${#fields.allErrors()}" class="error" th:text="${err}"/>
+            </div>
+            <div th:if="${tickets}">
+                <div th:if="${#lists.isEmpty(tickets)}"
+                     th:text="'The entered route for the specified date was not found'"/>
+            </div>
+        </form>
 
-<div th:if="${tickets}">
-    <div th:if="${#lists.isEmpty(tickets)}" th:text="'The entered route for the specified date was not found'" />
+        <table th:if="${not #lists.isEmpty(tickets)}" class="table">
+            <br>
+            <h3>
+                <span th:text="|Route: ${tickets[0].departureStation.title} &mdash; ${tickets[0].arrivalStation.title}, |"/>
+                <span th:text="${userRoute.departureDate != null} ?
+                    ${#temporals.format(userRoute.departureDate, 'dd MMM')} : ${#dates.format(#dates.createNow(), 'dd MMM')}"/>
+            </h3>
+            <br>
+            <tr>
+                <th>Train</th>
+                <th>Route</th>
+                <th>Price</th>
+            </tr>
+            <tr th:each="ticket : ${tickets}">
+                <td align="center">
+                    <span th:text="${ticket.departure.train.number}"/>
+                    <span th:text="|${ticket.departure.route.routeStations[0].station.title} &mdash;
+                ${ticket.departure.route.routeStations[ticket.departure.route.routeStations.size()-1].station.title}|"/>
+                    <br>
+                    <span id="routeType" th:text="${ticket.departure.route.type}"/>
+                </td>
+                <td align="center">
+                    <div class="route">
+                        <span th:text="${#temporals.format(ticket.departureDate, 'dd MMM HH:mm , ')}"/>
+                        <span th:text="|${ticket.departureStation.title} ———————> ${ticket.arrivalStation.title}|"/>
+                        <span th:text="${#temporals.format(ticket.arrivalDate, ', dd MMM HH:mm')}"/>
+                    </div>
+                    <a th:href="@{/departures/route(departureId=${ticket.departure.id})}" class="link" target="_blank">
+                        See the whole route
+                    </a>
+                </td>
+                <td align="center">
+                    <span th:text="|${ticket.routePrice / 100},${ticket.routePrice % 100} BYN|"/>
+                    <br>
+                    <a th:href="@{/order(departureId=${ticket.departure.id},departureStation=${ticket.departureStation.title},
+            arrivalStation=${ticket.arrivalStation.title})}" class="link">Make an order</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="footer" th:insert="blocks/footer :: footer"/>
 </div>
 
-<table th:if="${not #lists.isEmpty(tickets)}" border="5">
-    <h1 th:text="|Route: ${tickets[0].departureStation.title} &mdash; ${tickets[0].arrivalStation.title}|" />
-    <tr>
-        <th>Train</th>
-        <th>Route</th>
-        <th>Price</th>
-    </tr>
-    <tr th:each="ticket : ${tickets}">
-        <td align="center">
-            <span th:text="${ticket.departure.train.number}" />
-            <span th:text="|${ticket.departure.route.routeStations[0].station.title} &mdash;
-                ${ticket.departure.route.routeStations[ticket.departure.route.routeStations.size()-1].station.title}|" />
-            <br>
-            <span th:text="${ticket.departure.route.type}" />
-        </td>
-        <td align="center">
-            <div class="route">
-                <span th:text="${#temporals.format(ticket.departureDate, 'dd MMM HH:mm , ')}" />
-                <span th:text="|${ticket.departureStation.title} ———————> ${ticket.arrivalStation.title}|" />
-                <span th:text="${#temporals.format(ticket.arrivalDate, ', dd MMM HH:mm')}" />
-            </div>
-            <a th:href="@{/departures/route(departureId=${ticket.departure.id})} " target="_blank">See the whole route</a>
-        </td>
-        <td align="center">
-            <span th:text="|${ticket.routePrice / 100},${ticket.routePrice % 100} BYN|" />
-            <br>
-            <a th:href="@{/order(departureId=${ticket.departure.id},departureStation=${ticket.departureStation.title},
-            arrivalStation=${ticket.arrivalStation.title})}">Make an order</a>
-        </td>
-    </tr>
-</table>
 </body>
 
 </html>

@@ -1,20 +1,22 @@
 package com.academy.springwebapplication.service.impl;
 
-import com.academy.springwebapplication.dto.*;
+import com.academy.springwebapplication.dto.DepartureDto;
+import com.academy.springwebapplication.dto.StationDto;
+import com.academy.springwebapplication.dto.UserRouteDto;
 import com.academy.springwebapplication.exception.EntityByIdNotFoundException;
-import com.academy.springwebapplication.exception.EntityByTitleNotFoundException;
 import com.academy.springwebapplication.mapper.DepartureMapper;
 import com.academy.springwebapplication.model.entity.Departure;
 import com.academy.springwebapplication.model.entity.Route;
-import com.academy.springwebapplication.model.entity.Station;
 import com.academy.springwebapplication.model.entity.Train;
-import com.academy.springwebapplication.model.repository.*;
+import com.academy.springwebapplication.model.repository.DepartureRepository;
+import com.academy.springwebapplication.model.repository.RouteRepository;
+import com.academy.springwebapplication.model.repository.RouteStationRepository;
+import com.academy.springwebapplication.model.repository.TrainRepository;
 import com.academy.springwebapplication.service.DepartureService;
 import com.academy.springwebapplication.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;

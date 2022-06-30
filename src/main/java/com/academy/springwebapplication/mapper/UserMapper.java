@@ -3,7 +3,6 @@ package com.academy.springwebapplication.mapper;
 import com.academy.springwebapplication.dto.UserDto;
 import com.academy.springwebapplication.dto.UserRegistrationDto;
 import com.academy.springwebapplication.model.entity.User;
-import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

@@ -6,7 +6,7 @@ import com.academy.springwebapplication.model.entity.Route;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring",uses = {RouteStationMapper.class})
+@Mapper(componentModel = "spring", uses = {RouteStationMapper.class})
 @DecoratedWith(RouteMapperDecorator.class)
 public interface RouteMapper {
     RouteDto routeToRouteDto(Route route);

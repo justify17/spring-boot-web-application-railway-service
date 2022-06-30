@@ -1,13 +1,36 @@
-body {font-family: Arial;}
+* {
+    margin: 0;
+    padding: 0;
+}
 
-/* Style the tab */
+html, body {
+    background: linear-gradient(90deg, #69b7eb, #b3dbd3, #f4d6db);
+    height: 100%;
+    font-family: sans-serif;
+    font-size: 1.2em;
+}
+
+.wrapper {
+	position: relative;
+	min-height: 92.5%;
+}
+
+.content {
+	padding-bottom: 10px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 1em;
+    font-family: Georgia, "Times New Roman", Times, serif;
+}
+
 .tab {
     overflow: hidden;
     border: 1px solid #ccc;
     background-color: #f1f1f1;
 }
 
-/* Style the buttons that are used to open the tab content */
 .tab button {
     background-color: inherit;
     float: left;
@@ -18,19 +41,16 @@ body {font-family: Arial;}
     transition: 0.3s;
 }
 
-/* Change background color of buttons on hover */
 .tab button:hover {
     background-color: #ddd;
 }
 
-/* Create an active/current tablink class */
 .tab button.active {
     background-color: #ccc;
 }
 
-/* Style the tab content */
 .tabcontent {
-    animation: fadeEffect 1s; /* Fading effect takes 1 second */
+    animation: fadeEffect 1s;
     display: none;
     padding: 6px 12px;
     border: 1px solid #ccc;
@@ -42,26 +62,42 @@ body {font-family: Arial;}
     to {opacity: 1;}
 }
 
-.table table {
-    border-collapse: collapse;
-}
-
-.table th {
-    color: #ffebcd;
-    background: #008b8b;
-    cursor: pointer;
-}
-
-.table td,
-.table th {
-    width: max-content;
-    height: 40px;
+.table {
     text-align: center;
-    border: 2px solid #846868;
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-size: 0.75em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
-.table tbody tr:nth-child(even) {
-    background: #e3e3e3;
+.table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: center;
+}
+
+.table th,
+.table td {
+    padding: 12px 15px;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+
+.table tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
 }
 
 th.sorted[data-order="1"],
@@ -85,4 +121,107 @@ th.sorted[data-order="1"]::after {
 
 .error {
     color: #FF0000;
+}
+
+.select {
+    width: max-content;
+    height: 30px;
+    border: 1px solid #999;
+    font-size: 18px;
+    color: #1c87c9;
+    background-color: #eee;
+    border-radius: 5px;
+    box-shadow: 4px 4px #ccc;
+}
+
+.button {
+    margin: 0px 0px 0px 20px;
+    text-align: center;
+    width: max-content;
+    height: 30px;
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+    border-radius: 3px;
+    background: #808080;
+    transition: 0.2s;
+}
+
+.button:hover {
+    background: rgb(53, 167, 110);
+}
+
+.button:active {
+    background: rgb(33,147,90);
+    box-shadow: 0 3px rgb(33,147,90) inset;
+}
+
+.link {
+    background-image: linear-gradient(#FE5568 50%, #FE5568 50%), linear-gradient(silver 50%, silver 50%);
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    background-size: 0 2px, 100% 2px;
+    color: #34495e;
+    padding-bottom: 3px;
+    transition: .5s ease-in-out;
+    line-height: 1;
+}
+
+.link:hover {
+    background-size: 100% 2px, 100% 2px;
+    color: #FE5568;
+}
+
+#routeType {
+    font-size: 15px;
+}
+
+.form-style{
+    position: relative;
+    border: groove;
+    padding: 15px;
+    font-size: 0.9em;
+    background: #FFFAFA;
+    margin: 0 auto;
+    border-radius: 8px;
+    font-family: sans-serif;
+}
+
+.form-style input[type="datetime-local"] {
+    font-family: Georgia, "Times New Roman", Times, serif;
+    background: rgba(255,255,255,.1);
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    margin: 0;
+    outline: 0;
+    padding: 10px;
+    width:15%;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    background-color: #e8eeef;
+    color:#8a97a0;
+    -webkit-box-shadow: 0 1px 0 rgba(0,0,0,0.03) inset;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.03) inset;
+    margin-bottom: auto;
+}
+
+.form-style input[type="submit"] {
+    cursor: pointer;
+    position: relative;
+    padding: 15px;
+    color: #FFF;
+    margin: 0 auto;
+    background: #1abc9c;
+    font-size: 18px;
+    text-align: center;
+    font-style: normal;
+    width: 13%;
+    border: 1px solid #16a085;
+    border-width: 1px 1px 3px;
+}
+
+.form-style input[type="submit"]:hover {
+    background: #109177;
 }

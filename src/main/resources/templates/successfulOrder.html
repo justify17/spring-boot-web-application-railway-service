@@ -3,38 +3,44 @@
 
 <head>
     <title>Successful Order</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" href="css/order.css" />
-    <link rel="stylesheet" type="text/css" href="css/menu.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="css/successfulOrder.css"/>
+    <link rel="stylesheet" type="text/css" href="css/menu.css"/>
+    <link rel="stylesheet" type="text/css" href="css/footer.css"/>
 </head>
 
 <body>
-<div class="menu" th:insert="blocks/menu :: menu_fragment" />
-<div th:if="${ticket != null}" class="order">
-    <h3>Payment was successful!</h3>
-    <h3>Your ticket: </h3>
-    <p>Train:
-    <span th:text="${ticket.departure.train.number}" />
-    <span th:text="|${ticket.departure.route.routeStations[0].station.title} &mdash;
-                ${ticket.departure.route.routeStations[ticket.departure.route.routeStations.size()-1].station.title}|" /></p>
-    <p>Departure Station:
-    <span th:text="${ticket.departureStation.title}" /></p>
-    <p>Departure Date:
-    <span th:text="${#temporals.format(ticket.departureDate, 'dd MMM HH:mm')}" /></p>
-    <p>Arrival Station:
-    <span th:text="${ticket.arrivalStation.title}" /></p>
-    <p>Arrival Date:
-    <span th:text="${#temporals.format(ticket.arrivalDate, 'dd MMM HH:mm')}" /></p>
-    <p>Carriage Comfort Level:
-    <span th:text="${ticket.carriageComfortLevel != null} ? ${ticket.carriageComfortLevel} : '&mdash;'" /></p>
-    <p>Carriage Number:
-    <span th:text="${ticket.carriageNumber != null} ? ${ticket.carriageNumber} : '&mdash;'" /></p>
-    <p>Seat Number:
-    <span th:text="${ticket.seatNumber != null} ? ${ticket.seatNumber} : '&mdash;'" /></p>
-    <p>Ticket Price:
-    <span th:text="|${ticket.finalPrice} BYN|" /></p>
+<div class="menu" th:insert="blocks/menu :: menu_fragment"/>
+<div class="wrapper">
+    <div th:if="${ticket != null}" class="content">
+        <br>
+        <h1>Payment was successful!</h1>
+        <br>
+        <h1>Your ticket: </h1>
+        <br>
+        <p class="block" th:text="|Train: ${ticket.departure.train.number} ${ticket.departure.route.routeStations[0].station.title} &mdash;
+                ${ticket.departure.route.routeStations[ticket.departure.route.routeStations.size()-1].station.title}|"/>
+        <br>
+        <div class="block">
+        <p th:text="|Departure Station: ${ticket.departureStation.title}|"/>
+        <p th:text="|Departure Date: ${#temporals.format(ticket.departureDate, 'dd MMM HH:mm')}|"/>
+        </div>
+        <br>
+        <div class="block">
+        <p th:text="|Arrival Station: ${ticket.arrivalStation.title}|"/>
+        <p th:text="|Arrival Date: ${#temporals.format(ticket.arrivalDate, 'dd MMM HH:mm')}|"/>
+        </div>
+        <br>
+        <p class="block" th:if="${ticket.carriageNumber != null}" th:text="|Carriage Number: ${ticket.carriageNumber}, ${ticket.carriageComfortLevel}|" />
+        <p class="block" th:if="${ticket.carriageNumber == null}" th:text="'Carriage Number: &mdash;'" />
+        <br>
+        <p class="block" th:if="${ticket.seatNumber != null}" th:text="|Seat Number: ${ticket.seatNumber}|" />
+        <p class="block" th:if="${ticket.seatNumber == null}" th:text="'Seat Number: &mdash;'" />
+        <br>
+        <p class="block" th:text="|Ticket Price: ${ticket.finalPrice} BYN|" />
+    </div>
+    <div class="footer" th:insert="blocks/footer :: footer"/>
 </div>
-
 </body>
 
 </html>

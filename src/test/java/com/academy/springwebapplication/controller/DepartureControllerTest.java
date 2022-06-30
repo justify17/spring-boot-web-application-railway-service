@@ -8,7 +8,6 @@ import com.academy.springwebapplication.mapper.DepartureMapper;
 import com.academy.springwebapplication.model.entity.Departure;
 import com.academy.springwebapplication.service.DepartureService;
 import com.academy.springwebapplication.service.TicketGenerationService;
-import com.academy.springwebapplication.service.TicketService;
 import com.academy.springwebapplication.util.TestObjectFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -46,7 +46,6 @@ public class AccountServiceImpl implements AccountService {
         return userInformationMapper.userInformationToUserInformationDto(userInformation);
     }
 
-
     /**
      * Saves information about the user in the database
      *
@@ -67,7 +66,6 @@ public class AccountServiceImpl implements AccountService {
 
         userInformationRepository.save(userInformation);
     }
-
 
     /**
      * Sets a new username for the user and saves it in the database

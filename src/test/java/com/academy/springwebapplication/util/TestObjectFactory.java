@@ -194,13 +194,12 @@ public class TestObjectFactory {
         return departure;
     }
 
-    public Route getRoute() {
+    private Route getRoute() {
         Route route = new Route();
         route.setId(1);
         route.setRouteStations(List.of(new RouteStation(), new RouteStation()));
 
         return route;
     }
-
 }
 

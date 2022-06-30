@@ -3,56 +3,66 @@
 
 <head>
     <title>Online Scoreboard</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" href="css/menu.css" />
-    <link rel="stylesheet" type="text/css" href="css/onlineScoreboard.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="css/menu.css"/>
+    <link rel="stylesheet" type="text/css" href="css/footer.css"/>
+    <link rel="stylesheet" type="text/css" href="css/onlineScoreboard.css"/>
 </head>
 
 <body>
-<div class="menu" th:insert="blocks/menu :: menu_fragment" />
-<form class="form-style" th:action="@{/onlineScoreboard}" method="post" th:object="${station}">
-    <p><label for="station">Please enter the station:</label>
-        <input type="text" id="station" th:field="*{title}" />
-        <input type="submit" value="Search"/></p>
-    <div th:if="${#fields.hasAnyErrors()}">
-        <p th:each="err : ${#fields.allErrors()}" class="error" th:text="${err}" />
-    </div>
-</form>
-<table th:if="${departures} != null" class="table">
-    <h3 th:text="|Online scoreboard station: ${station.title}|" />
-    <thead>
-    <tr>
-        <th>Train</th>
-        <th>Station arrival time</th>
-        <th>Station departure time</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr class="active-row" th:each="departure : ${departures}">
-        <td align="center">
-            <span th:text="${departure.train.number}" />
-            <span th:text="|${departure.route.routeStations[0].station.title} &mdash;
-                ${departure.route.routeStations[departure.route.routeStations.size()-1].station.title}|" />
+<div class="menu" th:insert="blocks/menu :: menu_fragment"/>
+<div class="wrapper">
+    <div class="content">
+        <form class="form-style" th:action="@{/onlineScoreboard}" method="post" th:object="${station}">
+            <p><label for="station">Please enter the station:</label>
+                <input type="text" id="station" th:field="*{title}"/>
+                <input type="submit" value="Search"/></p>
+            <div th:if="${#fields.hasAnyErrors()}">
+                <p th:each="err : ${#fields.allErrors()}" class="error" th:text="${err}"/>
+            </div>
+        </form>
+        <table th:if="${departures} != null" class="table">
             <br>
-            <span th:text="${departure.route.type}" />
-        </td>
-        <td align="center">
+            <h3 th:text="|Online scoreboard station: ${station.title}|"/>
+            <br>
+            <thead>
+            <tr>
+                <th>Train</th>
+                <th>Station arrival time</th>
+                <th>Station departure time</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="active-row" th:each="departure : ${departures}">
+                <td align="center">
+                    <span th:text="${departure.train.number}"/>
+                    <span th:text="|${departure.route.routeStations[0].station.title} &mdash;
+                ${departure.route.routeStations[departure.route.routeStations.size()-1].station.title}|"/>
+                    <br>
+                    <span th:text="${departure.route.type}"/>
+                </td>
+                <td align="center">
             <span th:each="routeStation : ${departure.route.routeStations}">
                 <span th:if="${routeStation.station.title} eq ${station.title}"
-                    th:text="${routeStation.arrivalDate != null} ?
-                    ${#temporals.format(routeStation.arrivalDate, 'dd MMM HH:mm')} : '&mdash;'" />
+                      th:text="${routeStation.arrivalDate != null} ?
+                    ${#temporals.format(routeStation.arrivalDate, 'dd MMM HH:mm')} : '&mdash;'"/>
             </span>
-        </td>
-        <td align="center">
+                </td>
+                <td align="center">
             <span th:each="routeStation : ${departure.route.routeStations}">
                 <span th:if="${routeStation.station.title} eq ${station.title}"
-                    th:text="${routeStation.departureDate != null} ?
-                    ${#temporals.format(routeStation.departureDate, 'dd MMM HH:mm')} : '&mdash;'" />
+                      th:text="${routeStation.departureDate != null} ?
+                    ${#temporals.format(routeStation.departureDate, 'dd MMM HH:mm')} : '&mdash;'"/>
             </span>
-        </td>
-    </tr>
-    </tbody>
-</table>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+    </div>
+    <div class="footer" th:insert="blocks/footer :: footer"/>
+</div>
+
 </body>
 
 </html>

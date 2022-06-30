@@ -2,7 +2,10 @@ package com.academy.springwebapplication.controller;
 
 import com.academy.springwebapplication.dto.*;
 import com.academy.springwebapplication.model.entity.Departure;
-import com.academy.springwebapplication.service.*;
+import com.academy.springwebapplication.service.DepartureService;
+import com.academy.springwebapplication.service.OrderService;
+import com.academy.springwebapplication.service.StationService;
+import com.academy.springwebapplication.service.TicketGenerationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;

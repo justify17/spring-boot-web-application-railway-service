@@ -4,18 +4,18 @@
 
 <nav th:fragment="menu_fragment">
     <ul>
-        <li><a th:href="@{/}">Main Page</a></li>
-        <li><a th:href="@{/onlineScoreboard}">Online Scoreboard</a></li>
-        <li><a th:href="@{/departures}">Departures</a></li>
+        <li><a th:href="@{/}">MAIN PAGE</a></li>
+        <li><a th:href="@{/onlineScoreboard}">ONLINE SCOREBOARD</a></li>
+        <li><a th:href="@{/departures}">DEPARTURES</a></li>
         <span class="auth" sec:authorize="!isAuthenticated()">
-            <li><a th:href="@{/login}">Sign in</a></li>
-            <li><a th:href="@{/registration}">Registration</a></li>
+            <li><a th:href="@{/login}">SIGN IN</a></li>
+            <li><a th:href="@{/registration}">REGISTRATION</a></li>
         </span>
         <span class="auth" sec:authorize="isAuthenticated()">
-            <li><a th:href="@{/logout}">Logout</a></lI>
+            <li><a th:href="@{/logout}">LOGOUT</a></lI>
             <li><a id="account" th:href="@{/account}" sec:authentication="name"></a></li>
             <li sec:authorize="hasRole('ROLE_ADMIN')">
-                <a th:href="@{/admin}">Admin Page</a>
+                <a th:href="@{/admin}">ADMIN PAGE</a>
             </li>
         </span>
     </ul>

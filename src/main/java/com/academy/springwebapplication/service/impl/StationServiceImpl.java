@@ -21,10 +21,10 @@ public class StationServiceImpl implements StationService {
      * @param stationTitle the station title
      */
     @Override
-    public void checkIfStationTitleIsValid(String stationTitle){
+    public void checkIfStationTitleIsValid(String stationTitle) {
         Station station = stationRepository.findByTitle(stationTitle);
 
-        if(station == null){
+        if (station == null) {
 
             throw new EntityByTitleNotFoundException(stationTitle);
         }

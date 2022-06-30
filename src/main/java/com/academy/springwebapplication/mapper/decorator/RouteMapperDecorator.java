@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 public abstract class RouteMapperDecorator implements RouteMapper {
+
     @Autowired
     @Qualifier("delegate")
     private RouteMapper delegate;

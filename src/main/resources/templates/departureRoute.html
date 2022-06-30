@@ -3,30 +3,37 @@
 
 <head>
     <title>Route Details</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" th:href="@{/styles/css/menu.css}"/>
+    <link rel="stylesheet" th:href="@{/styles/css/footer.css}"/>
+    <link rel="stylesheet" th:href="@{/styles/css/departureRoute.css}"/>
 </head>
 
 <body>
-<div class="menu" th:insert="blocks/menu :: menu_fragment" />
-<div th:if="${departure}" class="route">
-    <span th:utext="|Route: ${departure.route.routeStations[0].station.title} &mdash;
+<div class="menu" th:insert="blocks/menu :: menu_fragment"/>
+<div class="wrapper">
+    <div th:if="${departure}" class="content">
+        <br>
+        <h3 th:utext="|Route: ${departure.route.routeStations[0].station.title} &mdash;
         ${departure.route.routeStations[departure.route.routeStations.size()-1].station.title}|"/>
-    <table border="5">
-        <tr>
-            <th>Station</th>
-            <th>Arrival time</th>
-            <th>Departure time</th>
-        </tr>
-        <tr th:each="routeStation : ${departure.route.routeStations}">
-            <td th:text="${routeStation.station.title}" />
-            <td align="center" th:utext="${routeStation.arrivalDate != null} ?
-                            ${#temporals.format(routeStation.arrivalDate, 'dd MMM HH:mm')} : '&mdash;'" />
-            <td align="center" th:utext="${routeStation.departureDate != null} ?
-                            ${#temporals.format(routeStation.departureDate, 'dd MMM HH:mm')} : '&mdash;'" />
-        </tr>
-    </table>
-    <br>
+        <br>
+        <table class="table">
+            <tr>
+                <th>Station</th>
+                <th>Arrival time</th>
+                <th>Departure time</th>
+            </tr>
+            <tr th:each="routeStation : ${departure.route.routeStations}">
+                <td th:text="${routeStation.station.title}"/>
+                <td align="center" th:utext="${routeStation.arrivalDate != null} ?
+                            ${#temporals.format(routeStation.arrivalDate, 'dd MMM HH:mm')} : '&mdash;'"/>
+                <td align="center" th:utext="${routeStation.departureDate != null} ?
+                            ${#temporals.format(routeStation.departureDate, 'dd MMM HH:mm')} : '&mdash;'"/>
+            </tr>
+        </table>
+        <br>
+    </div>
+    <div class="footer" th:insert="blocks/footer :: footer"/>
 </div>
 </body>
 

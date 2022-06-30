@@ -6,6 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="css/auth.css" />
     <link rel="stylesheet" type="text/css" href="css/menu.css" />
+    <link rel="stylesheet" type="text/css" href="css/footer.css" />
 </head>
 
 <body>
@@ -23,6 +24,8 @@
         <h3>Don't have an account? <a class="link" th:href="@{/registration}">Registration</a></h3>
         <span th:if="${param.error}" th:text="'Invalid username or password.'" />
     </form>
+    <div class="footer" th:insert="blocks/footer :: footer" />
+
 </body>
 
 </html>

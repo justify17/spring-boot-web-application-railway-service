@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  * @autor Roman Goncharov
  */
+
 @SpringBootApplication
 public class SpringWebApplication {
 

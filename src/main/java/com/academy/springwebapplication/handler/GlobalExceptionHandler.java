@@ -30,14 +30,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({FailedPaymentException.class})
     public String handleFailedPaymentException(Exception e, Model model) {
-        model.addAttribute("message",e.getMessage());
+        model.addAttribute("message", e.getMessage());
 
         return DEFAULT_ERROR_TEMPLATE;
     }
 
     @ExceptionHandler({FailedSavingTicketException.class})
     public String handleFailedSavingTicketException(Exception e, Model model) {
-        model.addAttribute("message",e.getMessage());
+        model.addAttribute("message", e.getMessage());
 
         return DEFAULT_ERROR_TEMPLATE;
     }

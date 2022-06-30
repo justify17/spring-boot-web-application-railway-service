@@ -1,6 +1,24 @@
-body{
-    background-color: #080710;
+* {
+    margin: 0;
+    padding: 0;
 }
+
+html, body {
+    background-color: #080710;
+    height: 100%;
+    font-family: sans-serif;
+    font-size: 1em;
+}
+
+.wrapper {
+	position: relative;
+	min-height: 92.5%;
+}
+
+.content {
+	padding-bottom: 10px;
+}
+
 .background{
     width: 430px;
     height: 520px;
@@ -9,29 +27,26 @@ body{
     left: 50%;
     top: 50%;
 }
+
 .background .shape{
     height: 200px;
     width: 200px;
     position: absolute;
     border-radius: 50%;
 }
+
 .shape:first-child{
-    background: linear-gradient(
-        #1845ad,
-        #23a2f6
-    );
+    background: linear-gradient(#1845ad,#23a2f6);
     left: -80px;
     top: -80px;
 }
+
 .shape:last-child{
-    background: linear-gradient(
-        to right,
-        #ff512f,
-        #f09819
-    );
+    background: linear-gradient(to right,#ff512f,#f09819);
     right: -30px;
     bottom: -80px;
 }
+
 form{
     height: 520px;
     width: 400px;
@@ -55,38 +70,43 @@ form h3{
 }
 
 a:link {
-  color: #497DDD;
-  border-bottom: 1px dashed;
+    color: #497DDD;
+    border-bottom: 1px dashed;
 }
+
 a:visited {
-  color: #EF7D55;
+    color: #EF7D55;
 }
+
 a:hover {
-  color: #154088;
-  border-bottom: .07em solid;
+    color: #154088;
+    border-bottom: .07em solid;
 }
+
 a:active {
-  color: #497DDD;
-  border-bottom: 1px dashed;
+    color: #497DDD;
+    border-bottom: 1px dashed;
 }
 
 a {
-  text-decoration: none;
+    text-decoration: none;
 }
+
 a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 .link {
-   color: #969696;
-   text-shadow: 1px 1px black;
-   letter-spacing: 1px;
-   border-bottom: 2px solid transparent;
+    color: #969696;
+    text-shadow: 1px 1px black;
+    letter-spacing: 1px;
+    border-bottom: 2px solid transparent;
 }
+
 .link:hover {
-   color: #F54318;
-   border-bottom: 2px solid #F54318;
-   box-shadow: 0 1px 0 white, 0 2px 0 #969696;
+    color: #F54318;
+    border-bottom: 2px solid #F54318;
+    box-shadow: 0 1px 0 white, 0 2px 0 #969696;
 }
 
 form *{
@@ -116,6 +136,7 @@ input[type="password"]{
     font-size: 14px;
     font-weight: 300;
 }
+
 ::placeholder{
     color: #e5e5e5;
 }
@@ -134,27 +155,32 @@ input[type="submit"]{
 input[type="submit"]:hover {
 	background: #109177;
 }
+
 .social{
-  margin-top: 30px;
-  display: flex;
+    margin-top: 30px;
+    display: flex;
 }
+
 .social div{
-  background: red;
-  width: 150px;
-  border-radius: 3px;
-  padding: 5px 10px 10px 5px;
-  background-color: rgba(255,255,255,0.27);
-  color: #eaf0fb;
-  text-align: center;
+    background: red;
+    width: 150px;
+    border-radius: 3px;
+    padding: 5px 10px 10px 5px;
+    background-color: rgba(255,255,255,0.27);
+    color: #eaf0fb;
+    text-align: center;
 }
+
 .social div:hover{
-  background-color: rgba(255,255,255,0.47);
+    background-color: rgba(255,255,255,0.47);
 }
+
 .social .fb{
-  margin-left: 25px;
+    margin-left: 25px;
 }
+
 .social i{
-  margin-right: 4px;
+    margin-right: 4px;
 }
 
 .error {

@@ -3,27 +3,34 @@
 
 <head>
     <title>Main page</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" href="css/main.css" />
-    <link rel="stylesheet" type="text/css" href="css/menu.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="css/menu.css"/>
+    <link rel="stylesheet" type="text/css" href="css/footer.css"/>
 </head>
 
 <body>
-    <div class="menu" th:insert="blocks/menu :: menu_fragment" />
-    <h3 sec:authorize="isAnonymous()" th:text="'Welcome, user'"/>
-    <h3 sec:authorize="isAuthenticated()">Welcome, <span sec:authentication="name"/></h3>
-    <form class="form-style" th:action="@{/departures}" method="post" th:object="${userRoute}">
+<div class="menu" th:insert="blocks/menu :: menu_fragment"/>
+<div class="wrapper">
+    <div class="content">
+        <br>
+        <h3 sec:authorize="isAnonymous()" th:text="'Welcome, user'"/>
+        <h3 sec:authorize="isAuthenticated()">Welcome, <span sec:authentication="name"/></h3>
+        <br>
+        <form class="form-style" th:action="@{/departures}" method="post" th:object="${userRoute}">
         <span><label for="from">From:</label>
-            <input type="text" id="from" placeholder="Departure Station" th:field="*{departureStation.title}" /></span>
-        <span><label for="to">To:</label>
-            <input type="text" id="to" placeholder="Arrival Station" th:field="*{arrivalStation.title}" /></span>
-        <span><label for="date">When:</label>
+            <input type="text" id="from" placeholder="Departure Station" th:field="*{departureStation.title}"/></span>
+            <span><label for="to">To:</label>
+            <input type="text" id="to" placeholder="Arrival Station" th:field="*{arrivalStation.title}"/></span>
+            <span><label for="date">When:</label>
             <input type="date" id="date" placeholder="dd.mm.yyyy" th:field="*{departureDate}"/></span>
-        <span><label for="time">at</label>
+            <span><label for="time">at</label>
             <input type="time" id="time" th:field="*{departureTime}"/></span>
-        <input type="submit" value="Search"/>
-        <br><br>
-    </form>
+            <input type="submit" value="Search"/>
+        </form>
+    </div>
+    <div class="footer" th:insert="blocks/footer :: footer"/>
+</div>
 </body>
 
 </html>

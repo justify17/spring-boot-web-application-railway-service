@@ -1,46 +1,49 @@
 @import url(https://fonts.googleapis.com/css?family=Lora);
 
 ul {
-  list-style: none;
-  margin: 0 auto;
-}
-a {
-  text-decoration: none;
-  font-family: 'Lora', serif;
-  transition: .5s linear;
+    list-style: none;
+    margin: 0 auto;
 }
 
-i {
-  margin-right: 10px;
+a {
+    text-decoration: none;
+    font-family: 'Lora', serif;
+    transition: .5s linear;
 }
 
 nav {
-  display: block;
-  width: auto;
-  margin: 0 auto 30px;
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: white;
 }
+
 .menu ul {
-  background: #D4E7EE;
-  overflow: hidden;
-  padding: 0;
+    overflow: hidden;
+    padding: 0;
 }
+
 .menu li {
-  float: left;
+    float: left;
 }
 .auth li{
-  float: right;
+    float: right;
 }
+
 .menu a {
-  display: block;
-  padding: 1em;
-  border-right: 1px solid #ADC0CE;
-  background: rgba(173, 192, 206, .3);
-  color: #29838C;
+    display: block;
+    padding: 1em;
+    border-right: 1px solid #ADC0CE;
+    color: black;
+    font-size: 17px;
 }
-.menu a:hover {background: #ADC0CE}
+
+.menu a:hover {
+    background: #ADC0CE
+}
 
 #account {
-   color: #A0522D;
-   font-family: Verdana, Arial, Helvetica, sans-serif;
-   letter-spacing: 1px;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    letter-spacing: 1px;
 }

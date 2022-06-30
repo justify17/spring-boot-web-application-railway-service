@@ -57,7 +57,6 @@ class SecurityTest {
                 .andExpect(redirectedUrl("http://localhost/login"));
     }
 
-
     @Test
     @WithMockUser
     void accessTest_whenDeparturesPage_AndUserIsNotAnonymous() throws Exception {

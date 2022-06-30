@@ -1,6 +1,8 @@
 package com.academy.springwebapplication.service;
 
-import com.academy.springwebapplication.dto.*;
+import com.academy.springwebapplication.dto.DepartureDto;
+import com.academy.springwebapplication.dto.StationDto;
+import com.academy.springwebapplication.dto.UserRouteDto;
 import com.academy.springwebapplication.model.entity.Departure;
 
 import java.util.List;

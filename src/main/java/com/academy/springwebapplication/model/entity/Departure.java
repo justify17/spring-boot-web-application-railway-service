@@ -8,8 +8,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"id", "train","route", "departureDate"})
-@ToString(of = {"id", "train","route", "departureDate"})
+@EqualsAndHashCode(of = {"id", "train", "route", "departureDate"})
+@ToString(of = {"id", "train", "route", "departureDate"})
 @NoArgsConstructor
 @Entity
 @Table(name = "departures")
@@ -29,6 +29,6 @@ public class Departure {
     @Column(name = "departure_date")
     private LocalDateTime departureDate;
 
-    @OneToMany(mappedBy = "departure",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "departure", cascade = CascadeType.ALL)
     private List<Ticket> tickets;
 }

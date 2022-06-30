@@ -35,7 +35,7 @@ public class ChangePasswordValidator implements ConstraintValidator<PasswordChan
             valid = false;
         }
 
-        if(!valid){
+        if (!valid) {
             constraintValidatorContext.disableDefaultConstraintViolation();
         }
 

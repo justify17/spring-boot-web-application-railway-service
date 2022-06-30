@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface DepartureRepository extends JpaRepository<Departure,Integer> {
+public interface DepartureRepository extends JpaRepository<Departure, Integer> {
     List<Departure> findByRoute_RouteStations_Station_TitleIgnoreCase(String stationTitle);
 }

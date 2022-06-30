@@ -21,10 +21,6 @@ public class UsernameValidator implements ConstraintValidator<UsernameNotTaken, 
     private boolean isUserExisting(String username) {
         User existingUser = userRepository.findByUsername(username);
 
-        if (existingUser != null) {
-            return true;
-        }
-
-        return false;
+        return existingUser != null;
     }
 }

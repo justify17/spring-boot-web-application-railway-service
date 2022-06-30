@@ -3,26 +3,38 @@
 
 <head>
     <title>Error page</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" th:href="@{/styles/css/menu.css}" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/css/menu.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/css/footer.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/css/error.css}"/>
 </head>
 
 <body>
-    <div class="menu" th:insert="blocks/menu :: menu_fragment" />
-    <p>Sorry, the app encountered an error. Please try again<p>
+<div class="menu" th:insert="blocks/menu :: menu_fragment"/>
+<div class="wrapper">
+    <div class="content">
+        <div class="block">
+            <br>
+            <p>Sorry, the app encountered an error. Please try again<p>
+            <br>
 
-    <p th:if="${timestamp}" id='created'>
-        <b>Occurred:</b> <span th:text="${timestamp}">Timestamp</span>
-    </p>
+            <p th:if="${timestamp}" id='created'>
+                <b>Occurred:</b> <span th:text="${timestamp}">Timestamp</span>
+            </p>
+            <br>
 
-    <p th:if="${status}">
-        <b>Response Status:</b> <span th:text="${status}">status-code</span>
-        <span th:if="${error}" th:text="'('+${error}+')'">error</span>
-    </p>
+            <p th:if="${status}">
+                <b>Response Status:</b> <span th:text="${status}">status-code</span>
+                <span th:if="${error}" th:text="'('+${error}+')'">error</span>
+            </p>
 
-    <p th:if="${message}">
-        <b>Details:</b> <span th:text="${message}">error-details</span>
-    </p>
+            <p th:if="${message}">
+                <b>Details:</b> <span th:text="${message}">error-details</span>
+            </p>
+        </div>
+    </div>
+    <div class="footer" th:insert="blocks/footer :: footer"/>
+</div>
 </body>
 
 </html>

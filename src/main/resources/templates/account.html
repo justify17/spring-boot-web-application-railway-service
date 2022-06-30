@@ -3,133 +3,155 @@
 
 <head>
     <title>My account</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" href="css/menu.css" />
-    <link rel="stylesheet" type="text/css" href="css/account.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="css/menu.css"/>
+    <link rel="stylesheet" type="text/css" href="css/footer.css"/>
+    <link rel="stylesheet" type="text/css" href="css/account.css"/>
     <script type="text/javascript" src="js/account.js"></script>
 </head>
 
 <body>
-<div class="menu" th:insert="blocks/menu :: menu_fragment" />
+<div class="menu" th:insert="blocks/menu :: menu_fragment"/>
+<div class="wrapper">
+    <div class="content">
+        <div class="tab">
+            <button class="tablinks" onclick="openData(event, 'myOrders')" id="openDefault">My orders</button>
+            <button class="tablinks" onclick="openData(event, 'userInformation')" id="openInformation">Personal
+                information
+            </button>
+            <button class="tablinks" onclick="openData(event, 'changeUsername')" id="openChangeUsername">Change
+                Username
+            </button>
+            <button class="tablinks" onclick="openData(event, 'changePassword')" id="openChangePassword">Change
+                Password
+            </button>
+        </div>
 
-<div class="tab">
-    <button class="tablinks" onclick="openData(event, 'myOrders')" id="openDefault">My orders</button>
-    <button class="tablinks" onclick="openData(event, 'userInformation')" id="openInformation">Personal information</button>
-    <button class="tablinks" onclick="openData(event, 'changeUsername')" id="openChangeUsername">Change Username</button>
-    <button class="tablinks" onclick="openData(event, 'changePassword')" id="openChangePassword">Change Password</button>
-</div>
+        <div id="myOrders" class="tabcontent">
+            <div th:if="${openDefault}">
+                <script>
+                    document.getElementById("openDefault").click();
+                </script>
+            </div>
+            <br>
+            <h1>My orders:</h1>
+            <br>
+            <table th:if="${not #lists.isEmpty(tickets)}" class="table">
+                <tr>
+                    <th>Train</th>
+                    <th>Departure Station</th>
+                    <th>Departure Date</th>
+                    <th>Arrival Station</th>
+                    <th>Arrival Date</th>
+                    <th>Carriage</th>
+                    <th>Seat Number</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                </tr>
+                <tr th:each="ticket : ${tickets}">
+                    <td>
+                        <span th:text="${ticket.departure.train.number}"/>
+                        <span th:text="|${ticket.departure.route.routeStations[0].station.title} &mdash;
+                ${ticket.departure.route.routeStations[ticket.departure.route.routeStations.size()-1].station.title}|"/>
+                        <br>
+                        <span id="routeType" th:text="${ticket.departure.route.type}"/>
+                    </td>
+                    <td th:text="${ticket.departureStation.title}"/>
+                    <td th:text="${#temporals.format(ticket.departureDate, 'dd MMM HH:mm')}"/>
+                    <td th:text="${ticket.arrivalStation.title}"/>
+                    <td th:text="${#temporals.format(ticket.arrivalDate, 'dd MMM HH:mm')}"/>
+                    <td th:text="${ticket.carriageNumber != null} ? |№ ${ticket.carriageNumber}, ${ticket.carriageComfortLevel}| : '&mdash;'"/>
+                    <td th:text="${ticket.seatNumber != null} ? ${ticket.seatNumber} : '&mdash;'"/>
+                    <td th:text="|${ticket.finalPrice} BYN|"/>
+                    <td>
+                        <span>Paid &#10003; </span>
+                        <form th:action="@{/account}" method="post">
+                            <input type="hidden" name="hiddenAction" value="cancelOrder"/>
+                            <input type="hidden" th:name="ticketId" th:value="${ticket.id}"/>
+                            <input class="button" type="submit" value="Cancel Order"/>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+            <br>
+        </div>
 
-<div id="myOrders" class="tabcontent">
-    <div th:if="${openDefault}">
-        <script>
-            document.getElementById("openDefault").click();
-        </script>
-    </div>
-    <h3>My orders:</h3>
-    <table th:if="${not #lists.isEmpty(tickets)}" border="5">
-        <tr>
-            <th>Train</th>
-            <th>Departure Station</th>
-            <th>Departure Date</th>
-            <th>Arrival Station</th>
-            <th>Arrival Date</th>
-            <th>Carriage</th>
-            <th>Seat Number</th>
-            <th>Price</th>
-            <th>Status</th>
-        </tr>
-        <tr th:each="ticket : ${tickets}">
-            <td>
-                <span th:text="${ticket.departure.train.number}" />
-                <span th:text="|${ticket.departure.route.routeStations[0].station.title} &mdash;
-                ${ticket.departure.route.routeStations[ticket.departure.route.routeStations.size()-1].station.title}|" />
+        <div id="userInformation" class="tabcontent">
+            <div th:if="${openInformation}">
+                <script>
+                    document.getElementById("openInformation").click();
+                </script>
+            </div>
+            <br>
+            <h1>Personal Information:</h1>
+            <br>
+            <form class="form-style" th:action="@{/account}" method="post" th:object="${userInformation}">
+                <input type="hidden" name="hiddenAction" value="changeInformation"/>
+                <input type="hidden" th:field="*{username}"/>
+                <p><label for="firstName">First name:</label>
+                    <input type="text" id="firstName" th:field="*{firstName}"/>
+                    <span th:if="${#fields.hasErrors('firstName')}" class="error" th:errors="*{firstName}"/></p>
                 <br>
-                <span th:text="${ticket.departure.route.type}" />
-            </td>
-            <td th:text="${ticket.departureStation.title}" />
-            <td th:text="${#temporals.format(ticket.departureDate, 'dd MMM HH:mm')}" />
-            <td th:text="${ticket.arrivalStation.title}" />
-            <td th:text="${#temporals.format(ticket.arrivalDate, 'dd MMM HH:mm')}" />
-            <td th:text="${ticket.carriageNumber != null} ? |№ ${ticket.carriageNumber}, ${ticket.carriageComfortLevel}| : '&mdash;'" />
-            <td th:text="${ticket.seatNumber != null} ? ${ticket.seatNumber} : '&mdash;'" />
-            <td th:text="|${ticket.finalPrice} BYN|" />
-            <td>
-                <span>Paid &#10003; </span>
-                <form th:action="@{/account}" method="post">
-                    <input type="hidden" name="hiddenAction" value="cancelOrder" />
-                    <input type="hidden" th:name="ticketId" th:value="${ticket.id}"/>
-                    <input type="submit" value="Cancel Order"/>
-                </form>
-            </td>
-        </tr>
-    </table>
-</div>
+                <p><label for="surname">Surname:</label>
+                    <input type="text" id="surname" th:field="*{surname}"/>
+                    <span th:if="${#fields.hasErrors('surname')}" class="error" th:errors="*{surname}"/></p>
+                <br>
+                <p><label for="phoneNumber">Phone number:</label>
+                    <input type="tel" id="phoneNumber" autofocus="autofocus"
+                           placeholder="+375(__)___-__-__" th:field="*{phoneNumber}"/>
+                    <span th:if="${#fields.hasErrors('phoneNumber')}" class="error" th:errors="*{phoneNumber}"/></p>
+                <br>
+                <p><input type="submit" value="Save changes"/>
+                    <span th:if="${successfulSave != null}" class="successful" th:text="${successfulSave}"/></p>
+            </form>
+        </div>
 
-<div id="userInformation" class="tabcontent">
-    <div th:if="${openInformation}">
-        <script>
-            document.getElementById("openInformation").click();
-        </script>
+        <div id="changeUsername" class="tabcontent">
+            <div th:if="${openChangeUsername}">
+                <script>
+                    document.getElementById("openChangeUsername").click();
+                </script>
+            </div>
+            <form class="form-style" th:action="@{/account}" method="post" th:object="${changedUsername}">
+                <input type="hidden" name="hiddenAction" value="changeUsername"/>
+                <input type="hidden" th:field="*{username}"/>
+                <p><label for="newUsername">Please enter your new username:</label>
+                    <input type="text" id="newUsername" th:field="*{newUsername}"/>
+                    <span th:if="${#fields.hasErrors('newUsername')}" class="error" th:errors="*{newUsername}"/></p>
+                <br>
+                <p><input type="submit" value="Change username"/></p>
+                <p><small>*After changing your username, you will be redirected to the login page</small></p>
+            </form>
+        </div>
+
+        <div id="changePassword" class="tabcontent">
+            <div th:if="${openChangePassword}">
+                <script>
+                    document.getElementById("openChangePassword").click();
+                </script>
+            </div>
+            <form class="form-style" th:action="@{/account}" method="post" th:object="${changedPassword}">
+                <input type="hidden" th:name="hiddenAction" th:value="changePassword"/>
+                <input type="hidden" th:field="*{username}"/>
+                <p><label for="password">Please enter your old password:</label>
+                    <input type="text" id="password" th:field="*{password}"/>
+                    <span th:if="${#fields.hasErrors('password')}" class="error" th:errors="*{password}"/></p>
+                <br>
+                <p><label for="newPassword">Enter a new password:</label>
+                    <input type="text" id="newPassword" th:field="*{newPassword}"/>
+                    <span th:if="${#fields.hasErrors('newPassword')}" class="error" th:errors="*{newPassword}"/></p>
+                <br>
+                <p><label for="confirmNewPassword">Confirm a new password:</label>
+                    <input type="text" id="confirmNewPassword" th:field="*{confirmNewPassword}"/></p>
+                <p th:if="${#fields.hasErrors('confirmNewPassword')}" class="error" th:errors="*{confirmNewPassword}"/>
+                <br>
+                <p><input type="submit" value="Change password"/></p>
+                <p><small>*After changing your password, you will be redirected to the login page</small></p>
+            </form>
+        </div>
     </div>
-    <h3>Personal Information</h3>
-    <form th:action="@{/account}" method="post" th:object="${userInformation}">
-        <input type="hidden" name="hiddenAction" value="changeInformation" />
-        <input type="hidden" th:field="*{username}" />
-        <p><label for="firstName">First name:</label>
-            <input type="text" id="firstName" th:field="*{firstName}"/>
-        <span th:if="${#fields.hasErrors('firstName')}" class="error" th:errors="*{firstName}" /></p>
-        <p><label for="surname">Surname:</label>
-            <input type="text" id="surname" th:field="*{surname}"/>
-            <span th:if="${#fields.hasErrors('surname')}" class="error" th:errors="*{surname}" /></p>
-        <p><label for="phoneNumber">Phone number:</label>
-            <input type="tel" id="phoneNumber" autofocus="autofocus"
-                   placeholder="+375(__)___-__-__" th:field="*{phoneNumber}"/>
-            <span th:if="${#fields.hasErrors('phoneNumber')}" class="error" th:errors="*{phoneNumber}" /></p>
-        <p><input type="submit" value="Save changes"/>
-        <span th:if="${successfulSave != null}" class="successful" th:text="${successfulSave}"/></p>
-    </form>
+    <div class="footer" th:insert="blocks/footer :: footer"/>
 </div>
-
-<div id="changeUsername" class="tabcontent">
-    <div th:if="${openChangeUsername}">
-        <script>
-            document.getElementById("openChangeUsername").click();
-        </script>
-    </div>
-    <form th:action="@{/account}" method="post" th:object="${changedUsername}">
-        <input type="hidden" name="hiddenAction" value="changeUsername" />
-        <input type="hidden" th:field="*{username}" />
-        <p><label for="newUsername">Please enter your new username:</label>
-            <input type="text" id="newUsername" th:field="*{newUsername}"/>
-            <span th:if="${#fields.hasErrors('newUsername')}" class="error" th:errors="*{newUsername}" /></p>
-        <p><input type="submit" value="Change username"/></p>
-        <p><small>*After changing your username, you will be redirected to the login page</small></p>
-    </form>
-</div>
-
-<div id="changePassword" class="tabcontent">
-    <div th:if="${openChangePassword}">
-        <script>
-            document.getElementById("openChangePassword").click();
-        </script>
-    </div>
-    <form th:action="@{/account}" method="post" th:object="${changedPassword}">
-        <input type="hidden" th:name="hiddenAction" th:value="changePassword" />
-        <input type="hidden" th:field="*{username}" />
-        <p><label for="password">Please enter your old password:</label>
-            <input type="text" id="password" th:field="*{password}"/>
-        <span th:if="${#fields.hasErrors('password')}" class="error" th:errors="*{password}" /></p>
-        <p><label for="newPassword">Enter a new password:</label>
-            <input type="text" id="newPassword" th:field="*{newPassword}"/>
-        <span th:if="${#fields.hasErrors('newPassword')}" class="error" th:errors="*{newPassword}" /></p>
-        <p><label for="confirmNewPassword">Confirm a new password:</label>
-            <input type="text" id="confirmNewPassword" th:field="*{confirmNewPassword}"/></p>
-        <p th:if="${#fields.hasErrors('confirmNewPassword')}" class="error" th:errors="*{confirmNewPassword}" />
-        <p><input type="submit" value="Change password"/></p>
-        <p><small>*After changing your password, you will be redirected to the login page</small></p>
-    </form>
-</div>
-
 </body>
 
 </html>

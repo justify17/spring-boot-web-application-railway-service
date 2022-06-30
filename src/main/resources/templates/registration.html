@@ -6,6 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="css/auth.css" />
     <link rel="stylesheet" type="text/css" href="css/menu.css" />
+    <link rel="stylesheet" type="text/css" href="css/footer.css" />
 </head>
 
 <body>
@@ -24,6 +25,7 @@
         <p><input type="submit" value="Sign up"/></p>
         <h3>Do you have an account? <a class="link" th:href="@{/login}">Sign in</a></h3>
     </form>
+    <div class="footer" th:insert="blocks/footer :: footer" />
 </body>
 
 </html>

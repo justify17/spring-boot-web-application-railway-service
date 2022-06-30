@@ -27,7 +27,7 @@ public class RegistrationServiceImpl implements RegistrationService {
      * @param userRegistrationDto the user to save
      */
     @Override
-    public void saveNewUser(UserRegistrationDto userRegistrationDto){
+    public void saveNewUser(UserRegistrationDto userRegistrationDto) {
         User user = userMapper.userRegistrationDtoToUser(userRegistrationDto);
 
         String encryptedPassword = passwordEncoder.encode(user.getPassword());

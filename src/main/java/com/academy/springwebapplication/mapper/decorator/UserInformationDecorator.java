@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 public abstract class UserInformationDecorator implements UserInformationMapper {
+
     @Autowired
     @Qualifier("delegate")
     private UserInformationMapper delegate;
@@ -30,7 +31,7 @@ public abstract class UserInformationDecorator implements UserInformationMapper 
         }
 
         if (changedUserInformationDto.getPhoneNumber().isEmpty() ||
-        changedUserInformationDto.getPhoneNumber().matches("\\+375\\(__\\)___-__-__")) {
+                changedUserInformationDto.getPhoneNumber().matches("\\+375\\(__\\)___-__-__")) {
             userInformation.setPhoneNumber(null);
         }
 

@@ -1,6 +1,22 @@
-body {
-    color: #2F4F4F;
-    background-color: #FFE4C4;
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    background: linear-gradient(90deg, #69b7eb, #b3dbd3, #f4d6db);
+    height: 100%;
+    font-family: sans-serif;
+    font-size: 1em;
+}
+
+.wrapper {
+	position: relative;
+	min-height: 92.5%;
+}
+
+.content {
+	padding-bottom: 10px;
 }
 
 h3 {
@@ -10,10 +26,11 @@ h3 {
 }
 
 .form-style{
-    max-width: 600px;
+    border: groove;
+    max-width: 700px;
     padding: 15px;
-    font-size: 1.3em;
-    background: #FFFAFA;
+    font-size: 1.2em;
+    background: white;
     border-radius: 8px;
     margin: auto;
     font-family: Georgia, "Times New Roman", Times, serif;
@@ -41,7 +58,6 @@ h3 {
 
 .form-style input[type="submit"] {
     cursor: pointer;
-	position: relative;
 	padding: 15px;
 	color: #FFF;
 	background: #1abc9c;
@@ -52,11 +68,13 @@ h3 {
 	border: 1px solid #16a085;
 	border-width: 1px 1px 3px;
 }
+
 .form-style input[type="submit"]:hover {
 	background: #109177;
 }
 
 .table {
+    text-align: center;
     border-collapse: collapse;
     margin: auto;
     font-size: 1.4em;
@@ -94,6 +112,5 @@ h3 {
 }
 
 .error {
-    font-size: 17px;
     color: #FF0000;
 }

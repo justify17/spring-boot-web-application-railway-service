@@ -17,6 +17,7 @@ import java.util.Arrays;
 @Aspect
 @Component
 public class LoggingAspect {
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Pointcut("within(@org.springframework.stereotype.Repository *)" +

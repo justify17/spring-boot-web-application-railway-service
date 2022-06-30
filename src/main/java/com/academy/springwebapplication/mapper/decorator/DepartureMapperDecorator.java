@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class DepartureMapperDecorator implements DepartureMapper {
+
     @Autowired
     @Qualifier("delegate")
     private DepartureMapper delegate;

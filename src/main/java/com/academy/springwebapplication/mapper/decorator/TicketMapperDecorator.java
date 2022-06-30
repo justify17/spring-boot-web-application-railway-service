@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 public abstract class TicketMapperDecorator implements TicketMapper {
+
     @Autowired
     @Qualifier("delegate")
     private TicketMapper delegate;
-
 
     @Override
     public Ticket ticketDtoToTicket(TicketDto ticketDto) {
@@ -27,5 +27,4 @@ public abstract class TicketMapperDecorator implements TicketMapper {
 
         return ticketDto;
     }
-
 }

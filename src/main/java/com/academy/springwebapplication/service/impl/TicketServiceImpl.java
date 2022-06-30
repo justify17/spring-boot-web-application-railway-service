@@ -55,7 +55,6 @@ public class TicketServiceImpl implements TicketService {
      * @param departureId departure id
      * @return number of purchased tickets for the departure
      */
-
     @Override
     public int getNumberOfPurchasedTicketsForDeparture(Integer departureId) {
 

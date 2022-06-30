@@ -6,7 +6,8 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface RoleMapper {
-    default RoleDto roleToRoleDto(Role role){
+
+    default RoleDto roleToRoleDto(Role role) {
         RoleDto roleDto = new RoleDto();
 
         roleDto.setId(role.getId());

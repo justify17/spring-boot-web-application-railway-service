@@ -67,7 +67,6 @@ class AdminControllerTest {
         verifyNoMoreInteractions(departureService);
     }
 
-
     @Test
     void whenChangeUserRole() throws Exception {
         String testUsername = MOCK_USERNAME;
