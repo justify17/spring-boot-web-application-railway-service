@@ -1,4 +1,4 @@
-# spring-web-application
+# spring-boot-web-application
 
 Тема проекта: Cистема "Железнодорожная касса".
 
